@@ -11,17 +11,14 @@
 
 
 import { Schema, model, Document } from "mongoose";
-import { categoriaSchema } from "../schemas/categorias.schema";
+import { educacionSchema } from "../schemas/educacion.schema";
 
 
-export interface ICategorias extends Document {   
-   nombre: string,
-   genero: string, 
-   edad_min: number,   
-   edad_max: number,
-   activo: number,
+export interface IEducacion extends Document {   
+   nombre: string,   
+   activo: boolean,
    createdAt: Date,
    updateAt:Date
 }
 
-export default model<ICategorias>('Categorias', categoriaSchema);
+export default model<IEducacion>('Educacion', educacionSchema);

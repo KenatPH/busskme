@@ -30,7 +30,7 @@ import userAuthRegisterRoutes from './routes/users.routes'
 import paisRoutes from './routes/pais.routes'
 import edoRoutes from './routes/estados.routes'
 import ciudadRoutes from './routes/ciudad.routes'
-import categoriaRoutes from './routes/categoria.routes'
+import categoriaRoutes from './routes/educacion.routes'
 import rutaRoutes from './routes/ruta.routes'
 import paradaRoutes from './routes/parada.routes'
 import vehiculoRoutes from './routes/vehiculo.routes'
@@ -38,6 +38,8 @@ import marcaRoutes from './routes/marca.routes'
 import modeloRoutes from './routes/modelo.routes'
 import roleRoutes from './routes/role.routes'
 import choferRoutes from './routes/chofer.routes'
+import educacionRoutes from './routes/educacion.routes'
+
 
 
 //import fbkRoutes from './routes/fbk.routes'
@@ -104,6 +106,7 @@ app.use('/ciudad',passport.authenticate('jwt', {session: false}),ciudadRoutes);
 app.use('/category',passport.authenticate('jwt', {session: false}),categoriaRoutes);
 app.use('/ruta',rutaRoutes);
 app.use('/chofer',choferRoutes);
+app.use('/educacion',educacionRoutes);
 app.use('/parada',passport.authenticate('jwt', {session: false}),paradaRoutes);
 app.use('/vehiculo',vehiculoRoutes);
 app.use('/vehiculo/marca',marcaRoutes);

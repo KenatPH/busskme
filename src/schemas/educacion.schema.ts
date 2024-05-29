@@ -1,0 +1,24 @@
+/*
+  Empresa         : Bioonix
+  Aplicación      : Api de Busskm
+  Módulo          : Archivo para definir el schema de educacion
+  Fecha creación  : 29 de May del 2024
+  Modificado el   :
+  Programador     : JLRAMIREZ
+  Colaboración    :
+  Descripción     : Api para enviar y manejar la información de Busskm
+*/
+
+import { Schema, Document } from "mongoose";
+
+export const educacionSchema = new Schema ({   
+   nombre: {
+      type: String,
+      required: true
+   },
+   activo: {
+      type: Boolean,
+      default:true
+   }  
+},{versionKey: false, timestamps: true}
+);

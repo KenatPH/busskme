@@ -11,7 +11,7 @@
 
 import { check } from 'express-validator';
 import { validateResult } from "../utils/validateHandle";
-import Categoria from "../models/categoria.models";
+import Categoria from "../models/educacion.models";
 import { httpCode } from "../utils/httpStatusHandle";
 
 var num_status = 0;
