@@ -219,8 +219,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
            fecha_venc_lic, grado_licencia, imagen_licencia, nro_cert_medico, fecha_emision_cermed,
            fecha_venc_cermed, grado_cermed, imagen_cermed, carga_familiar, grado_instruccion,
            idiomas } = req?.body
-   console.log('sonia body: ',req.body);
-   console.log('sonia files: ',req.files);
+
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -238,7 +237,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       var imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
       var fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
    }  
-   console.log('imag rutas: ',imagen_dni_path,' ',imagen_cermed_path,' ',imagen_licencia_path+' ',fotoperfil_path);
+   
    if(fotoperfil2 !== null && fotoperfil2 !== undefined && fotoperfil2 !== ""){
       const storagePath = path.resolve(fotoperfil2);      
       if (fs.existsSync(storagePath)) {
@@ -265,8 +264,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       tokenFacebook,
       tokenGoogle */
    });
-
-   //verificamos que los roles enviados existan
+   
    if(roles.length > 0){
       const foundRoles = await Role.find({nombre: {$in: roles}});      
       if(!foundRoles){
@@ -276,10 +274,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             msg_status: 'The submitted roles do not exist!'         
          })
       }
-      //si roles trae información tomamos el id del rol recibido y lo asignamos a roles
       newUser.roles = foundRoles.map(role => role._id);
-   }else{
-      //si no viene información en roles, asignamos vacío
+   }else{      
       newUser.roles = [];      
    }
 
@@ -338,7 +334,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'error (chofer) '+error         
+         msg_status: 'error guardando usuario-chofer (chofer) '
       });
    }
 }
@@ -356,7 +352,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Id is invalid'
          });
       }
-      // Find the user by userId
+      
       const user = await User.findById(id);
 
       if (!user) {
@@ -374,7 +370,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             await fs.unlink(storagePath);            
          }
       }
-      // Update the user properties
+      
       user.nombre = nombre.toUpperCase; 
       user.direccion = direccion;     
       user.telefono = telefono;            
@@ -387,8 +383,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          const foundRoles = await Role.find({nombre: {$in: roles}});      
          user.roles = foundRoles.map(role => role._id);    
       }  
-            
-      // Save the updated user
+                  
       await user.save();
 
       return res.status(httpCode[200].code).json({
@@ -423,7 +418,7 @@ export const deleteChofer = async (req: Request, res: Response): Promise<Respons
             msg_status: 'Id is invalid'
          });
       }
-      // Find the user by userId and Delete the user
+      
       const user = await User.findById(id);
       
       if (!user) {
@@ -433,10 +428,10 @@ export const deleteChofer = async (req: Request, res: Response): Promise<Respons
             msg_status: 'User not found'
          });
       }else{
-         user.activo = false;  //modificamos el campo activo a false, hacemos un borrado lógico del usuario
+         user.activo = false;  
          await user.save();
          return res.status(httpCode[200].code).json({
-            //data_send:user,
+            data_send:"",
             num_status: httpCode[200].code,
             msg_status: 'User deleted successfully'
          });

@@ -10,17 +10,56 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteVehiculo, getDataVehiculos, getVehiculo } from "../controllers/vehiculo.controller";
+import { create, update, deleteVehiculo, getDataVehiculos, getVehiculo, activarVehiculo } from "../controllers/vehiculo.controller";
 import passport from 'passport';
 import {checkAuth} from '../config/config.jwt';
 import config from '../config/config';
 import MulterMiddleware from '../middlewares/MulterPhotosMiddleware';
 
+
+const multer = new MulterMiddleware(config.STORAGEAPI.imgsvehiculo,'vehiculo');
+
+const upload = multer.getMiddleware().fields([{ name: 'img_certificado', maxCount: 1 }, 
+{ name: 'img_poliza', maxCount: 1 }]);
+
 const router = Router();
 
-router.post('/create', checkAuth, create);
-router.put('/update/:id', checkAuth, update);
+router.post('/create', checkAuth,function(req,res,next){upload(req, res, (err) => {
+   
+   if (err) {
+      return res.status(409).json({
+         data_send: "",         
+         num_status:409,
+         msg_status: err.message         
+      }); 
+   } else if (err) {
+      return res.status(500).json({
+         data_send: "",         
+         num_status:500,
+         msg_status: err.message         
+      }); 
+   } 
+   next();  
+ })}, create);
+router.put('/update/:id', checkAuth,function(req,res,next){upload(req, res, (err) => {
+   
+   if (err) {
+      return res.status(409).json({
+         data_send: "",         
+         num_status:409,
+         msg_status: err.message         
+      }); 
+   } else if (err) {
+      return res.status(500).json({
+         data_send: "",         
+         num_status:500,
+         msg_status: err.message         
+      }); 
+   } 
+   next();  
+ })}, update);
 router.delete('/delete/:id',checkAuth, deleteVehiculo);
+router.post('/active/:id',checkAuth, activarVehiculo);
 router.get('/show', getDataVehiculos);
 router.get('/show/:id', getVehiculo);
 

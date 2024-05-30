@@ -39,6 +39,7 @@ import modeloRoutes from './routes/modelo.routes'
 import roleRoutes from './routes/role.routes'
 import choferRoutes from './routes/chofer.routes'
 import educacionRoutes from './routes/educacion.routes'
+import colorRoutes from './routes/color.routes'
 
 
 
@@ -111,6 +112,7 @@ app.use('/parada',passport.authenticate('jwt', {session: false}),paradaRoutes);
 app.use('/vehiculo',vehiculoRoutes);
 app.use('/vehiculo/marca',marcaRoutes);
 app.use('/vehiculo/modelo',modeloRoutes);
+app.use('/vehiculo/color',colorRoutes);
 app.use('/roles',passport.authenticate('jwt', {session: false}),roleRoutes);
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);

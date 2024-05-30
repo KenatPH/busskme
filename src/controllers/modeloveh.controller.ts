@@ -12,112 +12,125 @@
 import express, { Request, Response } from "express";
 import Modeloveh from "../models/vehiculos/modeloveh.models";
 import Marcas from "../models/vehiculos/marca.models";
-
+import {ObjectId} from 'mongodb';
+import  {httpCode}  from "../utils/httpStatusHandle";
 
 export const getModelo = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params; 
-   const cat = await Modeloveh.findById(id);
-   //validamos que exista la información
+   if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido'
+      });
+   }
+   const data = await Modeloveh.findById(id);
+   
    try {
-      if(!cat){
-         return res.status(404).json({
+      if(!data){
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'No Model found'
+            num_status: httpCode[204].code,
+            msg_status: 'Modelo no enconttrado'
          });
       }
-      return res.status(200).json({
-         data_send: cat,
-         num_status: 0,
-         msg_status: 'Vehicle model found successfully'
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Modelo encontrado satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 0,
-         msg_status: 'There was a problem with the server, try again later '+error         
-      })
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '         
+      });
    }   
 }
 
 
 export const getModeloByMarcaid = async (req: Request, res: Response): Promise<Response> => {
-   const { marcaid } = req.params; 
-   const cat = await Modeloveh.find({marcaid: marcaid, activo: true});
-   //validamos que exista la información
+   const { marcaid } = req.params;
+   if(marcaid === null || marcaid === undefined || !marcaid || !ObjectId.isValid(marcaid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido.'
+      });
+   } 
+   const data = await Modeloveh.find({marcaid: marcaid, activo: true});
+   
    try {
-      if(!cat){
-         return res.status(404).json({
+      if(!data){
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'No Models found'
+            num_status: httpCode[204].code,
+            msg_status: 'Modelo no enconttrado.'
          });
       }
-      return res.status(200).json({
-         data_send: cat,
-         num_status: 0,
-         msg_status: 'Vehicle models found successfully'
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Modelo encontrado satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 0,
-         msg_status: 'There was a problem with the server, try again later '         
-      })
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
+      });
    }
    
 }
 
 //mostrar todos los modelos
 export const getDataModelos = async (req: Request, res: Response): Promise<Response> => {
-   const mod = await Modeloveh.find();
+   const data = await Modeloveh.find();
    
    //validamos que exista la información
    try {
-      if(mod.length === 0){
-         return res.status(404).json({
+      if(data.length === 0){
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'No Vehicle model found'
+            num_status: httpCode[204].code,
+            msg_status: 'Modelos no enconttrados.'
          });
       }
-      return res.status(200).json({
-         data_send: mod,
-         num_status: 0,
-         msg_status: 'Models found successfully!!!'
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Modelos encontrados satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 501,
-         msg_status: 'There was a problem with the server, try again later (modeloveh)'         
-      })
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
+      });
    }   
 }
 
-//crear un modelo de vehiculo
 export const create = async (req: Request, res: Response): Promise<Response> => {
-   //declaramos los parametros recibidos en el req.body
-   const { marcaid, nombre } = req?.body
    
-   //validar datos obligatorios
+   const { marcaid, nombre } = req?.body
+      
    if(!nombre || nombre == null || nombre == "" ||
-      !marcaid || marcaid == null || marcaid == ""){
-      return res.status(409).json({
-         data_send: "",         
-         num_status:12,
-         msg_status: 'El nombre, es obligatorio (marca)'
-      })
+      !marcaid || marcaid == null || marcaid == ""||!ObjectId.isValid(marcaid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El id no es válido, el nombre es obligatorio.'
+         });
    }
    
-   //verificar si ya existe una categoría con ése nombre
-   const ca = await Modeloveh.findOne({nombre: nombre.toUpperCase()})
-   if(ca) {
-      return res.status(409).json({
-         data_send: "",         
-         num_status:2,
-         msg_status: 'The Marca already exists!'         
-      })
+   
+   const data = await Modeloveh.findOne({nombre: nombre.toUpperCase()})
+   if(data) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'Ya existe un modelo con ése nombre.'
+      });
    }
       
    const newMod = new Modeloveh({ 
@@ -129,17 +142,18 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       
       await newMod.save();
       
-      return res.status(201).json(
-      {  
-         data_send: newMod,         
-         num_status:0,
-         msg_status: 'Model created successfully.'
+      return res.status(httpCode[201].code).json({
+         data_send: data,
+         num_status: httpCode[201].code,
+         msg_status: 'Modelo creado satisfactoriamente.'
       });
       
    } catch (error) {
-      return res.status(400).json({
-         message: error
-      })
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
+      });
    }
 }
 
@@ -148,85 +162,133 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    try {
       
       const { id } = req.params; 
-      const { marcaid, nombre, activo} = req.body;
-
-      // Find the marca by Id
-      const ve = await Modeloveh.findById(id).populate('Marcas', 'nombre');
-
-      if (!ve) {
-         return res.status(404).json({
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'Marca not found'
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
          });
       }
-      //validar datos obligatorios
-      if(!marcaid || marcaid == null || marcaid == "" 
-      || !nombre || nombre == null || nombre == "" || !activo || activo == null){
-         return res.status(409).json({
-            data_send: "",         
-            num_status:12,
-            msg_status: 'El nombre y la marca son obligatorios (modeloveh)'
-         })
+      const { marcaid, nombre, activo} = req.body;
+      if(!nombre || nombre == null || nombre == "" ||
+         !marcaid || marcaid == null || marcaid == "" || !ObjectId.isValid(marcaid)){
+            return res.status(httpCode[409].code).json({
+               data_send: "",
+               num_status: httpCode[409].code,
+               msg_status: 'El campo marcaid no es válido, el nombre es obligatorio.'
+         });
       }
-      // Update the category properties
-      ve.nombre = nombre.toUpperCase();                  
-      ve.activo = activo;
-      //.populate('Marcas', 'nombre')
-      // Save the updated modeloveh
       
-      await ve.save();
+      const data = await Modeloveh.findById(id).populate('Marcas', 'nombre');
 
-      return res.status(200).json({
-         data_send: {                  
-                  /* "nombre": ve.nombre.toUpperCase(), 
-                  "activo": ve.activo,  */       
-                  ve          
-         },
-         num_status: 0,
-         msg_status: 'Vehicle model updated successfully'
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Modelo no enconttrados.'
+         });
+      }
+      
+      
+      data.nombre = nombre.toUpperCase();                              
+      await data.save();
+
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Modelo modificado satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 501,
-         msg_status: 'There was a problem trying to modify the country, try again later (categoria)'+error         
-      })
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
+      });
    }
 }
 
 export const deleteModeloVeh = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-
-      // Find the model by id and Delete the vehicle model      
-      
-      const ve = await Modeloveh.findById(id);
-
-      if (!ve) {
-         return res.status(404).json({
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'Marca not found'
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+         });
+      }
+            
+      const data = await Modeloveh.findById(id);
+
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Modelo no enconttrados.'
          });
       }else{         
-         ve.activo = false;      
-         // Save the updated category      
-         await ve.save();
-         return res.status(200).json({
+         data.activo = false;      
+         
+         await data.save();
+         return res.status(httpCode[200].code).json({
             data_send:{
-               "marca id": ve.marcaid,
-               "modelo": ve.nombre,
-               "activo": ve.activo
+               "marca id": data.marcaid,
+               "modelo": data.nombre,
+               "activo": data.activo
             },
-            num_status: 0,
-            msg_status: 'Vehicle model deleted successfully'
+            num_status: httpCode[200].code,
+            msg_status: 'Modelo de vehículo eliminado satisfactoriamente.'
          });
       }
                   
    } catch (error) {
-      return res.status(500).json({
-         message: error
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
+      });
+   }
+}
+
+export const activarModeloVeh = async (req: Request, res: Response): Promise<Response> => {
+   try {
+      const { id } = req.params;
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+         });
+      }
+            
+      const data = await Modeloveh.findById(id);
+
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Modelo no enconttrados.'
+         });
+      }else{         
+         data.activo = true;      
+         
+         await data.save();
+         return res.status(httpCode[200].code).json({
+            data_send:{
+               "marca id": data.marcaid,
+               "modelo": data.nombre,
+               "activo": data.activo
+            },
+            num_status: httpCode[200].code,
+            msg_status: 'Modelo de vehículo activado satisfactoriamente.'
+         });
+      }
+                  
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'         
       });
    }
 }

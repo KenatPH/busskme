@@ -10,14 +10,14 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteModeloVeh, getDataModelos, getModelo, getModeloByMarcaid } from "../controllers/modeloveh.controller";
-//import { validateCreate } from '../validators/categoria.validator';
+import { create, update, deleteModeloVeh, getDataModelos, getModelo, getModeloByMarcaid, activarModeloVeh } from "../controllers/modeloveh.controller";
 import {checkAuth} from '../config/config.jwt';
 
 const router = Router();
 
 router.post('/create', checkAuth,create);
 router.put('/update/:id', checkAuth, update);
+router.put('/active/:id', checkAuth, activarModeloVeh);
 router.delete('/delete/:id', checkAuth, deleteModeloVeh);
 router.get('/show', getDataModelos);
 router.get('/show/:id', getModelo);

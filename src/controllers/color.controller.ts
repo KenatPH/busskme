@@ -1,20 +1,21 @@
 /*
   Empresa         : Bioonix
-  Aplicación      : Api de BPRanking
-  Módulo          : Archivo para crud de marcas
-  Fecha creación  : 05 de Abr del 2024
+  Aplicación      : Api de Busskm
+  Módulo          : Archivo para crud de colores de vehículos
+  Fecha creación  : 30 de May del 2024
   Modificado el   :
   Programador     : JLRAMIREZ
   Colaboración    :
-  Descripción     : Api para enviar y manejar la información de BPRanking
+  Descripción     : Api para enviar y manejar la información de Busskm
 */
 
 import express, { Request, Response } from "express";
-import Marcas from "../models/vehiculos/marca.models";
+import Color from "../models/vehiculos/color.models";
 import {ObjectId} from 'mongodb';
 import  {httpCode}  from "../utils/httpStatusHandle";
 
-export const getMarca = async (req: Request, res: Response): Promise<Response> => {
+
+export const getColor = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params; 
    if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
       return res.status(httpCode[409].code).json({
@@ -23,20 +24,20 @@ export const getMarca = async (req: Request, res: Response): Promise<Response> =
          msg_status: 'El Id no es válido'
       });
    }
-   const data = await Marcas.findById(id);
+   const data = await Color.findById(id);
    
    try {
       if(!data){
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'Marca no enconttrada'
+            msg_status: 'Color no enconttrado'
          });
       }
       return res.status(httpCode[200].code).json({
          data_send: data,
          num_status: httpCode[200].code,
-         msg_status: 'Marca encontrada satisfactoriamente.'
+         msg_status: 'Color encontrado satisfactoriamente.'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
@@ -47,72 +48,74 @@ export const getMarca = async (req: Request, res: Response): Promise<Response> =
    }   
 }
 
-export const getDataMarcas = async (req: Request, res: Response): Promise<Response> => {
-   const data = await Marcas.find();
+
+export const getColores = async (req: Request, res: Response): Promise<Response> => {
+   const data = await Color.find();
       
    try {
       if(data.length === 0){
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'Marca no enconttrada'
+            msg_status: 'No existen datos de colores.'
          });
       }
       return res.status(httpCode[200].code).json({
          data_send: data,
          num_status: httpCode[200].code,
-         msg_status: 'Marcas encontrada satisfactoriamente.'
+         msg_status: 'Colores encontrados satisfactoriamente.'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later (color vehículo).'         
       });
    }   
 }
 
+
 export const create = async (req: Request, res: Response): Promise<Response> => {
-   
-   const { nombre } = req?.body
-      
-   if(!nombre || nombre == null || nombre == "" ){
+
+   const { color } = req?.body      
+   if(!color || color == null || color == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
-         num_status:httpCode[204].code,
-         msg_status: 'El nombre de la marca, es obligatorio.'
+         num_status:httpCode[409].code,
+         msg_status: 'El color, es obligatorio.'
       })
    }
-      
-   const data = await Marcas.findOne({nombre: nombre.toUpperCase()})
+   
+   
+   const data = await Color.findOne({color: color.toUpperCase()})
    if(data) {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'La Marca ya existse.'         
-      })
+         msg_status: 'El nombre del color, ya existe.'
+      });
    }
       
-   const newMar = new Marcas({      
-      nombre: nombre.toUpperCase(),          
-   });
+   const newColor = new Color({           
+      color: color.toUpperCase(),          
+   })
 
    try {
       
-      await newMar.save();
+      await newColor.save();
       
       return res.status(httpCode[201].code).json(
       {  
-         data_send: newMar,         
+         data_send: newColor,         
          num_status:httpCode[201].code,
-         msg_status: 'Marca creada satisfactoriamente.'
+         msg_status: 'Color creado satisfactoriamente.'
       });
       
    } catch (error) {
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later (color vehículo).'         
       });
    }
 }
@@ -129,47 +132,43 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const { nombre } = req.body;
-      
-      const data = await Marcas.findById(id);
+      const { color } = req.body;
+      if(!color || color == null || color == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El color, es obligatorio.'
+         })
+      }
+      const data = await Color.findById(id);
 
       if (!data) {
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'Marca no encontrada.'
+            msg_status: 'Color no enconttrado'
          });
       }
       
-      if(!nombre || nombre == null || nombre == ""){
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: 'El nombre, es obligatorio (marca)'
-         })
-      }
-            
-      data.nombre = nombre.toUpperCase();            
+      
+      data.color = color.toUpperCase();                              
       await data.save();
 
       return res.status(httpCode[200].code).json({
-         data_send: {                  
-                  "Marca": data.nombre.toUpperCase(), 
-                  "activo": data.activo,                  
-         },
+         data_send: data,
          num_status: httpCode[200].code,
-         msg_status: 'Marca modificada satisfactoriamente.'
+         msg_status: 'Color modificado satisfactoriamente.'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later (color vehículo).'         
       });
    }
 }
 
-export const deleteMarca = async (req: Request, res: Response): Promise<Response> => {
+export const deleteColor = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
@@ -179,26 +178,22 @@ export const deleteMarca = async (req: Request, res: Response): Promise<Response
             msg_status: 'El Id no es válido'
          });
       }
-      
-      const data = await Marcas.findById(id);
+      const data = await Color.findById(id);
 
       if (!data) {
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'Marca no encontrada.'
+            msg_status: 'Color no enconttrado'
          });
-      }else{
+      }else{         
          data.activo = false;      
          
          await data.save();
          return res.status(httpCode[200].code).json({
-            data_send:{
-               "marca": data.nombre,
-               "activo": data.activo
-            },
+            data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Marca borrada satisfactoriamente.'
+            msg_status: 'Color eliminado satisfactoriamente.'
          });
       }
                   
@@ -206,12 +201,12 @@ export const deleteMarca = async (req: Request, res: Response): Promise<Response
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later (color vehículo).'         
       });
    }
 }
 
-export const activarMarca = async (req: Request, res: Response): Promise<Response> => {
+export const activarColor = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
@@ -221,26 +216,22 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
             msg_status: 'El Id no es válido'
          });
       }
-      
-      const data = await Marcas.findById(id);
+      const data = await Color.findById(id);
 
       if (!data) {
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'Marca no encontrada.'
+            msg_status: 'Color no enconttrado'
          });
-      }else{
+      }else{         
          data.activo = true;      
          
          await data.save();
          return res.status(httpCode[200].code).json({
-            data_send:{
-               "marca": data.nombre,
-               "activo": data.activo
-            },
+            data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Marca borrada satisfactoriamente.'
+            msg_status: 'Color activado satisfactoriamente.'
          });
       }
                   
@@ -248,7 +239,8 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later (color vehículo).'         
       });
    }
 }
+

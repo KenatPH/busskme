@@ -1,109 +1,141 @@
 /*
   Empresa         : Bioonix
-  Aplicación      : Api de Dominó
+  Aplicación      : Api de Busskm
   Módulo          : Archivo para crud de jugadores
   Fecha creación  : 25 de Mar del 2024
   Modificado el   :
   Programador     : JLRAMIREZ
   Colaboración    :
-  Descripción     : Api para enviar y manejar la información de Dominó
+  Descripción     : Api para enviar y manejar la información de Busskm
 */
 
 import express, { Request, Response } from "express";
 import Vehiculo from "../models/vehiculos/vehiculo.models";
+import {ObjectId} from 'mongodb';
+import  {httpCode}  from "../utils/httpStatusHandle";
+import fs from 'fs-extra';
+import path from 'path';
 
-//mostrar un vehiculo por su id
+
 export const getVehiculo = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params; 
-   const veh = await Vehiculo.findById(id);
-   //validamos que exista la información
+   if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido'
+      });
+   }
+   const data = await Vehiculo.findById(id);
+   
    try {
-      if(!veh){
-         return res.status(404).json({
+      if(!data){
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'No Vehiculo found'
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículo no enconttrado'
          });
       }
-      return res.status(200).json({
-         data_send: veh,
-         num_status: 0,
-         msg_status: 'Vehiculo found successfully'
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Vehiculo encontrado satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 0,
-         msg_status: 'There was a problem with the server, try again later '+error         
-      })
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '         
+      });
    }   
 }
 
-//mostrar todos los vehiculos
+
 export const getDataVehiculos = async (req: Request, res: Response): Promise<Response> => {
-   const vh = await Vehiculo.find();
-   
-   //validamos que exista la información
+   const data = await Vehiculo.find();
+      
    try {
-      if(vh.length === 0){
-         return res.status(404).json({
+      if(data.length === 0){
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'No Vehiculos found'
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículos no enconttrados.'
          });
       }
-      return res.status(200).json({
-         data_send: vh,
-         num_status: 0,
-         msg_status: 'Vehiculos found successfully!!!'
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Vehículos enconttrados satisfactoriamente.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 501,
-         msg_status: 'There was a problem with the server, try again later (club)'+error         
-      })
-   }
-   
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (vehículos).'        
+      });
+   }   
 }
 
-//crear un vehiculo
 export const create = async (req: Request, res: Response): Promise<Response> => {
-   //declaramos los parametros recibidos en el req.body
-   const { userid,nro_certificado_registro, placa,serial_niv, serial_chasis,
-           serial_carroceria, serial_motor, marca, modelo, color, anno, clase,
-           tipo, uso, servicio, puestos, intt_nro, fecha_emision_intt,   
-           nro_autorizacion, img_certificado, empresa_seguro, nro_poliza,
-           nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, img_poliza,
-    } = req?.body
    
-   //validaciones de campos en vehiculo.validator.ts          
+   const { userid,nro_certificado_registro, placa,serial_niv, serial_chasis,
+           serial_carroceria, serial_motor, marcaid, modeloid, colorid, anno, clase,
+           tipo, uso, servicio, puestos, intt_nro, fecha_emision_intt,   
+           nro_autorizacion, empresa_seguro, nro_poliza,
+           nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, 
+    } = req?.body
+    var imgs = Object();          
+    imgs = req.files;  
+    if(imgs != undefined && imgs !== null && imgs){      
+       var img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+       var img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";       
+    }  
+   
    const newVehiculo = new Vehiculo({       
       userid: userid, 
-      placa, 
-      marca: marca.toUpperCase(), 
-      modelo: modelo.toUppreCase(), 
-      color: color.toUpperCase(), 
+      nro_certificado_registro, 
+      placa,
+      serial_niv, 
+      serial_chasis,
+      serial_carroceria, 
+      serial_motor, 
+      marcaid, 
+      modeloid, 
+      colorid, 
       anno, 
+      clase,
+      tipo, 
+      uso, 
+      servicio, 
       puestos, 
-      //certificado: certificado.toLowerCase(), 
-      //foto_vehiculo: foto_vehiculo.toLowerCase()     
+      intt_nro, 
+      fecha_emision_intt,   
+      nro_autorizacion,       
+      empresa_seguro, 
+      nro_poliza,
+      nro_sudeaseg, 
+      fecha_emision_poliza, 
+      fecha_venc_poliza,
+      img_certificado: img_certificado_path,
+      img_poliza: img_poliza_path                  
    });
 
    try {      
       await newVehiculo.save();
       
-      return res.status(201).json(
+      return res.status(httpCode[201].code).json(
       {  
          data_send: newVehiculo,         
-         num_status:0,
-         msg_status: 'Vehiculo created successfully.'
+         num_status:httpCode[201].code,
+         msg_status: 'Vehiculo creado satisfactoriamente.'
       });
       
    } catch (error) {
-      return res.status(400).json({
-         message: error
-      })
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (vehículos).'        
+      });
    }
 }
 
@@ -111,52 +143,90 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      const {  placa, marca, modelo, color, anno, puestos, img_certificado, activo, aprobado } = req.body
-
-      // Find the user by userId
-      const vh = await Vehiculo.findOne({idcode: id});
-
-      if (!vh) {
-         return res.status(404).json({
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'Vehiculo not found'
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+         });
+      }
+      const {   
+         nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
+         serial_motor,marcaid,modeloid,colorid,anno,clase,tipo,uso,servicio,puestos, 
+         intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
+         nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza,img_certificado,img_poliza } = req.body
+
+      var imgs = Object();  
+      imgs = req.files;  
+      if(imgs != undefined && imgs !== null && imgs){      
+         var img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+         var img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";       
+      }  
+      const data = await Vehiculo.findOne({_id: id});
+
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículo no encontrado.'
          });
       }
 
-      //Update the vehiculo properties      
-      vh.placa          = placa.toUpperCase();
-      vh.marca          = marca.toUpperCase();
-      vh.modelo         = modelo.toUpperCase();
-      vh.color          = color.toUpperCase();
-      vh.anno           = anno;
-      vh.puestos        = puestos;
-      vh.img_certificado    = img_certificado.toLowerCase();      
-      vh.activo         = activo;
-      vh.aprobado       = aprobado
+      if(img_poliza !== null && img_poliza !== undefined && img_poliza !== ""){
+         const storagePath = path.resolve(img_poliza);      
+         if (fs.existsSync(storagePath)) {
+            await fs.unlink(storagePath);            
+         }
+      }
 
-      // Save the updated vehiculo
-      await vh.save();
+      if(img_certificado !== null && img_certificado !== undefined && img_certificado !== ""){
+         const storagePath = path.resolve(img_certificado);      
+         if (fs.existsSync(storagePath)) {
+            await fs.unlink(storagePath);            
+         }
+      }
+      
+      data.nro_certificado_registro,
+      data.placa,
+      data.serial_niv,
+      data.serial_chasis,
+      data.serial_carroceria, 
+      data.serial_motor,
+      data.marcaid,
+      data.modeloid,
+      data.colorid,
+      data.anno,
+      data.clase,
+      data.tipo,
+      data.uso,
+      data.servicio,
+      data.puestos, 
+      data.intt_nro,
+      data.fecha_emision_intt,
+      data.nro_autorizacion,
+      data.empresa_seguro,
+      data.nro_poliza,
+      data.nro_sudeaseg,
+      data.fecha_emision_poliza,
+      data.fecha_venc_poliza,
+      data.img_certificado = img_certificado_path,
+      data.img_poliza = img_poliza_path
 
-      return res.status(200).json({         
+      await data.save();
+       
+      return res.status(httpCode[200].code).json({         
          data_send: {            
-            "placa": vh.placa.toUpperCase(),
-            "marca": vh.marca,
-            "modelo": vh.modelo,
-            "color": vh.color.toUpperCase(),
-            "anno": vh.anno,
-            "puestos": vh.puestos,
-            "certificado": vh.img_certificado.toLowerCase(),            
-            "activo": vh.activo,
-            "aprobado": vh.aprobado,
-            "updateAt": Date.now()
+            "Placa vehículo": data.placa,
+            "Marca vehículo:": data.marcaid,                      
          },
-         num_status: 0,
+         num_status: httpCode[200].code,
          msg_status: 'Vehiculo updated successfully'
       });
    } catch (error) {
-      return res.status(500).json({
-         message: error
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (vehículos).'        
       });
    }
 }
@@ -164,37 +234,83 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 export const deleteVehiculo = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-            
-      const vh = await Vehiculo.findById(id);
-
-      if (!vh) {
-         return res.status(404).json({
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'Vehiculo not exists'
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+         });
+      }      
+      const data = await Vehiculo.findById(id);
+
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículo no encontrado.'
          });
       }
+      
+      data.activo = false;                  
+      await data.save();
 
-      // Update the propertie activo 
-      vh.activo = false;
-                  
-      // Save the delete vehiculo      
-      await vh.save();
-
-      return res.status(200).json({
+      return res.status(httpCode[200].code).json({
          data_send: {
-            "placa": vh.placa.toUpperCase(), 
-            "modelo": vh.modelo, 
-            "marca": vh.marca, 
-            "activo": vh.activo           
+            "placa": data.placa.toUpperCase(), 
+            "modelo": data.modeloid, 
+            "marca": data.marcaid, 
+            "activo": data.activo           
          },
-         num_status: 0,
-         msg_status: 'Vehiculo delete successfully'
+         num_status: httpCode[200].code,
+         msg_status: 'Vehículo eliminado satisfactoriamente.'
       });
                   
    } catch (error) {
       return res.status(500).json({
          message: error
+      });
+   }
+}
+
+export const activarVehiculo = async (req: Request, res: Response): Promise<Response> => {
+   try {
+      const { id } = req.params;
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+         });
+      }      
+      const data = await Vehiculo.findById(id);
+
+      if (!data) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículo no encontrado.'
+         });
+      }
+      
+      data.activo = true;                  
+      await data.save();
+
+      return res.status(httpCode[200].code).json({
+         data_send: {
+            "placa": data.placa.toUpperCase(), 
+            "modelo": data.modeloid, 
+            "marca": data.marcaid, 
+            "activo": data.activo           
+         },
+         num_status: httpCode[200].code,
+         msg_status: 'Vehículo activado satisfactoriamente.'
+      });
+                  
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (vehículos).'        
       });
    }
 }

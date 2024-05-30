@@ -35,16 +35,17 @@ export const vehiculoSchema = new Schema({
    serial_motor:{
       type: String
    }, 
-   marca: {  //marca del vehiculo
+   marcaid: {  
       type: Schema.Types.ObjectId,
       ref: 'Marcas'
    },  
-   modelo: {  //marca del vehiculo
+   modeloid: {
       type: Schema.Types.ObjectId,
       ref: 'Modeloveh'
    },  
-   color: {
-      type: String      
+   colorid: {
+      type: Schema.Types.ObjectId,
+      ref: 'Color'      
    },
    anno:{
       type: Number
