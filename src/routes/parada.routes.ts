@@ -19,6 +19,7 @@ router.post('/create', create);
 router.put('/update/:id', update);
 router.delete('/delete/:id', deleteParada);
 router.get('/show', getDataParadas);
+//router.get('/show/tipo', getParadasTipo);
 router.get('/show/:id', getParada);
 
 

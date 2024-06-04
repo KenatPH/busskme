@@ -21,7 +21,7 @@ router.put('/active/:id', checkAuth, activarModeloVeh);
 router.delete('/delete/:id', checkAuth, deleteModeloVeh);
 router.get('/show', getDataModelos);
 router.get('/show/:id', getModelo);
-router.get('/marca/show/:id', getModeloByMarcaid);
+router.get('/marca/show/:marcaid', getModeloByMarcaid);
 
 
 export default router;

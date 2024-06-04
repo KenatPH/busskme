@@ -83,11 +83,9 @@ export const getModeloByMarcaid = async (req: Request, res: Response): Promise<R
    
 }
 
-//mostrar todos los modelos
 export const getDataModelos = async (req: Request, res: Response): Promise<Response> => {
    const data = await Modeloveh.find();
    
-   //validamos que exista la información
    try {
       if(data.length === 0){
          return res.status(httpCode[204].code).json({

@@ -19,7 +19,7 @@ const router = Router();
 const multer = new MulterMiddleware(config.STORAGEAPI.fotop,'user');
 const upload = multer.getMiddleware().single('fotoperfil');
 
-//router.post('/register', multer.getMiddleware().single('fotoperfil'),register);
+
 router.post('/register', function(req,res,next){upload(req, res, (err) => {
    
    if (err) {

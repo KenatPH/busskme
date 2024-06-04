@@ -89,7 +89,78 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       fecha_venc_lic, grado_licencia, nro_cert_medico, fecha_emision_cermed,
       fecha_venc_cermed, grado_cermed, carga_familiar, grado_instruccion,
       idiomas} = req?.body
-         
+   
+   if(grado_instruccion === null || grado_instruccion === undefined || !grado_instruccion || !ObjectId.isValid(grado_instruccion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El grado de instrucción no es un Id válido'
+      });
+   }
+   
+   if(!dni && dni === null && dni =="" && dni == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo dni es obligatorio, verifique.'         
+      });
+   }   
+   if(!nombre && nombre === null && nombre =="" && nombre == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre es obligatorio, verifique.'         
+      });
+   } 
+   if(!fecha_nacimiento && fecha_nacimiento === null && fecha_nacimiento =="" && fecha_nacimiento == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de nacimiento es obligatorio, verifique.'         
+      });
+   } 
+   if(!genero && genero === null && genero =="" && genero == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo genero es obligatorio, verifique.'         
+      });
+   } 
+   if(!correo && correo === null && correo =="" && correo == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo correo es obligatorio, verifique.'         
+      });
+   }  
+   if(!telefono && telefono === null && telefono =="" && telefono == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo teléfono es obligatorio, verifique.'         
+      });
+   } 
+   if(!clave && clave === null && clave =="" && clave == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo clave es obligatorio, verifique.'         
+      });
+   }   
+   if(!idioma && idioma === null && idioma =="" && idioma == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo idioma es obligatorio, verifique.'         
+      });
+   }   
+   if(!direccion && direccion === null && direccion =="" && direccion == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo direccion es obligatorio, verifique.'         
+      });
+   }
    var imgs = Object();          
    imgs = req.files;  
    if(imgs != undefined && imgs !== null && imgs){      
@@ -106,14 +177,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'Ya existe un usuario con este correo.'         
       });      
    }
-   
-   if(fotoperfil2 !== null && fotoperfil2 !== undefined && fotoperfil2 !== ""){
-      const storagePath = path.resolve(fotoperfil2);      
-      if (fs.existsSync(storagePath)) {
-         await fs.unlink(storagePath);            
-      }
-   }
-    
+          
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; 
    const newUser = new User({
@@ -127,12 +191,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       fotoperfil: fotoperfil_path,
       clave,  
       idioma,
-      direccion            
-      /* origen, 
-      fbkid, 
-      googleid,
-      tokenFacebook,
-      tokenGoogle */
+      direccion                  
    });
    
    if(roles.length > 0){
@@ -145,8 +204,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          })
       }      
       newUser.roles = foundRoles.map(role => role._id);
-   }else{
-      //si no viene información en roles, asignamos vacío
+   }else{      
       newUser.roles = [];            
    }
 
@@ -213,19 +271,92 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
    
-   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, fotoperfil2,
-           clave, direccion, roles, lugar_nacimiento, nro_rif, fecha_insc_rif,fecha_emision_rif,
+   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
+           clave, direccion, roles, idioma, lugar_nacimiento, nro_rif, fecha_insc_rif,fecha_emision_rif,
            fecha_venc_rif, fecha_venc_dni, imagen_dni, nro_licencia, fecha_emision_lic,
            fecha_venc_lic, grado_licencia, imagen_licencia, nro_cert_medico, fecha_emision_cermed,
            fecha_venc_cermed, grado_cermed, imagen_cermed, carga_familiar, grado_instruccion,
            idiomas } = req?.body
+   var error = [];
 
+   if(grado_instruccion === null || grado_instruccion === undefined || !grado_instruccion || !ObjectId.isValid(grado_instruccion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El grado de instrucción no es un Id válido'
+      });
+   }
+   
+   if(!dni && dni === null && dni =="" && dni == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo dni es obligatorio, verifique.'         
+      });
+   }   
+   if(!nombre && nombre === null && nombre =="" && nombre == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre es obligatorio, verifique.'         
+      });
+   } 
+   if(!fecha_nacimiento && fecha_nacimiento === null && fecha_nacimiento =="" && fecha_nacimiento == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de nacimiento es obligatorio, verifique.'         
+      });
+   } 
+   if(!genero && genero === null && genero =="" && genero == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo genero es obligatorio, verifique.'         
+      });
+   } 
+   if(!correo && correo === null && correo =="" && correo == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo correo es obligatorio, verifique.'         
+      });
+   }  
+   if(!telefono && telefono === null && telefono =="" && telefono == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo teléfono es obligatorio, verifique.'         
+      });
+   } 
+   if(!clave && clave === null && clave =="" && clave == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo clave es obligatorio, verifique.'         
+      });
+   }   
+   if(!idioma && idioma === null && idioma =="" && idioma == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo idioma es obligatorio, verifique.'         
+      });
+   }   
+   if(!direccion && direccion === null && direccion =="" && direccion == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo direccion es obligatorio, verifique.'         
+      });
+   }
+           
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'The user already exists!'         
+         msg_status: 'El usuario ya existe.'         
       });
    }
    
@@ -237,16 +368,9 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       var imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
       var fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
    }  
-   
-   if(fotoperfil2 !== null && fotoperfil2 !== undefined && fotoperfil2 !== ""){
-      const storagePath = path.resolve(fotoperfil2);      
-      if (fs.existsSync(storagePath)) {
-         await fs.unlink(storagePath);            
-      }
-   }
-
+      
    const last = await User.findOne().sort({idcode: -1});
-   const idcode = last ? last.idcode + 1 : 1; //generamos un idcode para el usuario   
+   const idcode = last ? last.idcode + 1 : 1; 
    const newUser = new User({
       idcode: idcode,      
       dni,
@@ -257,12 +381,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       telefono, 
       fotoperfil: fotoperfil_path,
       direccion,
-      clave,    
-      /* origen, 
-      fbkid, 
-      googleid,
-      tokenFacebook,
-      tokenGoogle */
+      clave,
+      idioma: idioma.toLowerCase()          
    });
    
    if(roles.length > 0){
@@ -271,7 +391,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: 'The submitted roles do not exist!'         
+            msg_status: 'El rol suministrado no existe.'         
          })
       }
       newUser.roles = foundRoles.map(role => role._id);
@@ -327,14 +447,14 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             "token": token
          },         
          num_status:httpCode[201].code,
-         msg_status: 'User created successfully, an email has been sent to confirm your account, check your spam folder.'
+         msg_status: httpCode[600].message_es
       });
       
    } catch (error) {
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'error guardando usuario-chofer (chofer) '
+         msg_status: 'error guardando usuario-chofer (chofer) '+error
       });
    }
 }

@@ -134,7 +134,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later (vehículos).'        
+         msg_status: 'There was a problem with the server, try again later (vehículos). '+error        
       });
    }
 }

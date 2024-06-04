@@ -58,15 +58,12 @@ export const validateLogin = [
       .exists()
       .not().isEmpty()
       .custom(async (value, { req }) => {
-         const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
-         
-         if(!passRegex.test(value)) {            
+         if(value === undefined || value === null || value === "" || value === " "){
             num_status = httpCode[409].code
             msg_status = httpCode[602].message_es;
             res_status = httpCode[409].code;
-            throw new Error('invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.');         
-         }         
-         return true;         
+            throw new Error('The value of the email field is undefined!');
+         }    
       }),   
    (req: any, res: any, next: any) => {      
       validateResult(req, res, next,num_status,res_status,msg_status);

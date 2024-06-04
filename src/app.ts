@@ -40,6 +40,7 @@ import roleRoutes from './routes/role.routes'
 import choferRoutes from './routes/chofer.routes'
 import educacionRoutes from './routes/educacion.routes'
 import colorRoutes from './routes/color.routes'
+import organizacionRoutes from './routes/organizacion.routes'
 
 
 
@@ -107,8 +108,9 @@ app.use('/ciudad',passport.authenticate('jwt', {session: false}),ciudadRoutes);
 app.use('/category',passport.authenticate('jwt', {session: false}),categoriaRoutes);
 app.use('/ruta',rutaRoutes);
 app.use('/chofer',choferRoutes);
+app.use('/organizador',organizacionRoutes);
 app.use('/educacion',educacionRoutes);
-app.use('/parada',passport.authenticate('jwt', {session: false}),paradaRoutes);
+app.use('/parada',paradaRoutes);
 app.use('/vehiculo',vehiculoRoutes);
 app.use('/vehiculo/marca',marcaRoutes);
 app.use('/vehiculo/modelo',modeloRoutes);

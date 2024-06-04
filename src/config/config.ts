@@ -53,6 +53,7 @@ export default {
       fotop:"storage/imgs/perfil/user",      
       imgschofer:"storage/imgs/chofer",
       imgsvehiculo:"storage/imgs/vehiculo",
+      imgsorganizacion:"storage/imgs/organizacion",
 
    }
 }

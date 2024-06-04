@@ -102,15 +102,8 @@ export const vehiculoSchema = new Schema({
    activo: {    //permite saber si el vehículo está activo, default=true
       type: Boolean,
       default: true
-   },
-   createdAt: {
-      type: Date,
-      default: Date.now
-   },
-   updateAt: {
-      type: Date,
-      default: Date.now
-   }   
-});
+   }
+},{versionKey: false, timestamps: true}
+);
 
 export default model('Vehiculo', vehiculoSchema);

@@ -54,6 +54,21 @@ class MulterMiddleware {
       });                        
    }  
 
+   public getMiddlewareArch(): multer.Multer { 
+                
+      return multer({         
+         storage: this.storage,               
+         limits: this.limits,
+         fileFilter(req, file, cb) {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|xlsx|docx)$/i)) {
+               cb(new Error('Solo los siguientes formatos .jpg, .jpeg, .png, .pdf, .xlsx, .docx, están permitidos!'));               
+            } else {
+               cb(null, true);
+            }
+         },                          
+      });                        
+   } 
+
    /* fileTest(fileType:any,cb:any) {
       const pattern = /jpg/
       const result = pattern.test(fileType);

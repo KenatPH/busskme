@@ -34,7 +34,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       }); 
    }        
    img = req.file; 
-   console.log('img: ',img);            
+   
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -43,14 +43,14 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          msg_status: 'El usuario ya existe.'         
       });      
    }
-   console.log('fotoperfil2: ',fotoperfil2);
-   if(fotoperfil2 !== null || fotoperfil2 !=="" || fotoperfil2 !== undefined){
+   
+   if(fotoperfil2 !== null && fotoperfil2 !=="" && fotoperfil2 !== undefined){
       const storagePath = path.resolve(fotoperfil2);            
       if (fs.existsSync(storagePath)) {
          await fs.unlink(storagePath);            
       }
    }
-   console.log('llegando aqui');  
+   
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; 
    const newUser = new User({
@@ -71,8 +71,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       tokenFacebook,
       tokenGoogle */
    });
-
-   //verificamos que los roles enviados existan
+   
    if(roles.length > 0){
       const foundRoles = await Role.find({nombre: {$in: roles}});      
       if(!foundRoles){
@@ -83,8 +82,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          })
       }      
       newUser.roles = foundRoles.map(role => role._id);
-   }else{
-      //si no viene información en roles, asignamos vacío
+   }else{      
       newUser.roles = [];            
    }
 
@@ -132,7 +130,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
    }
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, fotoperfil2,
-           clave, direccion, roles} = req?.body
+           idioma, clave, direccion, roles} = req?.body
    
    
    const user = await User.findOne({correo: correo})
@@ -160,20 +158,20 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       dni,
       nombre,
       fecha_nacimiento,
-      genero,
+      genero: genero.toLowerCase(),
       correo,
       telefono, 
       fotoperfil: img.path,
       direccion,
-      clave,    
+      clave, 
+      idioma: idioma.toLowerCase()   
       /* origen, 
       fbkid, 
       googleid,
       tokenFacebook,
       tokenGoogle */
    });
-
-   //verificamos que los roles enviados existan
+   
    if(roles.length > 0){
       const foundRoles = await Role.find({nombre: {$in: roles}});      
       if(!foundRoles){
@@ -182,27 +180,19 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
             num_status:httpCode[409].code,
             msg_status: 'The submitted roles do not exist!'         
          })
-      }
-      //si roles trae información tomamos el id del rol recibido y lo asignamos a roles
+      }      
       newUser.roles = foundRoles.map(role => role._id);
-   }else{
-      //si no viene información en roles, asignamos vacío
+   }else{      
       newUser.roles = [];      
    }
 
    try {
       
       await newUser.save();
-      const id = newUser._id;   
-            
-      //obtenemos un token
-      const token = getToken({ correo, id, idcode, telefono, roles},'2d');
-   
-      //Obtener template html  
+      const id = newUser._id;                     
+      const token = getToken({ correo, id, idcode, telefono, roles},'2d');         
       const accion = "confirmar";
-      const html = getTemplateHtml(nombre, token, idcode, accion, "", "admin");
-
-      //Enviar correo
+      const html = getTemplateHtml(nombre, token, idcode, accion, "", "admin");      
       await sendMail(correo, 'Confirmar cuenta', html);
       
       return res.status(httpCode[201].code).json(
@@ -232,17 +222,17 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      const { nombre, direccion, telefono, genero, fecha_nacimiento, activo, 
-         confirmado, fotoperfil2, roles } = req.body;
+      const { nombre, direccion, telefono, genero, fecha_nacimiento, 
+              idioma, fotoperfil2, roles } = req.body;
 
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
             num_status: httpCode[409].code,
-            msg_status: 'Id is invalid'
+            msg_status: 'El Id no es válido.'
          });
       }
-      // Find the user by userId
+      
       const user = await User.findById(id);
 
       if (!user) {
@@ -254,27 +244,25 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       }
       var img = Object();       
       img = req.file; 
-      if(fotoperfil2 !== null || fotoperfil2 !== undefined || fotoperfil2 !==""){
+      if(fotoperfil2 !== null && fotoperfil2 !== undefined && fotoperfil2 !==""){
          const storagePath = path.resolve(fotoperfil2);      
          if (fs.existsSync(storagePath)) {
             await fs.unlink(storagePath);            
          }
       }
-      // Update the user properties
-      user.nombre = nombre.toUpperCase; 
-      user.direccion = direccion;     
-      user.telefono = telefono;            
-      user.genero = genero.toLowerCase();
-      user.fecha_nacimiento = fecha_nacimiento;
-      user.activo = activo;
-      user.confirmado = confirmado;
-      user.fotoperfil = img.path;
+      
+      user.nombre             = nombre.toUpperCase; 
+      user.direccion          = direccion;     
+      user.telefono           = telefono;            
+      user.genero             = genero.toLowerCase();
+      user.fecha_nacimiento   = fecha_nacimiento;            
+      user.fotoperfil         = img.path;
+      user.idioma             = idioma.toLowerCase()
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
          user.roles = foundRoles.map(role => role._id);    
       }  
-            
-      // Save the updated user
+
       await user.save();
 
       return res.status(httpCode[200].code).json({

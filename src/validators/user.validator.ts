@@ -23,7 +23,7 @@ export const validateCreate = [
       .exists()
       .not().isEmpty()
       .custom(async (value, { req }) => {
-         if(value === null || value === undefined || value === ""){
+         if(value == null || value || undefined || value == ""){
             num_status = httpCode[409].code
             msg_status = httpCode[409].message;
             res_status = httpCode[409].code;
