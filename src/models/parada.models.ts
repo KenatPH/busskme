@@ -14,14 +14,13 @@ import { paradaSchema } from "../schemas/parada.schema";
 
 
 export interface IParada extends Document {  
-   rutaid: Schema.Types.ObjectId,     
-   codigo: string,
+   rutaid: Schema.Types.ObjectId,        
    nombre: string,
    latitud: string,
    longitud: string,
    cod_qr: string,     
-   aprobado: boolean, //permite saber si busskm ya ha aprobado el registro, hasta que no se apruebe no puede iniciar sesión
-   activo: boolean, //permite saber si la ruta está activa, default=true   
+   aprobado: boolean, 
+   activo: boolean, 
    createdAt: Date,
    updateAt:Date         
 }

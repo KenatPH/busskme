@@ -15,11 +15,7 @@ export const paradaSchema = new Schema ({
    rutaid: {
       type: Schema.Types.ObjectId,
       ref: 'Ruta'
-    },
-   codigo: {
-      type: String,
-      required: true
-   },
+    },   
    nombre: {
       type: String,
       required: true
@@ -33,8 +29,7 @@ export const paradaSchema = new Schema ({
       required: true
    },
    cod_qr: {
-      type: String,
-      required: true
+      type: String,      
    },
    activo: {
       type: Boolean,

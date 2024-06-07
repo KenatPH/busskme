@@ -28,7 +28,7 @@ export const getParada = async (req: Request, res: Response): Promise<Response> 
       });
    }
    const dat = await Parada.findOne({_id: id});
-   //validamos que exista la información
+   
    try {
       if(!dat){
          return res.status(httpCode[404].code).json({
@@ -53,9 +53,8 @@ export const getParada = async (req: Request, res: Response): Promise<Response> 
 }
 
 export const getDataParadas = async (req: Request, res: Response): Promise<Response> => {
-   const dat = await Parada.find();
-   
-   //validamos que exista la información
+   const dat = await Parada.find({activo:true});
+      
    try {
       if(dat.length === 0){
          return res.status(httpCode[404].code).json({
@@ -79,9 +78,61 @@ export const getDataParadas = async (req: Request, res: Response): Promise<Respo
    
 }
 
+export const getDataParadasByNombre = async (req: Request, res: Response): Promise<Response> => {
+   const {filtro} = req.params
+   const dat = await Parada.find({ nombre: { $regex: `.*${filtro}.*`, $options: 'i' }, activo:true});
+      
+   try {
+      if(dat.length === 0){
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No data found'
+         });
+      }
+      return res.status(httpCode[200].code).json({
+         data_send: dat,
+         num_status: httpCode[200].code,
+         msg_status: 'Data found successfully'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '
+      })
+   }   
+}
+
+export const getDataParadasByRuta = async (req: Request, res: Response): Promise<Response> => {
+   const {rutaid} = req.params
+   const dat = await Parada.find({ rutaid: rutaid , activo:true});
+      
+   try {
+      if(dat.length === 0){
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No data found'
+         });
+      }
+      return res.status(httpCode[200].code).json({
+         data_send: dat,
+         num_status: httpCode[200].code,
+         msg_status: 'Data found successfully'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '
+      })
+   }   
+}
+
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
-   const { rutaid,codigo,nombre,latitud,longitud} = req?.body   
+   const { rutaid,nombre,latitud,longitud} = req?.body   
    if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)){
       return res.status(httpCode[409].code).json({
          data_send: "",
@@ -89,23 +140,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'Id es inválido'
       });
    } 
-   const dat = await Parada.findOne({codigo: codigo});
-   if(dat !== null || dat){
-      return res.status(httpCode[409].code).json({
-         data_send: "",
-         num_status: httpCode[409].code,
-         msg_status: 'El código de la parada ya está en uso'
-      });
-   }
-
+   
    const qr ="";       
    const newParada = new Parada({
-      rutaid:rutaid,      
-      codigo: codigo.toUpperCase(),
+      rutaid:rutaid,            
       nombre: nombre.toUpperCase(),
       latitud:latitud,
-      longitud:longitud,
-      cod_qr:qr      
+      longitud:longitud
    });
 
    try {
@@ -123,7 +164,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '
+         msg_status: 'There was a problem with the server, try again later '+error
       })
    }
 }
@@ -131,7 +172,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
             
-      const { rutaid,codigo,nombre,latitud,longitud} = req.body;
+      const { rutaid,nombre,latitud,longitud} = req.body;
       const id = req.params.id;
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
@@ -140,24 +181,14 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Id is invalid'
          });
       } 
-      const dat = await Parada.findOne({codigo: codigo});
-      if(dat !== null || dat){
-         return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'El código de la parada ya está en uso'
-         });
-      }
-      //generar codigo qr
+      
       const qr = "";
       const updrut = await Parada.findOneAndUpdate({_id: id}, 
          {$set: {
             rutaid: rutaid,
             nombre   : nombre.toUpperCase(),            
-            codigo    : codigo.toUpperCase(),  
             latitud:latitud,
-            longitud:longitud,
-            cod_qr:qr
+            longitud:longitud            
          }}, 
          {new: true});
       if(!updrut) {
@@ -203,16 +234,13 @@ export const deleteParada = async (req: Request, res: Response): Promise<Respons
             msg_status: 'No route found'
          });
       }
-
-      // Update the category properties      
+      
       dat.activo = false;
 
-      // Save the updated ruta      
       await dat.save();
 
       return res.status(httpCode[200].code).json({
-         data_send: {
-            "codigo": dat.codigo.toUpperCase(), 
+         data_send: {            
             "nombre": dat.nombre.toUpperCase(), 
             "activo": dat.activo,
             "aprobado": dat.aprobado             
@@ -255,8 +283,7 @@ export const reactivarParada = async (req: Request, res: Response): Promise<Resp
       await dat.save();
 
       return res.status(httpCode[200].code).json({
-         data_send: {
-            "codigo de parada": dat.codigo.toUpperCase(), 
+         data_send: {            
             "parada": dat.nombre.toUpperCase(), 
             "activo": dat.activo,
             "aprobado": dat.aprobado             
