@@ -351,7 +351,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 
       await data.save();
 
-      return res.status(200).json({
+      return res.status(httpCode[200].code).json({
          data_send: {                  
             "pais"                     :data.paisid,
             "estado"                   :data.estadoid,
@@ -379,7 +379,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             "Número de rutas"          :data.nro_rutas,
             "Descripción de rutas"     :data.descripcion_rutas,                                                   
          },
-         num_status: 0,
+         num_status: httpCode[200].code,
          msg_status: 'Organización modificada satisfactoriamente.'
       });
    } catch (error) {
