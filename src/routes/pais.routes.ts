@@ -12,7 +12,7 @@
 import { Router } from "express";
 import { create, update, deletePais, getDataPaises, getPais } from "../controllers/pais.controller";
 import passport from 'passport';
-import {checkAuth} from './config/config.jwt';
+import {checkAuth} from '../config/config.jwt';
 
 const router = Router();
 
