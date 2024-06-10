@@ -12,12 +12,13 @@
 import { Router } from "express";
 import { create, update, deletePais, getDataPaises, getPais } from "../controllers/pais.controller";
 import passport from 'passport';
+import {checkAuth} from './config/config.jwt';
 
 const router = Router();
 
-router.post('/create',  create);
-router.put('/update/:id', update);
-router.delete('/delete/:id', deletePais);
+router.post('/create', checkAuth, create);
+router.put('/update/:id',checkAuth, update);
+router.delete('/delete/:id', checkAuth,deletePais);
 router.get('/show', getDataPaises);
 router.get('/show/:id', getPais);
 

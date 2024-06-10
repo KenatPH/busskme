@@ -101,9 +101,9 @@ app.use('/user',userRoutes);
 //app.use('/user',userRoutes);
 
 //app.use('/admin',checkAuth,passport.authenticate('jwt', {session: false}),adminRoutes);
-app.use('/pais',checkAuth,passport.authenticate('jwt', {session: false}),paisRoutes);
-app.use('/estado',passport.authenticate('jwt', {session: false}),edoRoutes);
-app.use('/ciudad',passport.authenticate('jwt', {session: false}),ciudadRoutes);
+app.use('/pais',paisRoutes);
+app.use('/estado',edoRoutes);
+app.use('/ciudad',ciudadRoutes);
 //app.use('/municipio',municipioRoutes);
 app.use('/category',passport.authenticate('jwt', {session: false}),categoriaRoutes);
 app.use('/ruta',rutaRoutes);
