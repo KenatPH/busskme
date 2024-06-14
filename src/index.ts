@@ -12,6 +12,7 @@
 import app from './app'
 import './database'
 
+
 app.listen(app.get('port'))
 console.log(`Server Api-Busskm is running in port: ${app.get('port')}`)
 

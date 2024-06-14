@@ -18,8 +18,12 @@ import passport, { Passport } from 'passport';
 import passportMiddleware from './middlewares/protectedroutes.middleware';
 import {checkAuth} from './config/config.jwt';
 import session from 'express-session';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger';
+const basicAuth = require('express-basic-auth');
 import initialConfig from './config/initialConfig';
 import path from 'path';
+import 'dotenv/config';
 
 //imported routes
 import authRoutes from './routes/auth.routes'
@@ -53,6 +57,7 @@ connectDB();
 const app = express()
 
 // settings
+
 app.set('port', process.env.PORT || 3000)
 
 //crear directorio storage si no existe
@@ -90,6 +95,11 @@ app.get('/', (req, res) => {
    res.send(`The API Busskm, is running in http://localhost:${app.get('port')}`)
 })
 
+app.use("/api-docs",basicAuth({
+   users: {'busskm': 'busskm.bioonix'},
+   challenge: true,
+}), swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 //rutas de autenticación sin validacion de autenticate
 app.use('/auth',authRoutes);
 
@@ -120,3 +130,14 @@ app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);
 export default app
+
+//Componente de esquema de seguirdad
+/**
+ * @swagger
+ * components:
+ *    securitySchemes:
+ *       apiAuth:
+ *          type: apiKey
+ *          in: header
+ *          name: authorization 
+ */

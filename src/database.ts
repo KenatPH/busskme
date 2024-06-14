@@ -22,7 +22,7 @@ if(!config.RUN_MODE){ //false = desarrollo
       db_uri = config.DB.URI;
    }
 }
-console.log('db_uri: ',db_uri);
+
 export const connectDB = async () => {   
    try {
       await mongoose.connect(db_uri)

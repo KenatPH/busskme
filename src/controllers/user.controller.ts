@@ -22,18 +22,15 @@ import path from 'path';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
    
-   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, fotoperfil2,
+   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            clave, idioma, direccion, roles} = req?.body
    
-   var img = Object();  
-   if(!img || img === undefined || img === null){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'La imagen no es válida.'         
-      }); 
-   }        
+   var img = Object();  let fotoperfil_path = "";
    img = req.file; 
+   if(img != undefined && img !== null && img){  
+      fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
+   }     
+   
    
    const user = await User.findOne({correo: correo})
    if(user) {
@@ -44,12 +41,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       });      
    }
    
-   if(fotoperfil2 !== null && fotoperfil2 !=="" && fotoperfil2 !== undefined){
-      const storagePath = path.resolve(fotoperfil2);            
-      if (fs.existsSync(storagePath)) {
-         await fs.unlink(storagePath);            
-      }
-   }
+   
    
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; 
@@ -61,7 +53,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       genero,
       correo,
       telefono, 
-      fotoperfil: img.path,
+      fotoperfil: fotoperfil_path,
       clave,  
       idioma,
       direccion            
@@ -129,7 +121,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
          msg_status: 'Los datos no están llegando de manera correcta.'         
       });
    }
-   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, fotoperfil2,
+   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            idioma, clave, direccion, roles} = req?.body
    
    
@@ -142,15 +134,15 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
    }
    
-   var img = Object();       
+   var img = Object(); let fotoperfil_path = "";
    img = req.file;
-   
-   if(fotoperfil2.length != 0 && fotoperfil2 != null && fotoperfil2 !=""){
-      const storagePath = path.resolve(fotoperfil2);      
-      if (fs.existsSync(storagePath)) {
-         await fs.unlink(storagePath);            
-      }
+   if(img != undefined && img !== null && img){  
+      fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
    }
+         
+   
+   
+   
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; //generamos un idcode para el usuario   
    const newUser = new User({
@@ -161,7 +153,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       genero: genero.toLowerCase(),
       correo,
       telefono, 
-      fotoperfil: img.path,
+      fotoperfil: fotoperfil_path,
       direccion,
       clave, 
       idioma: idioma.toLowerCase()   
@@ -223,7 +215,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    try {
       const { id } = req.params;
       const { nombre, direccion, telefono, genero, fecha_nacimiento, 
-              idioma, fotoperfil2, roles } = req.body;
+              idioma,  roles } = req.body;
 
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
@@ -242,21 +234,28 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'User not found'
          });
       }
-      var img = Object();       
-      img = req.file; 
-      if(fotoperfil2 !== null && fotoperfil2 !== undefined && fotoperfil2 !==""){
-         const storagePath = path.resolve(fotoperfil2);      
+      var img = Object();  
+      let fotoperfil_path = "";
+      img = req.file;
+      if(img != undefined && img !== null && img){  
+         fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
+      }     
+      
+      if(fotoperfil_path !== "" && fotoperfil_path !== undefined && fotoperfil_path !== null) {
+         const storagePath = path.resolve(user.fotoperfil);      
          if (fs.existsSync(storagePath)) {
             await fs.unlink(storagePath);            
          }
-      }
+      }else{
+         fotoperfil_path = user.fotoperfil;
+      } 
       
       user.nombre             = nombre.toUpperCase; 
       user.direccion          = direccion;     
       user.telefono           = telefono;            
       user.genero             = genero.toLowerCase();
       user.fecha_nacimiento   = fecha_nacimiento;            
-      user.fotoperfil         = img.path;
+      user.fotoperfil         = fotoperfil_path;
       user.idioma             = idioma.toLowerCase()
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
@@ -324,6 +323,46 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
       });
    }
 }
+
+export const activarUser = async (req: Request, res: Response): Promise<Response> => {
+   try {
+      const { id } = req.params;
+
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'Id is invalid'
+         });
+      }
+      
+      const user = await User.findById(id);
+      
+      if (!user) {
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'User not found'
+         });
+      }else{
+         user.activo = true;  
+         await user.save();
+         return res.status(httpCode[200].code).json({
+            data_send: "",
+            num_status: httpCode[200].code,
+            msg_status: 'User activaded successfully'
+         });
+      }
+                  
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '         
+      });
+   }
+}
+
 
 export const uploadimg = async (req: Request, res: Response): Promise<Response> => {
    const {id} = req?.body;
