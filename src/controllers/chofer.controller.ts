@@ -83,7 +83,7 @@ export const getDataChoferes = async (req: Request, res: Response): Promise<Resp
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
-   const { dni, nombre, fecha_nacimiento, genero, correo, telefono, fotoperfil2,
+   const { dni, nombre, fecha_nacimiento, genero, correo, telefono,
       clave, direccion, roles, idioma, lugar_nacimiento, nro_rif, fecha_insc_rif,fecha_emision_rif,
       fecha_venc_rif, fecha_venc_dni, nro_licencia, fecha_emision_lic,
       fecha_venc_lic, grado_licencia, nro_cert_medico, fecha_emision_cermed,
@@ -161,13 +161,14 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo direccion es obligatorio, verifique.'         
       });
    }
-   var imgs = Object();          
+   var imgs = Object();  let fotoperfil_path = ""; let imagen_dni_path =""; let imagen_licencia_path = "";
+   let imagen_cermed_path = "";       
    imgs = req.files;  
-   if(imgs != undefined && imgs !== null && imgs){      
-      var imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
-      var imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
-      var imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
-      var fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+   if(imgs != undefined && imgs !== null && imgs){            
+      imagen_dni_path  = imgs['imagen_dni']?.[0].path ?? "";
+      imagen_licencia_path  = imgs['imagen_licencia']?.[0].path ?? "";
+      imagen_cermed_path  = imgs['imagen_cermed']?.[0].path ?? "";
+      fotoperfil_path  = imgs['fotoperfil']?.[0].path ?? "";      
    }           
    const user = await User.findOne({correo: correo})
    if(user) {
@@ -273,9 +274,9 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            clave, direccion, roles, idioma, lugar_nacimiento, nro_rif, fecha_insc_rif,fecha_emision_rif,
-           fecha_venc_rif, fecha_venc_dni, imagen_dni, nro_licencia, fecha_emision_lic,
-           fecha_venc_lic, grado_licencia, imagen_licencia, nro_cert_medico, fecha_emision_cermed,
-           fecha_venc_cermed, grado_cermed, imagen_cermed, carga_familiar, grado_instruccion,
+           fecha_venc_rif, fecha_venc_dni,  nro_licencia, fecha_emision_lic,
+           fecha_venc_lic, grado_licencia,  nro_cert_medico, fecha_emision_cermed,
+           fecha_venc_cermed, grado_cermed,  carga_familiar, grado_instruccion,
            idiomas } = req?.body
    var error = [];
 
@@ -360,13 +361,19 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       });
    }
    
-   var imgs = Object();       
+   var imgs = Object(); let imagen_dni_path; let imagen_licencia_path; 
+   let imagen_cermed_path;  let fotoperfil_path;    
    imgs = req.files; 
    if(imgs != undefined && imgs !== null && imgs){      
-      var imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
-      var imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
-      var imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
-      var fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+      imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
+      imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
+      imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
+      fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+   }else{
+      imagen_dni_path = "";
+      imagen_licencia_path = "";
+      imagen_cermed_path = "";
+      fotoperfil_path = "";
    }  
       
    const last = await User.findOne().sort({idcode: -1});

@@ -26,12 +26,13 @@ export const register = async (req: Request, res: Response): Promise<Response> =
            clave, idioma, direccion, roles} = req?.body
    
    var img = Object();  let fotoperfil_path = "";
-   img = req.file; 
-   if(img != undefined && img !== null && img){  
-      fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
-   }     
-   
-   
+   img = req.file;   
+   if(img != undefined && img !== null && img){        
+      fotoperfil_path  = img.path ? img.path : "";
+   }else{
+      fotoperfil_path = "";
+   }   
+      
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -40,9 +41,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          msg_status: 'El usuario ya existe.'         
       });      
    }
-   
-   
-   
+
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; 
    const newUser = new User({
@@ -96,7 +95,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             "cédula": newUser.dni,
             "teléfono": newUser.telefono,
             "dirección": newUser.direccion, 
-            "correo": newUser.correo,           
+            "email": newUser.correo,           
             "token": token
          },         
          num_status:httpCode[201].code,
@@ -123,7 +122,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    }
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            idioma, clave, direccion, roles} = req?.body
-   
+      
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -135,13 +134,13 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    
    var img = Object(); let fotoperfil_path = "";
    img = req.file;
-   if(img != undefined && img !== null && img){  
-      fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
+   
+   if(img != undefined && img !== null && img){        
+      fotoperfil_path  = img.path ? img.path : "";
+   }else{
+      fotoperfil_path = "";
    }
-         
-   
-   
-   
+                  
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; //generamos un idcode para el usuario   
    const newUser = new User({
@@ -164,7 +163,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    });
    
    if(roles.length > 0){
-      const foundRoles = await Role.find({nombre: {$in: roles}});      
+      const foundRoles = await Role.find({nombre: {$in: roles}});          
       if(!foundRoles){
          return res.status(httpCode[409].code).json({
             data_send: "",         
@@ -205,7 +204,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later '+error         
       });
    }
 }
@@ -235,10 +234,12 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       }
       var img = Object();  
       let fotoperfil_path = "";
-      img = req.file;
-      if(img != undefined && img !== null && img){  
-         fotoperfil_path  = img['fotoperfil']?.[0].path ?? "";
-      }     
+      img = req.file;   
+      if(img != undefined && img !== null && img){        
+         fotoperfil_path  = img.path ? img.path : "";
+      }else{
+         fotoperfil_path = "";
+      }  
       
       if(fotoperfil_path !== "" && fotoperfil_path !== undefined && fotoperfil_path !== null) {
          const storagePath = path.resolve(user.fotoperfil);      
@@ -409,5 +410,4 @@ export const uploadimg = async (req: Request, res: Response): Promise<Response> 
          msg_status: 'Image user created successfully.'
       });
    }
-
 }

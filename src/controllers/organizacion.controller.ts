@@ -207,7 +207,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    });
    
    if(roles.length > 0){
-      const foundRoles = await Role.find({nombre: {$in: roles}});      
+      const foundRoles = await Role.find({nombre: {$in: roles}});   
       if(!foundRoles){
          return res.status(httpCode[409].code).json({
             data_send: "",         
