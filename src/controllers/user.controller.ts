@@ -20,6 +20,33 @@ import  {httpCode}  from "../utils/httpStatusHandle";
 import fs from 'fs-extra';
 import path from 'path';
 
+
+export const getUsers = async (req: Request, res: Response): Promise<Response> => {
+      
+   try {      
+      const users = await User.find();
+      if(!users){
+         return res.status(httpCode[204].code).json({
+            data_send: users,
+            num_status: httpCode[204].code,
+            msg_status: 'Users not found',
+        });
+      }               
+      return res.status(httpCode[200].code).json({
+          data_send: users,
+          num_status: httpCode[200].code,
+          msg_status: 'Users found successfully',
+      });
+  } catch (error) {      
+      return res.status(httpCode[500].code).json({
+          data_send: "",
+          num_status: httpCode[500].code,
+          msg_status: 'Error searching for users with admin role',
+      });
+  }      
+}
+
+
 export const register = async (req: Request, res: Response): Promise<Response> => {
    
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
@@ -411,3 +438,32 @@ export const uploadimg = async (req: Request, res: Response): Promise<Response> 
       });
    }
 }
+
+export const getUserRole = async (req: Request, res: Response): Promise<Response> => {
+   
+   const rol = req.params;
+   try {      
+      const role = await Role.findOne({ nombre: rol });
+      
+      if (!role) {          
+          return res.status(httpCode[404].code).json({
+              data_send: "",
+              num_status: httpCode[404].code,
+              msg_status: `Role ${rol} not found`,
+          });
+      }      
+      const usersWithAdminRole = await User.find({ roles: role._id }).populate("roles","nombre");
+      return res.status(httpCode[200].code).json({
+          data_send: usersWithAdminRole,
+          num_status: httpCode[200].code,
+          msg_status: 'Users with admin role found successfully',
+      });
+  } catch (error) {      
+      return res.status(httpCode[500].code).json({
+          data_send: "",
+          num_status: httpCode[500].code,
+          msg_status: 'Error searching for users with admin role',
+      });
+  }      
+}
+

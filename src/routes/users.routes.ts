@@ -10,7 +10,7 @@
 */
 
 import { Router, Request, Response, response } from "express";
-import { register, update, deleteUser, uploadimg, registeradmin, activarUser } from "../controllers/user.controller";
+import { register, update, deleteUser, uploadimg, registeradmin, activarUser, getUserRole, getUsers } from "../controllers/user.controller";
 import { validateCreate } from '../validators/user.validator';
 import MulterMiddleware from '../middlewares/MulterPhotosMiddleware';
 import config from '../config/config';
@@ -75,8 +75,8 @@ router.post('/upload-imgs', function(req,res,next){upload(req, res, (err) => {
 router.put('/update/:id',checkAuth, update);
 router.delete('/delete/:id',checkAuth,deleteUser);
 router.post('/active/:id',checkAuth,activarUser);
-router.get('/show', (req, res) => {
-   res.send('Buscando usuario')
-});
+router.get('/show/role/:rol',checkAuth,getUserRole);
+router.get('/show',checkAuth,getUsers);
+
 
 export default router;
