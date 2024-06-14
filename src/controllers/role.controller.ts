@@ -13,6 +13,8 @@ import express, { Request, Response } from "express";
 import Role from "../models/role.models";
 import mongoose from "mongoose";
 import { roleSchema } from "../schemas/role.schema";
+import {ObjectId} from 'mongodb';
+import  {httpCode}  from "../utils/httpStatusHandle";
 
 
 //mostrar un role por su id
@@ -76,23 +78,35 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    //declaramos los parametros recibidos en el req.body
    const { nombre } = req?.body      
    
+   const rol = await Role.findOne({nombre: nombre});
+
+   if(rol){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'The rol already exists!'         
+      });
+   }
+
    const newRole = new Role({      
       nombre: nombre.toLowerCase(),      
    });
-
+   
    try {      
       await newRole.save();      
-      return res.status(201).json(
+      return res.status(httpCode[201].code).json(
       {  
          data_send: newRole,         
-         num_status:0,
+         num_status:httpCode[201].code,
          msg_status: 'Role created successfully.'
       });
       
    } catch (error) {
-      return res.status(400).json({
-         message: error
-      })
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '         
+      });
    }
 }
 

@@ -124,7 +124,6 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            idioma, clave, direccion, roles} = req?.body
    
-   
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({

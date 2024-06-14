@@ -125,7 +125,7 @@ app.use('/vehiculo',vehiculoRoutes);
 app.use('/vehiculo/marca',marcaRoutes);
 app.use('/vehiculo/modelo',modeloRoutes);
 app.use('/vehiculo/color',colorRoutes);
-app.use('/roles',passport.authenticate('jwt', {session: false}),roleRoutes);
+app.use('/roles',roleRoutes);
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);
