@@ -441,7 +441,8 @@ export const uploadimg = async (req: Request, res: Response): Promise<Response> 
 
 export const getUserRole = async (req: Request, res: Response): Promise<Response> => {
    
-   const rol = req.params;
+   const {rol} = req.params;
+   
    try {      
       const role = await Role.findOne({ nombre: rol });
       
@@ -462,7 +463,7 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
       return res.status(httpCode[500].code).json({
           data_send: "",
           num_status: httpCode[500].code,
-          msg_status: 'Error searching for users with admin role',
+          msg_status: 'Error searching for users with admin role'+error
       });
   }      
 }
