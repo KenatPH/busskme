@@ -164,12 +164,17 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    var imgs = Object();  let fotoperfil_path = ""; let imagen_dni_path =""; let imagen_licencia_path = "";
    let imagen_cermed_path = "";       
    imgs = req.files;  
-   if(imgs != undefined && imgs !== null && imgs){            
-      imagen_dni_path  = imgs['imagen_dni']?.[0].path ?? "";
-      imagen_licencia_path  = imgs['imagen_licencia']?.[0].path ?? "";
-      imagen_cermed_path  = imgs['imagen_cermed']?.[0].path ?? "";
-      fotoperfil_path  = imgs['fotoperfil']?.[0].path ?? "";      
-   }           
+   if(imgs != undefined && imgs !== null && imgs){      
+      imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
+      imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
+      imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
+      fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+   }else{
+      imagen_dni_path = "";
+      imagen_licencia_path = "";
+      imagen_cermed_path = "";
+      fotoperfil_path = "";
+   }          
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -208,9 +213,6 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    }else{      
       newUser.roles = [];            
    }
-
-   
-   
 
    try {
       

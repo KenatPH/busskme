@@ -307,7 +307,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later '         
+         msg_status: 'There was a problem with the server, try again later '+error         
       });
    }
 }
@@ -453,7 +453,10 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
               msg_status: `Role ${rol} not found`,
           });
       }      
-      const usersWithAdminRole = await User.find({ roles: role._id }).populate("roles","nombre");
+      const usersWithAdminRole = await User.find({ roles: role._id },{clave:0})      
+      .populate("roles","nombre");
+      
+      
       return res.status(httpCode[200].code).json({
           data_send: usersWithAdminRole,
           num_status: httpCode[200].code,
