@@ -240,8 +240,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    try {
       const { id } = req.params;
       const { nombre, direccion, telefono, genero, fecha_nacimiento, 
-              idioma,  roles } = req.body;
-
+              idioma,  roles } = req?.body;
+       
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
@@ -249,13 +249,21 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido.'
          });
       }
+
+      if(!nombre){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'Nombre es requerido'
+         });
+      }
       
       const user = await User.findById(id);
 
       if (!user) {
-         return res.status(httpCode[404].code).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: httpCode[404].code,
+            num_status: httpCode[204].code,
             msg_status: 'User not found'
          });
       }
@@ -277,7 +285,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          fotoperfil_path = user.fotoperfil;
       } 
       
-      user.nombre             = nombre.toUpperCase; 
+      user.nombre             = nombre.toUpperCase(); 
       user.direccion          = direccion;     
       user.telefono           = telefono;            
       user.genero             = genero.toLowerCase();

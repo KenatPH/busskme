@@ -19,11 +19,9 @@ var msg_status = "";
 var res_status = 400;
 
 export const validateCreate = [
-   check('nombre')
-      .exists()
-      .not().isEmpty()
+   check('nombre')      
       .custom(async (value, { req }) => {
-         if(value == null || value || undefined || value == ""){
+         if(!value || value == null || value == undefined || value == ""){
             num_status = httpCode[409].code
             msg_status = httpCode[409].message;
             res_status = httpCode[409].code;
@@ -32,11 +30,25 @@ export const validateCreate = [
          return true;         
       }),   
    check('dni')
-      .exists()
-      .not().isEmpty(),              
+      .custom(async (value, { req }) => {
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('El dni es requerido.');         
+         }     
+         return true;         
+      }),              
    check('genero')
-      .exists()      
-      .not().isEmpty(),
+      .custom(async (value, { req }) => {
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('El genero es requerido.');         
+         }     
+         return true;         
+      }),
    check('correo')
       .exists()
       .not().isEmpty()
