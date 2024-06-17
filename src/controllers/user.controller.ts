@@ -167,6 +167,10 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    }else{
       fotoperfil_path = "";
    }
+   let dir = "";
+   if(!direccion){
+      dir="";
+   }
                   
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; //generamos un idcode para el usuario   
