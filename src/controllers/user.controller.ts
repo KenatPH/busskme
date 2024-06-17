@@ -47,6 +47,41 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
   }      
 }
 
+export const getUserbyId = async (req: Request, res: Response): Promise<Response> => {
+      
+   try {   
+      const { id } = req.params; 
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'Id no es válido'
+         });
+      }
+   
+      const users = await User.findOne({_id:id},{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})
+      .populate("roles","nombre");
+      if(!users){
+         return res.status(httpCode[204].code).json({
+            data_send: users,
+            num_status: httpCode[204].code,
+            msg_status: 'User not found',
+        });
+      }               
+      return res.status(httpCode[200].code).json({
+          data_send: users,
+          num_status: httpCode[200].code,
+          msg_status: 'User found successfully',
+      });
+  } catch (error) {      
+      return res.status(httpCode[500].code).json({
+          data_send: "",
+          num_status: httpCode[500].code,
+          msg_status: 'Error searching for users with admin role',
+      });
+  }      
+}
+
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
    
