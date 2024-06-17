@@ -105,6 +105,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo dni es obligatorio, verifique.'         
       });
    } 
+   if(!fecha_venc_dni || fecha_venc_dni === null || fecha_venc_dni =="" || fecha_venc_dni == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de vencimiento del dni es obligatorio, verifique.'+fecha_venc_dni         
+      });
+   }
 
    if(!nombre || nombre === null || nombre =="" || nombre == undefined){
       return res.status(httpCode[409].code).json({
@@ -204,13 +211,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo fecha de vencimiento del rif es obligatorio, verifique.'         
       });
    }
-   if(!fecha_venc_dni || fecha_venc_dni === null || fecha_venc_dni =="" || fecha_venc_dni == undefined){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo fecha de vencimiento del dni es obligatorio, verifique.'         
-      });
-   }
+   
    
    
    
