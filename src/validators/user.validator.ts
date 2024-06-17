@@ -99,7 +99,9 @@ export const validateCreate = [
       }), 
    check('idioma')
    .custom(async (value, { req }) => {
-      if(!value || value == null || value == undefined || value == ""){
+      console.log('idioma: '+req.body.idioma);
+      console.log('idioma', value);
+      if(!value && value == null && value == undefined || value == ""){
          num_status = httpCode[409].code
          msg_status = httpCode[409].message+', El idioma es requerido.';
          res_status = httpCode[409].code;
@@ -110,12 +112,14 @@ export const validateCreate = [
    
    check('roles')
    .custom(async (value, { req }) => {
+
+      /* console.log('roles '+value);
       if(!value || value == null || value == undefined || value == ""){
          num_status = httpCode[409].code
          msg_status = httpCode[409].message+', El rol del usuario es requerido.';
          res_status = httpCode[409].code;
          throw new Error('El rol del usuario es requerido.');         
-      }     
+      }   */   
       return true;         
    }),    
    check('direccion')
