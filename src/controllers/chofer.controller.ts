@@ -136,7 +136,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       }
    }
 
-   if(!correo && correo === null && correo =="" && correo == undefined){
+   if(!correo || correo === null || correo =="" || correo == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
