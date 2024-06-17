@@ -150,13 +150,23 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo teléfono es obligatorio, verifique.'         
       });
    } 
-   if(!clave && clave === null && clave =="" && clave == undefined){
+   if(!clave || clave == null || clave == undefined || clave == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'El campo clave es obligatorio, verifique.'         
-      });
-   }   
+         msg_status: httpCode[409].message+', La clave es requerida.'
+      });          
+   }else{
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      if(!passRegex.test(clave)) {            
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
+         });
+         
+      }   
+   }  
    if(!idioma && idioma === null && idioma =="" && idioma == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -415,7 +425,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later (chofer-user) '         
+         msg_status: 'There was a problem with the server, try again later (chofer-user) '+error         
       });
    }
 }
