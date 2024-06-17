@@ -50,18 +50,35 @@ export const validateCreate = [
          return true;         
       }),
    check('correo')
-      .exists()
-      .not().isEmpty()
-      .isEmail(),      
+      .custom(async (value, { req }) => {
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('El correo es requerido.');         
+         }     
+         return true;         
+      }),    
    check('fecha_nacimiento')
-      .exists()
-      .not().isEmpty(),
+      .custom(async (value, { req }) => {
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('La fecha de nacimiento es requerida.');         
+         }     
+         return true;         
+      }),
    check('clave')
-      .exists()
-      .not().isEmpty()      
+           
       .custom(async (value, { req }) => {
          const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
-         
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('La clave es requerida.');         
+         }     
          if(!passRegex.test(value)) {            
             num_status = httpCode[409].code
             msg_status = httpCode[409].message;
@@ -71,8 +88,35 @@ export const validateCreate = [
          return true;         
       }), 
    check('telefono')
-      .exists()
-      .not().isEmpty(),                  
+      .custom(async (value, { req }) => {
+         if(!value || value == null || value == undefined || value == ""){
+            num_status = httpCode[409].code
+            msg_status = httpCode[409].message;
+            res_status = httpCode[409].code;
+            throw new Error('El número de teléfono es requerido.');         
+         }     
+         return true;         
+      }), 
+   check('idioma')
+   .custom(async (value, { req }) => {
+      if(!value || value == null || value == undefined || value == ""){
+         num_status = httpCode[409].code
+         msg_status = httpCode[409].message;
+         res_status = httpCode[409].code;
+         throw new Error('El idioma es requerido.');         
+      }     
+      return true;         
+   }),
+   check('roles')
+   .custom(async (value, { req }) => {
+      if(!value || value == null || value == undefined || value == ""){
+         num_status = httpCode[409].code
+         msg_status = httpCode[409].message;
+         res_status = httpCode[409].code;
+         throw new Error('El rol del usuario es requerido.');         
+      }     
+      return true;         
+   }),                
    (req: any, res: any, next: any) => {      
       validateResult(req, res, next,num_status,res_status,msg_status);
    }

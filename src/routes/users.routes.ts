@@ -38,7 +38,7 @@ router.post('/register', function(req,res,next){upload(req, res, (err) => {
    next();  
  })},register);
 
- router.post('/admin/register',checkAuth, function(req,res,next){upload(req, res, (err) => {
+ router.post('/admin/register',checkAuth, validateCreate, function(req: any,res: any,next:any ){upload(req, res, (err) => {
    
    if (err) {
       return res.status(409).json({
