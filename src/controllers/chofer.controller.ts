@@ -98,7 +98,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });
    }
    
-   if(!dni && dni === null && dni =="" && dni == undefined){
+   if(!dni || dni === null || dni =="" || dni == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -106,21 +106,21 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });
    } 
 
-   if(!nombre && nombre === null && nombre =="" && nombre == undefined){
+   if(!nombre || nombre === null || nombre =="" || nombre == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo nombre es obligatorio, verifique.'         
       });
    } 
-   if(!fecha_nacimiento && fecha_nacimiento === null && fecha_nacimiento =="" && fecha_nacimiento == undefined){
+   if(!fecha_nacimiento || fecha_nacimiento === null || fecha_nacimiento =="" || fecha_nacimiento == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo fecha de nacimiento es obligatoria, verifique.'         
       });
    } 
-   if(!genero && genero === null && genero =="" && genero == undefined){
+   if(!genero || genero === null || genero =="" || genero == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -143,7 +143,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo correo es obligatorio, verifique.'         
       });
    }  
-   if(!telefono && telefono === null && telefono =="" && telefono == undefined){
+
+   if(!telefono || telefono === null || telefono =="" || telefono == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -167,28 +168,28 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          
       }   
    }  
-   if(!idioma && idioma === null && idioma =="" && idioma == undefined){
+   if(!idioma || idioma === null || idioma =="" || idioma == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo idioma es obligatorio, verifique.'         
       });
    }   
-   if(!direccion && direccion === null && direccion =="" && direccion == undefined){
+   if(!direccion || direccion === null || direccion =="" || direccion == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo direccion es obligatorio, verifique.'         
       });
    }
-   if(!nro_rif && nro_rif === null && nro_rif =="" && nro_rif == undefined){
+   if(!nro_rif || nro_rif === null || nro_rif =="" || nro_rif == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo nro de rif es obligatorio, verifique.'         
       });
    }
-   if(!fecha_insc_rif && fecha_insc_rif === null && fecha_insc_rif =="" && fecha_insc_rif == undefined){
+   if(!fecha_insc_rif || fecha_insc_rif === null || fecha_insc_rif =="" || fecha_insc_rif == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -196,14 +197,14 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });
    }
    
-   if(!fecha_venc_rif && fecha_venc_rif === null && fecha_venc_rif =="" && fecha_venc_rif == undefined){
+   if(!fecha_venc_rif || fecha_venc_rif === null || fecha_venc_rif =="" || fecha_venc_rif == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: 'El campo fecha de vencimiento del rif es obligatorio, verifique.'         
       });
    }
-   if(!fecha_venc_dni && fecha_venc_dni === null && fecha_venc_dni =="" && fecha_venc_dni == undefined){
+   if(!fecha_venc_dni || fecha_venc_dni === null || fecha_venc_dni =="" || fecha_venc_dni == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -212,38 +213,11 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    }
    
    
-   if(!nro_cert_medico && nro_cert_medico === null && nro_cert_medico =="" && nro_cert_medico == undefined){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo nro de certificado médico es obligatorio, verifique.'         
-      });
-   }
-   if(!fecha_emision_cermed && fecha_emision_cermed === null && fecha_emision_cermed =="" && fecha_emision_cermed == undefined){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo fecha de emisión del certificado médico es obligatorio, verifique.'         
-      });
-   }
-   if(!fecha_venc_cermed && fecha_venc_cermed === null && fecha_venc_cermed =="" && fecha_venc_cermed == undefined){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo fecha de vencimiento del certificado médico es obligatorio, verifique.'         
-      });
-   }
-   if(!grado_cermed && grado_cermed === null && grado_cermed =="" && grado_cermed == undefined){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo grado del certificado médico es obligatorio, verifique.'         
-      });
-   }
-   if(!carga_familiar && carga_familiar === null && carga_familiar =="" && carga_familiar == undefined){
+   
+   if(!carga_familiar || carga_familiar === null || carga_familiar =="" || carga_familiar == undefined){
       let carga_familiar = 0;
    }
-   if(!idiomas && idiomas === null && idiomas =="" && idiomas == undefined){
+   if(!idiomas || idiomas === null || idiomas =="" || idiomas == undefined){
       let idiomas = "";
    }
    if(!roles || roles == null || roles == undefined || roles == ""){
@@ -254,47 +228,87 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       }); 
    }else{
       if(roles === "chofer"){
-         if(!nro_licencia && nro_licencia === null && nro_licencia =="" && nro_licencia == undefined){
+         if(!nro_licencia || nro_licencia === null || nro_licencia =="" || nro_licencia == undefined){
             return res.status(httpCode[409].code).json({
                data_send: "",         
                num_status:httpCode[409].code,
                msg_status: 'El campo número de licencia es obligatorio, verifique.'         
             });
          }
-         if(!fecha_emision_lic && fecha_emision_lic === null && fecha_emision_lic =="" && fecha_emision_lic == undefined){
+         if(!fecha_emision_lic || fecha_emision_lic === null || fecha_emision_lic =="" || fecha_emision_lic == undefined){
             return res.status(httpCode[409].code).json({
                data_send: "",         
                num_status:httpCode[409].code,
                msg_status: 'El campo fecha de emisión de licencia es obligatorio, verifique.'         
             });
          }
-         if(!fecha_venc_lic && fecha_venc_lic === null && fecha_venc_lic =="" && fecha_venc_lic == undefined){
+         if(!fecha_venc_lic || fecha_venc_lic === null || fecha_venc_lic =="" || fecha_venc_lic == undefined){
             return res.status(httpCode[409].code).json({
                data_send: "",         
                num_status:httpCode[409].code,
                msg_status: 'El campo fecha de vencimiento de licencia es obligatorio, verifique.'         
             });
          }
-         if(!grado_licencia && grado_licencia === null && grado_licencia =="" && grado_licencia == undefined){
+         if(!grado_licencia || grado_licencia === null || grado_licencia =="" || grado_licencia == undefined){
             return res.status(httpCode[409].code).json({
                data_send: "",         
                num_status:httpCode[409].code,
                msg_status: 'El campo fecha de emisión de licencia es obligatorio, verifique.'         
             });
          }
+         if(!nro_cert_medico || nro_cert_medico === null || nro_cert_medico =="" || nro_cert_medico == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo nro de certificado médico es obligatorio, verifique.'         
+            });
+         }
+         if(!fecha_emision_cermed || fecha_emision_cermed === null || fecha_emision_cermed =="" || fecha_emision_cermed == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo fecha de emisión del certificado médico es obligatorio, verifique.'         
+            });
+         }
+         if(!fecha_venc_cermed || fecha_venc_cermed === null || fecha_venc_cermed =="" || fecha_venc_cermed == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo fecha de vencimiento del certificado médico es obligatorio, verifique.'         
+            });
+         }
+         if(!grado_cermed || grado_cermed === null || grado_cermed =="" || grado_cermed == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo grado del certificado médico es obligatorio, verifique.'         
+            });
+         }
       }else{
-         if(!nro_licencia && nro_licencia === null && nro_licencia =="" && nro_licencia == undefined){
+         if(!nro_licencia || nro_licencia === null || nro_licencia =="" || nro_licencia == undefined){
             let nro_licencia = "";
          }
-         if(!fecha_emision_lic && fecha_emision_lic === null && fecha_emision_lic =="" && fecha_emision_lic == undefined){
+         if(!fecha_emision_lic || fecha_emision_lic === null || fecha_emision_lic =="" || fecha_emision_lic == undefined){
             let fecha_emision_lic = "";
          }
-         if(!fecha_venc_lic && fecha_venc_lic === null && fecha_venc_lic =="" && fecha_venc_lic == undefined){
+         if(!fecha_venc_lic || fecha_venc_lic === null || fecha_venc_lic =="" || fecha_venc_lic == undefined){
             let fecha_venc_lic = "";
          }
-         if(!grado_licencia && grado_licencia === null && grado_licencia =="" && grado_licencia == undefined){
+         if(!grado_licencia || grado_licencia === null || grado_licencia =="" || grado_licencia == undefined){
             let grado_licencia = "";
          }
+         if(!nro_cert_medico || nro_cert_medico === null || nro_cert_medico =="" || nro_cert_medico == undefined){
+            let nro_cert_medico = "";
+         }
+         if(!fecha_emision_cermed || fecha_emision_cermed === null || fecha_emision_cermed =="" || fecha_emision_cermed == undefined){
+            let fecha_emision_cermed = "";
+         }
+         if(!fecha_venc_cermed || fecha_venc_cermed === null || fecha_venc_cermed =="" || fecha_venc_cermed == undefined){
+            let fecha_venc_cermed = "";
+         }
+         if(!grado_cermed || grado_cermed === null || grado_cermed =="" || grado_cermed == undefined){
+            let grado_cermed = "";
+         }         
       }
    }
         
