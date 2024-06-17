@@ -109,7 +109,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'El campo fecha de vencimiento del dni es obligatorio, verifique.'+fecha_venc_dni         
+         msg_status: 'El campo fecha de vencimiento del dni es obligatorio, verifique.'      
       });
    }
 
@@ -127,7 +127,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo fecha de nacimiento es obligatoria, verifique.'         
       });
    } 
-   if(!genero || genero === null || genero =="" || genero == undefined){
+   if(!genero || genero === null || genero ==="" || genero === undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
