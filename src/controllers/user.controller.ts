@@ -171,13 +171,22 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
          msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
       });          
    }
-   if(!genero || genero == null || genero == undefined || genero == ""){
+   if (!genero || genero === null || genero === undefined || genero === "" ) {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El genero es requerido.'
-      });          
+      }); 
+   }else{
+      if(genero !== "masculino" && genero !== "femenino"){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El valor de genero no es correcto, debe ser masculino o femenino.'
+         }); 
+      }
    }
+   
    if(!correo || correo == null || correo == undefined || correo == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
