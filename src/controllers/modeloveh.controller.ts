@@ -141,7 +141,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       await newMod.save();
       
       return res.status(httpCode[201].code).json({
-         data_send: data,
+         data_send: newMod,
          num_status: httpCode[201].code,
          msg_status: 'Modelo creado satisfactoriamente.'
       });
