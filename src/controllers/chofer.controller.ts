@@ -104,7 +104,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          num_status:httpCode[409].code,
          msg_status: 'El campo dni es obligatorio, verifique.'         
       });
-   }   
+   } 
+
    if(!nombre && nombre === null && nombre =="" && nombre == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -116,7 +117,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'El campo fecha de nacimiento es obligatorio, verifique.'         
+         msg_status: 'El campo fecha de nacimiento es obligatoria, verifique.'         
       });
    } 
    if(!genero && genero === null && genero =="" && genero == undefined){
@@ -125,7 +126,16 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          num_status:httpCode[409].code,
          msg_status: 'El campo genero es obligatorio, verifique.'         
       });
-   } 
+   }else{
+      if(genero !== "masculino" && genero !== "femenino"){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El valor de genero no es correcto, debe ser masculino o femenino.'
+         }); 
+      }
+   }
+
    if(!correo && correo === null && correo =="" && correo == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -161,14 +171,152 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo direccion es obligatorio, verifique.'         
       });
    }
+   if(!nro_rif && nro_rif === null && nro_rif =="" && nro_rif == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro de rif es obligatorio, verifique.'         
+      });
+   }
+   if(!fecha_insc_rif && fecha_insc_rif === null && fecha_insc_rif =="" && fecha_insc_rif == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro de rif es obligatorio, verifique.'         
+      });
+   }
+   
+   if(!fecha_venc_rif && fecha_venc_rif === null && fecha_venc_rif =="" && fecha_venc_rif == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de vencimiento del rif es obligatorio, verifique.'         
+      });
+   }
+   if(!fecha_venc_dni && fecha_venc_dni === null && fecha_venc_dni =="" && fecha_venc_dni == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de vencimiento del dni es obligatorio, verifique.'         
+      });
+   }
+   
+   
+   if(!nro_cert_medico && nro_cert_medico === null && nro_cert_medico =="" && nro_cert_medico == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro de certificado médico es obligatorio, verifique.'         
+      });
+   }
+   if(!fecha_emision_cermed && fecha_emision_cermed === null && fecha_emision_cermed =="" && fecha_emision_cermed == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de emisión del certificado médico es obligatorio, verifique.'         
+      });
+   }
+   if(!fecha_venc_cermed && fecha_venc_cermed === null && fecha_venc_cermed =="" && fecha_venc_cermed == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha de vencimiento del certificado médico es obligatorio, verifique.'         
+      });
+   }
+   if(!grado_cermed && grado_cermed === null && grado_cermed =="" && grado_cermed == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo grado del certificado médico es obligatorio, verifique.'         
+      });
+   }
+   if(!carga_familiar && carga_familiar === null && carga_familiar =="" && carga_familiar == undefined){
+      let carga_familiar = 0;
+   }
+   if(!idiomas && idiomas === null && idiomas =="" && idiomas == undefined){
+      let idiomas = "";
+   }
+   if(!roles || roles == null || roles == undefined || roles == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El rol del usuario es requerido.'
+      }); 
+   }else{
+      if(roles === "chofer"){
+         if(!nro_licencia && nro_licencia === null && nro_licencia =="" && nro_licencia == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo número de licencia es obligatorio, verifique.'         
+            });
+         }
+         if(!fecha_emision_lic && fecha_emision_lic === null && fecha_emision_lic =="" && fecha_emision_lic == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo fecha de emisión de licencia es obligatorio, verifique.'         
+            });
+         }
+         if(!fecha_venc_lic && fecha_venc_lic === null && fecha_venc_lic =="" && fecha_venc_lic == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo fecha de vencimiento de licencia es obligatorio, verifique.'         
+            });
+         }
+         if(!grado_licencia && grado_licencia === null && grado_licencia =="" && grado_licencia == undefined){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: 'El campo fecha de emisión de licencia es obligatorio, verifique.'         
+            });
+         }
+      }else{
+         if(!nro_licencia && nro_licencia === null && nro_licencia =="" && nro_licencia == undefined){
+            let nro_licencia = "";
+         }
+         if(!fecha_emision_lic && fecha_emision_lic === null && fecha_emision_lic =="" && fecha_emision_lic == undefined){
+            let fecha_emision_lic = "";
+         }
+         if(!fecha_venc_lic && fecha_venc_lic === null && fecha_venc_lic =="" && fecha_venc_lic == undefined){
+            let fecha_venc_lic = "";
+         }
+         if(!grado_licencia && grado_licencia === null && grado_licencia =="" && grado_licencia == undefined){
+            let grado_licencia = "";
+         }
+      }
+   }
+        
    var imgs = Object();  let fotoperfil_path = ""; let imagen_dni_path =""; let imagen_licencia_path = "";
    let imagen_cermed_path = "";       
    imgs = req.files;  
-   if(imgs != undefined && imgs !== null && imgs){      
-      imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
-      imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
-      imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
-      fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+   if(imgs != undefined && imgs !== null && imgs){ 
+      if(imgs['imagen_cermed'] != undefined && imgs['imagen_cermed'] !== null && imgs['imagen_cermed']){ 
+         imagen_cermed_path = imgs['imagen_cermed'][0].path !== "" ? imgs['imagen_cermed'][0].path : "";
+      }else{
+         imagen_cermed_path = "";
+      }
+      if(imgs['imagen_dni'] != undefined && imgs['imagen_dni'] !== null && imgs['imagen_dni']){ 
+         imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
+      }else{
+         imagen_cermed_path = "";
+      }  
+      if(imgs['imagen_dni'] != undefined && imgs['imagen_dni'] !== null && imgs['imagen_dni']){ 
+         imagen_dni_path = imgs['imagen_dni'][0].path !== "" ? imgs['imagen_dni'][0].path : "";
+      }else{
+         imagen_dni_path = "";
+      }  
+      if(imgs['imagen_licencia'] != undefined && imgs['imagen_licencia'] !== null && imgs['imagen_licencia']){ 
+         imagen_licencia_path = imgs['imagen_licencia'][0].path !== "" ? imgs['imagen_licencia'][0].path : "";
+      }else{
+         imagen_licencia_path = "";
+      }
+      if(imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']){ 
+         fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
+      }else{
+         fotoperfil_path = "";
+      }
    }else{
       imagen_dni_path = "";
       imagen_licencia_path = "";
@@ -237,9 +385,9 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          fecha_venc_cermed, 
          grado_cermed, 
          imagen_cermed: imagen_cermed_path, 
-         carga_familiar, 
+         carga_familiar: carga_familiar, 
          grado_instruccion,
-         idiomas
+         idiomas: idiomas
       });
       await chofer.save();
 

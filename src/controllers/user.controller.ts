@@ -24,7 +24,8 @@ import path from 'path';
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
       
    try {      
-      const users = await User.find();
+      const users = await User.find({},{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})
+      .populate("roles","nombre");
       if(!users){
          return res.status(httpCode[204].code).json({
             data_send: users,
@@ -51,7 +52,97 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            clave, idioma, direccion, roles} = req?.body
+
+   if(!dni || dni == null || dni == undefined || dni == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El dni es requerido.'         
+      });          
+   }
+   if(!nombre || nombre == null || nombre == undefined || nombre == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El nombre es requerido.'         
+      });          
+   }  
+   if(!fecha_nacimiento || fecha_nacimiento == null || fecha_nacimiento == undefined || fecha_nacimiento == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
+      });          
+   }
+   if (!genero || genero === null || genero === undefined || genero === "" ) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El genero es requerido.'
+      }); 
+   }else{
+      if(genero !== "masculino" && genero !== "femenino"){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El valor de genero no es correcto, debe ser masculino o femenino.'
+         }); 
+      }
+   }
    
+   if(!correo || correo == null || correo == undefined || correo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El correo es requerido.'
+      });          
+   }
+   if(!telefono || telefono == null || telefono == undefined || telefono == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El teléfono es requerido.'
+      });          
+   }
+   if(!idioma || idioma == null || idioma == undefined || idioma == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El idioma es requerido.'
+      });          
+   }
+   if(!clave || clave == null || clave == undefined || clave == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La clave es requerida.'
+      });          
+   }else{
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      if(!passRegex.test(clave)) {            
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
+         });
+         
+      }   
+   }
+   if(!direccion || direccion == null || direccion == undefined || direccion == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La dirección es requerida.'
+      }); 
+   }
+   if(!roles || roles == null || roles == undefined || roles == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El rol del usuario es requerido.'
+      }); 
+   }
+      
    var img = Object();  let fotoperfil_path = "";
    img = req.file;   
    if(img != undefined && img !== null && img){        
@@ -343,6 +434,67 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido.'
          });
       }
+      
+      if(!nombre || nombre == null || nombre == undefined || nombre == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El nombre es requerido.'         
+         });          
+      }  
+      if(!fecha_nacimiento || fecha_nacimiento == null || fecha_nacimiento == undefined || fecha_nacimiento == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
+         });          
+      }
+      if (!genero || genero === null || genero === undefined || genero === "" ) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El genero es requerido.'
+         }); 
+      }else{
+         if(genero !== "masculino" && genero !== "femenino"){
+            return res.status(httpCode[409].code).json({
+               data_send: "",         
+               num_status:httpCode[409].code,
+               msg_status: httpCode[409].message+', El valor de genero no es correcto, debe ser masculino o femenino.'
+            }); 
+         }
+      }
+           
+      if(!telefono || telefono == null || telefono == undefined || telefono == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El teléfono es requerido.'
+         });          
+      }
+      if(!idioma || idioma == null || idioma == undefined || idioma == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El idioma es requerido.'
+         });          
+      }
+      
+      if(!direccion || direccion == null || direccion == undefined || direccion == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', La dirección es requerida.'
+         }); 
+      }
+      if(!roles || roles == null || roles == undefined || roles == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El rol del usuario es requerido.'
+         }); 
+      }
+   
 
       if(!nombre){
          return res.status(httpCode[409].code).json({
@@ -555,7 +707,7 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
               msg_status: `Role ${rol} not found`,
           });
       }      
-      const usersWithAdminRole = await User.find({ roles: role._id },{clave:0})      
+      const usersWithAdminRole = await User.find({ roles: role._id },{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})      
       .populate("roles","nombre");
       
       

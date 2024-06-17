@@ -26,7 +26,7 @@ const upload = multer.getMiddleware().fields([{ name: 'fotoperfil', maxCount: 1 
 
 const router = Router();
 
-router.post('/register', function(req,res,next){upload(req, res, (err) => {
+router.post('/create', function(req,res,next){upload(req, res, (err) => {
    
    if (err) {
       return res.status(409).json({
@@ -42,9 +42,26 @@ router.post('/register', function(req,res,next){upload(req, res, (err) => {
       }); 
    } 
    next();  
- })},register);
-router.post('/create', checkAuth, create);
-router.put('/update/:id', checkAuth, update);
+ })},create);
+// router.post('/create', checkAuth, create);
+router.put('/update/:id', checkAuth, function(req,res,next){upload(req, res, (err) => {
+   
+   if (err) {
+      return res.status(409).json({
+         data_send: "",         
+         num_status:409,
+         msg_status: err.message         
+      }); 
+   } else if (err) {
+      return res.status(500).json({
+         data_send: "",         
+         num_status:500,
+         msg_status: err.message         
+      }); 
+   } 
+   next();  
+ })},update);
+ 
 router.delete('/delete/:id', checkAuth, deleteChofer);
 router.get('/show', getDataChoferes);
 router.get('/show/:id', getChofer);
