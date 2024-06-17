@@ -120,12 +120,7 @@ export const validateCreate = [
    }),    
    check('direccion')
    .custom(async (value, { req }) => {
-      if(!value || value == null || value == undefined){
-         num_status = httpCode[409].code
-         msg_status = httpCode[409].message+', falta el campo dirección en los datos enviados.';
-         res_status = httpCode[409].code;
-         throw new Error('falta el campo dirección en los datos enviados.');         
-      }     
+       
       return true;         
    }),              
    (req: any, res: any, next: any) => {      
