@@ -24,7 +24,8 @@ export const getModelo = async (req: Request, res: Response): Promise<Response> 
          msg_status: 'El Id no es válido'
       });
    }
-   const data = await Modeloveh.findById(id);
+   const data = await Modeloveh.findById(id).
+   populate('marcaid','nombre');
    
    try {
       if(!data){
@@ -58,7 +59,8 @@ export const getModeloByMarcaid = async (req: Request, res: Response): Promise<R
          msg_status: 'El Id no es válido.'
       });
    } 
-   const data = await Modeloveh.find({marcaid: marcaid, activo: true});
+   const data = await Modeloveh.find({marcaid: marcaid, activo: true}).
+   populate('marcaid','nombre');
    
    try {
       if(!data){
@@ -84,7 +86,8 @@ export const getModeloByMarcaid = async (req: Request, res: Response): Promise<R
 }
 
 export const getDataModelos = async (req: Request, res: Response): Promise<Response> => {
-   const data = await Modeloveh.find();
+   const data = await Modeloveh.find().
+   populate('marcaid','nombre');
    
    try {
       if(data.length === 0){
