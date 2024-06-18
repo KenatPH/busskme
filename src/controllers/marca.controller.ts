@@ -189,17 +189,29 @@ export const deleteMarca = async (req: Request, res: Response): Promise<Response
             msg_status: 'Marca no encontrada.'
          });
       }else{
-         data.activo = false;      
+         if(data.activo === true){
+            data.activo = false;      
          
-         await data.save();
-         return res.status(httpCode[200].code).json({
-            data_send:{
-               "marca": data.nombre,
-               "activo": data.activo
-            },
-            num_status: httpCode[200].code,
-            msg_status: 'Marca borrada satisfactoriamente.'
-         });
+            await data.save();
+            return res.status(httpCode[200].code).json({
+               data_send:{
+                  "marca": data.nombre,
+                  "activo": data.activo
+               },
+               num_status: httpCode[200].code,
+               msg_status: 'Marca borrada satisfactoriamente.'
+            });
+         }else{
+            return res.status(httpCode[200].code).json({
+               data_send:{
+                  "marca": data.nombre,
+                  "activo": data.activo
+               },
+               num_status: httpCode[200].code,
+               msg_status: 'Marca ya se encuentra con estatus eliminada.'
+            });
+         }
+         
       }
                   
    } catch (error) {
@@ -223,7 +235,7 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
       }
       
       const data = await Marcas.findById(id);
-
+      
       if (!data) {
          return res.status(httpCode[204].code).json({
             data_send: "",
@@ -231,17 +243,29 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
             msg_status: 'Marca no encontrada.'
          });
       }else{
-         data.activo = true;      
+         if(data.activo === false){
+            data.activo = true;      
          
-         await data.save();
-         return res.status(httpCode[200].code).json({
-            data_send:{
-               "marca": data.nombre,
-               "activo": data.activo
-            },
-            num_status: httpCode[200].code,
-            msg_status: 'Marca activada satisfactoriamente.'
-         });
+            await data.save();
+            return res.status(httpCode[200].code).json({
+               data_send:{
+                  "marca": data.nombre,
+                  "activo": data.activo
+               },
+               num_status: httpCode[200].code,
+               msg_status: 'Marca activada satisfactoriamente.'
+            });
+         }else{
+            return res.status(httpCode[200].code).json({
+               data_send:{
+                  "marca": data.nombre,
+                  "activo": data.activo
+               },
+               num_status: httpCode[200].code,
+               msg_status: 'Marca ya se encuentra con estatus activa.'
+            });
+         }
+         
       }
                   
    } catch (error) {
