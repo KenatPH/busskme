@@ -170,7 +170,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const { marcaid, nombre, activo} = req.body;
+      const { marcaid, nombre} = req.body;
       if(!nombre || nombre == null || nombre == "" ||
          !marcaid || marcaid == null || marcaid == "" || !ObjectId.isValid(marcaid)){
             return res.status(httpCode[409].code).json({
@@ -180,7 +180,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });
       }
       
-      const data = await Modeloveh.findById(id).populate('Marcas', 'nombre');
+      const data = await Modeloveh.findById(id)
+      .populate('marcaid', 'nombre');
 
       if (!data) {
          return res.status(httpCode[204].code).json({
@@ -190,12 +191,13 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });
       }
       
-      
+      data.marcaid = marcaid,
       data.nombre = nombre.toUpperCase();                              
       await data.save();
-
+      const upd = await Modeloveh.findById(id)
+      .populate('marcaid', 'nombre');
       return res.status(httpCode[200].code).json({
-         data_send: data,
+         data_send: upd,
          num_status: httpCode[200].code,
          msg_status: 'Modelo modificado satisfactoriamente.'
       });
@@ -203,7 +205,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem with the server, try again later.'         
+         msg_status: 'There was a problem with the server, try again later.'+error         
       });
    }
 }
