@@ -45,6 +45,7 @@ import choferRoutes from './routes/chofer.routes'
 import educacionRoutes from './routes/educacion.routes'
 import colorRoutes from './routes/color.routes'
 import organizacionRoutes from './routes/organizacion.routes'
+import municipioRoutes from './routes/municipio.routes'
 
 
 
@@ -114,7 +115,7 @@ app.use('/user',userRoutes);
 app.use('/pais',paisRoutes);
 app.use('/estado',edoRoutes);
 app.use('/ciudad',ciudadRoutes);
-//app.use('/municipio',municipioRoutes);
+app.use('/municipio',municipioRoutes);
 app.use('/category',passport.authenticate('jwt', {session: false}),categoriaRoutes);
 app.use('/ruta',rutaRoutes);
 app.use('/chofer',choferRoutes);
