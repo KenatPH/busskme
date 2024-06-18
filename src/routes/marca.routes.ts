@@ -19,7 +19,7 @@ const router = Router();
 router.post('/create', checkAuth,create);
 router.put('/update/:id', checkAuth, update);
 router.delete('/delete/:id', checkAuth, deleteMarca);
-router.delete('/active/:id', checkAuth, activarMarca);
+router.post('/active/:id', checkAuth, activarMarca);
 router.get('/show', getDataMarcas);
 router.get('/show/:id', getMarca);
 
