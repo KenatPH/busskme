@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteParada, getDataParadas, getParada,getDataParadasByNombre, getDataParadasByRuta } from "../controllers/parada.controller";
+import { create, update, deleteParada, activarParada, getDataParadas, getParada,getDataParadasByNombre, getDataParadasByRuta } from "../controllers/parada.controller";
 //import { validateCreate } from '../validators/ruta.validator';
 
 const router = Router();
@@ -18,6 +18,7 @@ const router = Router();
 router.post('/create', create);
 router.put('/update/:id', update);
 router.delete('/delete/:id', deleteParada);
+router.put('/active/:id', activarParada);
 router.get('/show', getDataParadas);
 router.get('/show/:filtro', getDataParadasByNombre);
 router.get('/show/:id', getParada);

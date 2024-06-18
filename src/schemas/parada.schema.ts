@@ -15,7 +15,11 @@ export const paradaSchema = new Schema ({
    rutaid: {
       type: Schema.Types.ObjectId,
       ref: 'Ruta'
-    },   
+    },
+   municipioid:{
+      type: Schema.Types.ObjectId,
+      ref: 'Municipio'
+   },
    nombre: {
       type: String,
       required: true
@@ -27,6 +31,9 @@ export const paradaSchema = new Schema ({
    longitud: {
       type: String,
       required: true
+   },
+   distancia:{
+      type: Schema.Types.Decimal128,
    },
    cod_qr: {
       type: String,      

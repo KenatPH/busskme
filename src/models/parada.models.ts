@@ -14,10 +14,12 @@ import { paradaSchema } from "../schemas/parada.schema";
 
 
 export interface IParada extends Document {  
-   rutaid: Schema.Types.ObjectId,        
+   rutaid: Schema.Types.ObjectId, 
+   municipioid: Schema.Types.ObjectId,        
    nombre: string,
    latitud: string,
    longitud: string,
+   distancia: Schema.Types.Decimal128,
    cod_qr: string,     
    aprobado: boolean, 
    activo: boolean, 

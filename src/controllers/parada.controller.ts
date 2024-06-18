@@ -132,21 +132,66 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
-   const { rutaid,nombre,latitud,longitud} = req?.body   
-   if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)){
+   const { rutaid,municipioid,nombre,latitud,longitud,distancia} = req?.body   
+   if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)
+   ||municipioid === null || municipioid === undefined || !municipioid || !ObjectId.isValid(municipioid)){
       return res.status(httpCode[409].code).json({
          data_send: "",
          num_status: httpCode[409].code,
          msg_status: 'Id es inválido'
       });
    } 
-   
+   if(!rutaid || rutaid === null || rutaid =="" || rutaid == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo rutaid es obligatorio, verifique.'         
+      });
+   }
+   if(!municipioid || municipioid === null || municipioid =="" || municipioid == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo municipioid es obligatorio, verifique.'         
+      });
+   }
+   if(!nombre || nombre === null || nombre =="" || nombre == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre es obligatorio, verifique.'         
+      });
+   } 
+   if(!latitud || latitud === null || latitud =="" || latitud == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo latitud es obligatorio, verifique.'         
+      });
+   }
+   if(!longitud || longitud === null || longitud =="" || longitud == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo longitud es obligatorio, verifique.'         
+      });
+   }
+   if(!distancia || distancia === null || distancia =="" || distancia == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo distancia es obligatorio, verifique.'         
+      });
+   }
    const qr ="";       
    const newParada = new Parada({
-      rutaid:rutaid,            
+      rutaid:rutaid,
+      municipioid:municipioid,            
       nombre: nombre.toUpperCase(),
       latitud:latitud,
-      longitud:longitud
+      longitud:longitud,
+      distancia:distancia,
+      cod_qr:qr 
    });
 
    try {
@@ -171,9 +216,9 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
-            
-      const { rutaid,nombre,latitud,longitud} = req.body;
+                  
       const id = req.params.id;
+      const { rutaid,municipioid,nombre,latitud,longitud,distancia} = req?.body 
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
@@ -181,14 +226,68 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Id is invalid'
          });
       } 
+        
+      if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)
+      ||municipioid === null || municipioid === undefined || !municipioid || !ObjectId.isValid(municipioid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'Id es inválido'
+         });
+      } 
+      if(!rutaid || rutaid === null || rutaid =="" || rutaid == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo rutaid es obligatorio, verifique.'         
+         });
+      }
+      if(!municipioid || municipioid === null || municipioid =="" || municipioid == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo municipioid es obligatorio, verifique.'         
+         });
+      }
+      if(!nombre || nombre === null || nombre =="" || nombre == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nombre es obligatorio, verifique.'         
+         });
+      } 
+      if(!latitud || latitud === null || latitud =="" || latitud == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo latitud es obligatorio, verifique.'         
+         });
+      }
+      if(!longitud || longitud === null || longitud =="" || longitud == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo longitud es obligatorio, verifique.'         
+         });
+      }
+      if(!distancia || distancia === null || distancia =="" || distancia == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo distancia es obligatorio, verifique.'         
+         });
+      }
       
       const qr = "";
       const updrut = await Parada.findOneAndUpdate({_id: id}, 
          {$set: {
             rutaid: rutaid,
+            municipioid: municipioid,                        
             nombre   : nombre.toUpperCase(),            
             latitud:latitud,
-            longitud:longitud            
+            longitud:longitud,
+            distancia:distancia,
+            cod_qr:qr            
          }}, 
          {new: true});
       if(!updrut) {
@@ -203,7 +302,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             updrut            
          },
          num_status: httpCode[200].code,
-         msg_status: 'Route updated successfully'
+         msg_status: 'Ruta modificada con éxito'
       });
                               
    } catch (error) {
@@ -218,7 +317,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 export const deleteParada = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      // Find the route by id and Delete the ruta cambiando activo a false      
+      
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
@@ -228,10 +327,10 @@ export const deleteParada = async (req: Request, res: Response): Promise<Respons
       } 
       const dat = await Parada.findById(id);
       if (!dat) {
-         return res.status(httpCode[404].code).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: httpCode[404].code,
-            msg_status: 'No route found'
+            num_status: httpCode[204].code,
+            msg_status: 'Parada no encontrada.'
          });
       }
       
@@ -246,7 +345,7 @@ export const deleteParada = async (req: Request, res: Response): Promise<Respons
             "aprobado": dat.aprobado             
          },
          num_status: httpCode[200].code,
-         msg_status: 'Parada delete successfully'
+         msg_status: 'Parada eliminada con éxito.'
       });
                         
    } catch (error) {
@@ -258,7 +357,7 @@ export const deleteParada = async (req: Request, res: Response): Promise<Respons
    }
 }
 
-export const reactivarParada = async (req: Request, res: Response): Promise<Response> => {
+export const activarParada = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
       
@@ -274,7 +373,7 @@ export const reactivarParada = async (req: Request, res: Response): Promise<Resp
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'No route found'
+            msg_status: 'Parada no encontrada.'
          });
       }
           
@@ -289,7 +388,7 @@ export const reactivarParada = async (req: Request, res: Response): Promise<Resp
             "aprobado": dat.aprobado             
          },
          num_status: httpCode[200].code,
-         msg_status: 'Parada eliminada satisfactoriamente.'
+         msg_status: 'Parada activada con éxito.'
       });
                         
    } catch (error) {
