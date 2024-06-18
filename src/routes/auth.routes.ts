@@ -18,7 +18,7 @@ const router = Router();
 
 
 
-router.post('/login', validateLogin, login);
+router.post('/login', login);
 router.post('/modify-password', modifyPassword);
 router.post('/reset-password', resetPassword);
 router.post('/confirm-account', confirmAccount);

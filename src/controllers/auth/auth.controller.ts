@@ -24,7 +24,21 @@ export const home = (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
    
    const { correo, clave } = req?.body
-      
+   if(!correo || correo == null || correo == undefined || correo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El correo es requerido.'
+      });          
+   }
+   if(!clave || clave == null || clave == undefined || clave == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La clave es requerida.'
+      });          
+   }
+    
    const user = await User.findOne({correo: correo}).populate('roles','nombre');
    if(!user) {
       return res.status(httpCode[404].code).json({
@@ -86,11 +100,42 @@ export const login = async (req: Request, res: Response) => {
 export const modifyPassword = async (req: Request, res: Response): Promise<Response> => {
    const { correo, oldPassword, newPassword } = req.body;
 
-   try {
-      // Find the user by correo
-      const user = await User.findOne({ correo });
+   if(!correo || correo == null || correo == undefined || correo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El correo es requerido.'
+      });          
+   }
+   if(!oldPassword || oldPassword == null || oldPassword == undefined || oldPassword == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La clave anterior es requerida.'
+      });          
+   }
+   if(!newPassword || newPassword == null || newPassword == undefined || newPassword == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La clave nueva es requerida.'
+      });          
+   }else{
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      if(!passRegex.test(newPassword)) {            
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', password incorrecto. El password debe tener al menos una letra minúscula, una mayúscula, un número y al menos uno de estos caracteres especiales @$!%*#?&.'
+         });
+         
+      }   
+   }
 
-      // Check if the user exists
+   try {
+      
+      const user = await User.findOne({ correo });
+      
       if (!user) {
          return res.status(httpCode[404].code).json({
             data_send: "",
@@ -99,7 +144,7 @@ export const modifyPassword = async (req: Request, res: Response): Promise<Respo
          });
       }
 
-      // Check if the old password matches
+      
       const isMatch = await user.comparePassword(oldPassword);
       if (!isMatch) {
          return res.status(httpCode[409].code).json({
@@ -109,7 +154,7 @@ export const modifyPassword = async (req: Request, res: Response): Promise<Respo
          });
       }
 
-      // Update the password
+     
       user.clave = newPassword;
       await user.save();
 
@@ -130,11 +175,35 @@ export const modifyPassword = async (req: Request, res: Response): Promise<Respo
 export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
    const { correo, newPassword } = req.body;
 
+   if(!correo || correo == null || correo == undefined || correo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El correo es requerido.'
+      });          
+   }
+   if(!newPassword || newPassword == null || newPassword == undefined || newPassword == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La clave nueva es requerida.'
+      });          
+   }else{
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      if(!passRegex.test(newPassword)) {            
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', password incorrecto. El password debe tener al menos una letra minúscula, una mayúscula, un número y al menos uno de estos caracteres especiales @$!%*#?&.'
+         });
+         
+      }   
+   }
+
    try {
-      // Find the user by correo
+      
       const user = await User.findOne({ correo });
 
-      // Check if the user exists
       if (!user) {
          return res.status(httpCode[404].code).json({
             data_send: "",
@@ -142,8 +211,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
             msg_status: 'User not found'
          });
       }
-      
-      // Update the password
+            
       user.clave = newPassword;
       await user.save();
 
