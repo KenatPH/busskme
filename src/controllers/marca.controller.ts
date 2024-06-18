@@ -240,7 +240,7 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
                "activo": data.activo
             },
             num_status: httpCode[200].code,
-            msg_status: 'Marca borrada satisfactoriamente.'
+            msg_status: 'Marca activada satisfactoriamente.'
          });
       }
                   
