@@ -199,3 +199,49 @@ export const deleteRuta = async (req: Request, res: Response): Promise<Response>
       });
    }
 }
+
+export const activarRuta = async (req: Request, res: Response): Promise<Response> => {
+   try {
+      const { id } = req.params;
+      // Find the route by id and Delete the ruta cambiando activo a false      
+      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'Id is invalid'
+         });
+      } 
+      const rut = await Ruta.findById(id);
+      if (!rut) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'No route found'
+         });
+      }
+
+      // Update the category properties      
+      rut.activo = true;
+
+      // Save the updated ruta      
+      await rut.save();
+
+      return res.status(httpCode[200].code).json({
+         data_send: {
+            "color": rut.color.toUpperCase(), 
+            "nombre": rut.nombre.toUpperCase(), 
+            "activo": rut.activo,
+            "aprobado": rut.aprobado             
+         },
+         num_status: httpCode[200].code,
+         msg_status: 'Ruta activada con éxito.'
+      });
+                        
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem trying to modify the route, try again later (ruta)'         
+      });
+   }
+}

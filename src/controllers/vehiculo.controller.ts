@@ -84,12 +84,24 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
            nro_autorizacion, empresa_seguro, nro_poliza,
            nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, 
     } = req?.body
-    var imgs = Object();          
-    imgs = req.files;  
-    if(imgs != undefined && imgs !== null && imgs){      
-       var img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
-       var img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";       
-    }  
+    
+   var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
+   imgs = req.files;  
+   if(imgs != undefined && imgs !== null && imgs){ 
+      if(imgs['img_certificado'] != undefined && imgs['img_certificado'] !== null && imgs['img_certificado']){ 
+         img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+      }else{
+         img_certificado_path = "";
+      }
+      if(imgs['img_poliza'] != undefined && imgs['img_poliza'] !== null && imgs['img_poliza']){ 
+         img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";
+      }else{
+         img_poliza_path = "";
+      }        
+   }else{
+      img_certificado_path = "";
+      img_poliza_path = "";      
+   } 
    
    const newVehiculo = new Vehiculo({       
       userid: userid, 
@@ -156,14 +168,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
          nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza,img_certificado,img_poliza } = req.body
 
-      var imgs = Object();  
-      imgs = req.files;  
-      if(imgs != undefined && imgs !== null && imgs){      
-         var img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
-         var img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";       
-      }  
+          
       const data = await Vehiculo.findOne({_id: id});
-
       if (!data) {
          return res.status(httpCode[204].code).json({
             data_send: "",
@@ -171,6 +177,24 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Vehículo no encontrado.'
          });
       }
+      var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
+      imgs = req.files;  
+      if(imgs != undefined && imgs !== null && imgs){ 
+         if(imgs['img_certificado'] != undefined && imgs['img_certificado'] !== null && imgs['img_certificado']){ 
+            img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+         }else{
+            img_certificado_path = "";
+         }
+         if(imgs['img_poliza'] != undefined && imgs['img_poliza'] !== null && imgs['img_poliza']){ 
+            img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";
+         }else{
+            img_poliza_path = "";
+         }        
+      }else{
+         img_certificado_path = "";
+         img_poliza_path = "";      
+      }  
+      
 
       if(img_poliza !== null && img_poliza !== undefined && img_poliza !== ""){
          const storagePath = path.resolve(img_poliza);      

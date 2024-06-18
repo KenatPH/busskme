@@ -43,7 +43,7 @@ router.post('/create', function(req,res,next){upload(req, res, (err) => {
    } 
    next();  
  })},create);
-// router.post('/create', checkAuth, create);
+
 router.put('/update/:id', checkAuth, function(req,res,next){upload(req, res, (err) => {
    
    if (err) {
