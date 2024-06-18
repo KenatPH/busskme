@@ -11,7 +11,8 @@
 
 import express, { Request, Response } from "express";
 import Estado from "../models/estados.models";
-
+import {ObjectId} from 'mongodb';
+import  {httpCode}  from "../utils/httpStatusHandle";
 
 //mostrar estados que pertenecen a un país por su codigo de país (pais=VE o paisid)
 
@@ -70,38 +71,38 @@ export const getDataEdos = async (req: Request, res: Response): Promise<Response
    }   
 }
 
-//mostrar un estado por el id de pais
+
 export const getEstadosPais = async (req: Request, res: Response): Promise<Response> => {
-   const { paisid } = req.body; 
-   console.log("paisd: ",paisid);
-   if(!paisid || paisid === undefined){
-      return res.status(404).json({
+   const { paisid } = req.params; 
+   
+   if(paisid === null || paisid === undefined || !paisid || !ObjectId.isValid(paisid)){
+      return res.status(httpCode[409].code).json({
          data_send: "",
-         num_status: 9,
-         msg_status: 'paisid is invalid'
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido'
       });
    }
-   //buscamos si existe una ciudad con esos id de país y estado
+   
    const edo = await Estado.find({paisid: paisid});
    
-   //validamos que exista la información
+   
    try {
       if(!edo){
-         return res.status(404).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
-            msg_status: 'There is no state for the country sent'
+            num_status: httpCode[204].code,
+            msg_status: 'No hay estados para este país'
          });
       }
-      return res.status(200).json({
+      return res.status(httpCode[200].code).json({
          data_send: edo,
-         num_status: 0,
-         msg_status: 'States found successfully'
+         num_status: httpCode[200].code,
+         msg_status: 'Estados encontrados con éxito.'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 0,
+         num_status: httpCode[500].code,
          msg_status: 'There was a problem with the server, try again later (estado control)'         
       })
    }   

@@ -19,5 +19,5 @@ router.put('/update/:id', update);
 router.delete('/delete/:id', deleteEstado);
 router.get('/show', getDataEdos);
 router.get('/show/:id', getEstado);
-router.get('/pais/show', getEstadosPais);
+router.get('/pais/show:paisid', getEstadosPais);
 export default router;
