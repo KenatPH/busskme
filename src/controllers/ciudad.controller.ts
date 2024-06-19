@@ -65,22 +65,22 @@ export const getCiudadesPaisEdo = async (req: Request, res: Response): Promise<R
    
    try {
       if(!ciu){
-         return res.status(404).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
+            num_status: httpCode[204].code,
             msg_status: 'There is no city for the country and state sent'
          });
       }
-      return res.status(200).json({
+      return res.status(httpCode[200].code).json({
          data_send: ciu,
-         num_status: 0,
+         num_status: httpCode[200].code,
          msg_status: 'Cities found successfully'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 0,
-         msg_status: 'There was a problem with the server, try again later '+error         
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'
       })
    }   
 }
@@ -95,22 +95,22 @@ export const getDataCiudades = async (req: Request, res: Response): Promise<Resp
    //validamos que exista la información
    try {
       if(ciu.length === 0){
-         return res.status(404).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: 6,
+            num_status: httpCode[204].code,
             msg_status: 'No cities found'
          });
       }
-      return res.status(200).json({
+      return res.status(httpCode[200].code).json({
          data_send: ciu,
-         num_status: 0,
+         num_status: httpCode[200].code,
          msg_status: 'Cities found successfully!!!'
       });
    } catch (error) {
-      return res.status(500).json({
+      return res.status(httpCode[500].code).json({
          data_send: "",
-         num_status: 501,
-         msg_status: 'There was a problem with the server, try again later (ciudad)'+error         
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'
       })
    }   
 }
