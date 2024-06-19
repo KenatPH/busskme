@@ -55,6 +55,39 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
       });
    }   
 }
+export const getChoferByUserId = async (req: Request, res: Response): Promise<Response> => {
+   const { id } = req.params; 
+   if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'Id no es válido'
+      });
+   }
+   const data = await Chofer.findOne({userid:id})
+   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
+   
+   try {
+      if(!data){
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Chofer no encontrado.'
+         });
+      }      
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Chofer encontrado satisfactoriamente'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (chofer)'         
+      });
+   }   
+}
 
 export const getDataChoferes = async (req: Request, res: Response): Promise<Response> => {
    const data = await Chofer.find()

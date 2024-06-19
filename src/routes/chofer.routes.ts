@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, register, deleteChofer, getDataChoferes, getChofer } from "../controllers/chofer.controller";
+import { create, update, register, deleteChofer, getDataChoferes, getChofer, getChoferByUserId } from "../controllers/chofer.controller";
 import {checkAuth} from '../config/config.jwt';
 import config from '../config/config';
 import MulterMiddleware from '../middlewares/MulterPhotosMiddleware';
@@ -65,6 +65,7 @@ router.put('/update/:id', checkAuth, function(req,res,next){upload(req, res, (er
 router.delete('/delete/:id', checkAuth, deleteChofer);
 router.get('/show', getDataChoferes);
 router.get('/show/:id', getChofer);
+router.get('/show/user/:id', getChoferByUserId);
 
 
 export default router;
