@@ -17,7 +17,7 @@ const router = Router();
 
 router.post('/create', checkAuth,create);
 router.put('/update/:id', checkAuth, update);
-router.put('/active/:id', checkAuth, activarModeloVeh);
+router.post('/active/:id', checkAuth, activarModeloVeh);
 router.delete('/delete/:id', checkAuth, deleteModeloVeh);
 router.get('/show', getDataModelos);
 router.get('/show/:id', getModelo);

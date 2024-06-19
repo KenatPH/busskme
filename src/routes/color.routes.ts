@@ -17,7 +17,7 @@ const router = Router();
 
 router.post('/create', checkAuth,create);
 router.put('/update/:id', checkAuth, update);
-router.put('/active/:id', checkAuth, activarColor);
+router.post('/active/:id', checkAuth, activarColor);
 router.delete('/delete/:id', checkAuth, deleteColor);
 router.get('/show', checkAuth, getColores);
 router.get('/show/:id', checkAuth, getColor);
