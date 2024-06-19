@@ -57,7 +57,8 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
 }
 
 export const getDataChoferes = async (req: Request, res: Response): Promise<Response> => {
-   const data = await Chofer.find();
+   const data = await Chofer.find()
+   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
       
    try {
       if(data.length === 0){
