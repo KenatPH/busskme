@@ -18,7 +18,7 @@ const router = Router();
 router.post('/create', create);
 router.put('/update/:id', update);
 router.delete('/delete/:id', deleteParada);
-router.put('/active/:id', activarParada);
+router.post('/active/:id', activarParada);
 router.get('/show', getDataParadas);
 router.get('/show/:filtro', getDataParadasByNombre);
 router.get('/show/:id', getParada);
