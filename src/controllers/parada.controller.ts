@@ -55,7 +55,7 @@ export const getParada = async (req: Request, res: Response): Promise<Response> 
 }
 
 export const getDataParadas = async (req: Request, res: Response): Promise<Response> => {
-   const dat = await Parada.find({activo:true})
+   const dat = await Parada.find()
    .populate('rutaid','nombre')
    .populate('municipioid','paisid estadoid nombre');
       
