@@ -31,7 +31,8 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
          msg_status: 'Id no es válido'
       });
    }
-   const data = await Chofer.findById(id);
+   const data = await Chofer.findById(id)
+   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
    
    try {
       if(!data){
@@ -40,7 +41,7 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
             num_status: httpCode[204].code,
             msg_status: 'Chofer no encontrado.'
          });
-      }
+      }      
       return res.status(httpCode[200].code).json({
          data_send: data,
          num_status: httpCode[200].code,
