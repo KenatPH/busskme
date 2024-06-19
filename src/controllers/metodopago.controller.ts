@@ -208,7 +208,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       dat.titulo        = titulo,
       dat.referencia    = referencia,
       dat.paisid        = paisid,
-      dat.imagen        = img.path      
+      dat.imagen        = imgpath     
       await dat.save();
       const mp = await Metodopago.find({_id:id})
       .populate('paisid', 'nombre'); 
