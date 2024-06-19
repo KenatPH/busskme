@@ -27,7 +27,9 @@ export const getParada = async (req: Request, res: Response): Promise<Response> 
          msg_status: 'Id is invalid'
       });
    }
-   const dat = await Parada.findOne({_id: id});
+   const dat = await Parada.findOne({_id: id})
+   .populate('rutaid','nombre')
+   .populate('municipioid','paisid estadoid nombre');
    
    try {
       if(!dat){
@@ -53,7 +55,9 @@ export const getParada = async (req: Request, res: Response): Promise<Response> 
 }
 
 export const getDataParadas = async (req: Request, res: Response): Promise<Response> => {
-   const dat = await Parada.find({activo:true});
+   const dat = await Parada.find({activo:true})
+   .populate('rutaid','nombre')
+   .populate('municipioid','paisid estadoid nombre');
       
    try {
       if(dat.length === 0){
@@ -80,7 +84,9 @@ export const getDataParadas = async (req: Request, res: Response): Promise<Respo
 
 export const getDataParadasByNombre = async (req: Request, res: Response): Promise<Response> => {
    const {filtro} = req.params
-   const dat = await Parada.find({ nombre: { $regex: `.*${filtro}.*`, $options: 'i' }, activo:true});
+   const dat = await Parada.find({ nombre: { $regex: `.*${filtro}.*`, $options: 'i' }, activo:true})
+   .populate('rutaid','nombre')
+   .populate('municipioid','paisid estadoid nombre');
       
    try {
       if(dat.length === 0){
@@ -106,7 +112,9 @@ export const getDataParadasByNombre = async (req: Request, res: Response): Promi
 
 export const getDataParadasByRuta = async (req: Request, res: Response): Promise<Response> => {
    const {rutaid} = req.params
-   const dat = await Parada.find({ rutaid: rutaid , activo:true});
+   const dat = await Parada.find({ rutaid: rutaid , activo:true})
+   .populate('rutaid','nombre')
+   .populate('municipioid','paisid estadoid nombre');
       
    try {
       if(dat.length === 0){
