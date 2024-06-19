@@ -107,7 +107,20 @@ export const getMetodoPagoByPais = async (req: Request, res: Response): Promise<
 
 export const create = async (req: Request, res: Response): Promise<Response> => {   
    const { paisid,titulo,referencia} = req?.body
-      
+   if(!titulo || titulo == null || titulo == undefined || titulo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El título es requerido.'
+      });          
+   }
+   if(!referencia || referencia == null || referencia == undefined || referencia == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La referencia  es requerida.'
+      });          
+   }   
    var img = Object();  
    if(!img || img === undefined || img === null){
       return res.status(httpCode[409].code).json({
