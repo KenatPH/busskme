@@ -66,7 +66,7 @@ export const getChoferByUserId = async (req: Request, res: Response): Promise<Re
       });
    }
    const data = await Chofer.findOne({userid:id})
-   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
+   .populate('userid','nombre genero fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
    
    try {
       if(!data){
