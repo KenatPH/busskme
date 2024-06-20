@@ -84,20 +84,174 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
            nro_autorizacion, empresa_seguro, nro_poliza,
            nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, 
     } = req?.body
-    
+
+    if(userid === null || userid === undefined || !userid || !ObjectId.isValid(userid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido'
+      });
+   }
+
+    if(!nro_certificado_registro || nro_certificado_registro == null || nro_certificado_registro == undefined || nro_certificado_registro == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_certificado_registro es requerido.'
+      });          
+   }   
+       
+   if(!placa || placa == null || placa == undefined || placa == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo placa es requerido.'
+      });          
+   }
+   if(!serial_niv || serial_niv == null || serial_niv == undefined || serial_niv == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo serial_niv es requerido.'
+      });          
+   }
+   if(!serial_chasis || serial_chasis == null || serial_chasis == undefined || serial_chasis == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo serial_chasis es requerido.'
+      });          
+   }
+
+   if(!serial_carroceria || serial_carroceria == null || serial_carroceria == undefined || serial_carroceria == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo serial_carroceria es requerido.'
+      });          
+   }
+
+   if(!serial_motor || serial_motor == null || serial_motor == undefined || serial_motor == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo serial_motor es requerido.'
+      });          
+   }
+   
+   if(!marcaid || marcaid == null || marcaid == undefined || marcaid == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo marcaid es requerido.'
+      });          
+   }
+   
+   if(!modeloid || modeloid == null || modeloid == undefined || modeloid == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo modeloid es requerido.'
+      });          
+   }
+
+   if(!colorid || colorid == null || colorid == undefined || colorid == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo colorid es requerido.'
+      });          
+   }
+
+   if(!anno || anno == null || anno == undefined || anno == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo anno es requerido.'
+      });          
+   }
+
+   if(!puestos || puestos == null || puestos == undefined || puestos == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo puestos es requerido.'
+      });          
+   }
+   
+   if(!intt_nro || intt_nro == null || intt_nro == undefined || intt_nro == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo intt_nro es requerido.'
+      });          
+   }
+   if(!nro_autorizacion || nro_autorizacion == null || nro_autorizacion == undefined || nro_autorizacion == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_autorizacion es requerido.'
+      });          
+   }
+   
+   if(!fecha_emision_intt || fecha_emision_intt == null || fecha_emision_intt == undefined || fecha_emision_intt == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo fecha_emision_intt es requerido.'
+      });          
+   }
+
+   if(!empresa_seguro || empresa_seguro == null || empresa_seguro == undefined || empresa_seguro == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo empresa_seguro es requerido.'
+      });          
+   }
+   if(!nro_poliza || nro_poliza == null || nro_poliza == undefined || nro_poliza == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_poliza es requerido.'
+      });          
+   }
+   if(!nro_sudeaseg || nro_sudeaseg == null || nro_sudeaseg == undefined || nro_sudeaseg == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_sudeaseg es requerido.'
+      });          
+   }
+
+   if(!fecha_emision_poliza || fecha_emision_poliza == null || fecha_emision_poliza == undefined || fecha_emision_poliza == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo fecha_emision_poliza es requerido.'
+      });          
+   }
+
+   if(!fecha_venc_poliza || fecha_venc_poliza == null || fecha_venc_poliza == undefined || fecha_venc_poliza == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo fecha_venc_poliza es requerido.'
+      });          
+   }
    var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
    imgs = req.files;  
    if(imgs != undefined && imgs !== null && imgs){ 
-      if(imgs['img_certificado'] != undefined && imgs['img_certificado'] !== null && imgs['img_certificado']){ 
-         img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+      if(imgs['img_certificado'] != undefined && imgs['img_certificado'] !== null && imgs['img_certificado']){          
+         img_certificado_path  = imgs['img_certificado']?.[0].path ?? "";
       }else{
          img_certificado_path = "";
-      }
-      if(imgs['img_poliza'] != undefined && imgs['img_poliza'] !== null && imgs['img_poliza']){ 
-         img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";
+      }    
+      if(imgs['img_poliza'] != undefined && imgs['img_poliza'] !== null && imgs['img_poliza']){          
+         img_poliza_path  = imgs['img_poliza']?.[0].path ?? "";
       }else{
          img_poliza_path = "";
-      }        
+      }              
    }else{
       img_certificado_path = "";
       img_poliza_path = "";      
@@ -162,13 +316,158 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const {   
-         nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
+      const { nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
          serial_motor,marcaid,modeloid,colorid,anno,clase,tipo,uso,servicio,puestos, 
          intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
-         nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza,img_certificado,img_poliza } = req.body
+         nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza } = req.body
 
+      if(!nro_certificado_registro || nro_certificado_registro == null || nro_certificado_registro == undefined || nro_certificado_registro == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_certificado_registro es requerido.'
+         });          
+      }   
           
+      if(!placa || placa == null || placa == undefined || placa == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo placa es requerido.'
+         });          
+      }
+      if(!serial_niv || serial_niv == null || serial_niv == undefined || serial_niv == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo serial_niv es requerido.'
+         });          
+      }
+      if(!serial_chasis || serial_chasis == null || serial_chasis == undefined || serial_chasis == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo serial_chasis es requerido.'
+         });          
+      }
+
+      if(!serial_carroceria || serial_carroceria == null || serial_carroceria == undefined || serial_carroceria == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo serial_carroceria es requerido.'
+         });          
+      }
+
+      if(!serial_motor || serial_motor == null || serial_motor == undefined || serial_motor == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo serial_motor es requerido.'
+         });          
+      }
+      
+      if(!marcaid || marcaid == null || marcaid == undefined || marcaid == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo marcaid es requerido.'
+         });          
+      }
+      
+      if(!modeloid || modeloid == null || modeloid == undefined || modeloid == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo modeloid es requerido.'
+         });          
+      }
+
+      if(!colorid || colorid == null || colorid == undefined || colorid == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo colorid es requerido.'
+         });          
+      }
+
+      if(!anno || anno == null || anno == undefined || anno == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo anno es requerido.'
+         });          
+      }
+
+      if(!puestos || puestos == null || puestos == undefined || puestos == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo puestos es requerido.'
+         });          
+      }
+      
+      if(!intt_nro || intt_nro == null || intt_nro == undefined || intt_nro == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo intt_nro es requerido.'
+         });          
+      }
+      if(!nro_autorizacion || nro_autorizacion == null || nro_autorizacion == undefined || nro_autorizacion == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_autorizacion es requerido.'
+         });          
+      }
+      
+      if(!fecha_emision_intt || fecha_emision_intt == null || fecha_emision_intt == undefined || fecha_emision_intt == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo fecha_emision_intt es requerido.'
+         });          
+      }
+
+      if(!empresa_seguro || empresa_seguro == null || empresa_seguro == undefined || empresa_seguro == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo empresa_seguro es requerido.'
+         });          
+      }
+      if(!nro_poliza || nro_poliza == null || nro_poliza == undefined || nro_poliza == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_poliza es requerido.'
+         });          
+      }
+      if(!nro_sudeaseg || nro_sudeaseg == null || nro_sudeaseg == undefined || nro_sudeaseg == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_sudeaseg es requerido.'
+         });          
+      }
+
+      if(!fecha_emision_poliza || fecha_emision_poliza == null || fecha_emision_poliza == undefined || fecha_emision_poliza == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo fecha_emision_poliza es requerido.'
+         });          
+      }
+
+      if(!fecha_venc_poliza || fecha_venc_poliza == null || fecha_venc_poliza == undefined || fecha_venc_poliza == ""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo fecha_venc_poliza es requerido.'
+         });          
+      }
+
       const data = await Vehiculo.findOne({_id: id});
       if (!data) {
          return res.status(httpCode[204].code).json({
@@ -178,71 +477,66 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });
       }
       var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
-      imgs = req.files;  
+      imgs = req.files; 
+      
       if(imgs != undefined && imgs !== null && imgs){ 
-         if(imgs['img_certificado'] != undefined && imgs['img_certificado'] !== null && imgs['img_certificado']){ 
-            img_certificado_path = imgs['img_certificado'][0].path !== "" ? imgs['img_certificado'][0].path : "";
+         img_certificado_path  = imgs['img_certificado']?.[0].path ?? "";
+                      
+         if(img_certificado_path !== "" && img_certificado_path !== undefined && img_certificado_path !== null) {
+            const storagePath = path.resolve(data.img_certificado);      
+            if (fs.existsSync(storagePath)) {
+               await fs.unlink(storagePath);            
+            }
          }else{
-            img_certificado_path = "";
-         }
-         if(imgs['img_poliza'] != undefined && imgs['img_poliza'] !== null && imgs['img_poliza']){ 
-            img_poliza_path = imgs['img_poliza'][0].path !== "" ? imgs['img_poliza'][0].path : "";
+            img_certificado_path = data.img_certificado;
+         }  
+         
+         img_poliza_path  = imgs['img_poliza']?.[0].path ?? "";
+                      
+         if(img_poliza_path !== "" && img_poliza_path !== undefined && img_poliza_path !== null) {
+            const storagePath = path.resolve(data.img_poliza);      
+            if (fs.existsSync(storagePath)) {
+               await fs.unlink(storagePath);            
+            }
          }else{
-            img_poliza_path = "";
-         }        
+            img_poliza_path = data.img_poliza;
+         } 
+                
       }else{
-         img_certificado_path = "";
-         img_poliza_path = "";      
+         img_certificado_path = data.img_certificado;
+         img_poliza_path = data.img_poliza;      
       }  
-      
-
-      if(img_poliza !== null && img_poliza !== undefined && img_poliza !== ""){
-         const storagePath = path.resolve(img_poliza);      
-         if (fs.existsSync(storagePath)) {
-            await fs.unlink(storagePath);            
-         }
-      }
-
-      if(img_certificado !== null && img_certificado !== undefined && img_certificado !== ""){
-         const storagePath = path.resolve(img_certificado);      
-         if (fs.existsSync(storagePath)) {
-            await fs.unlink(storagePath);            
-         }
-      }
-      
-      data.nro_certificado_registro,
-      data.placa,
-      data.serial_niv,
-      data.serial_chasis,
-      data.serial_carroceria, 
-      data.serial_motor,
-      data.marcaid,
-      data.modeloid,
-      data.colorid,
-      data.anno,
-      data.clase,
-      data.tipo,
-      data.uso,
-      data.servicio,
-      data.puestos, 
-      data.intt_nro,
-      data.fecha_emision_intt,
-      data.nro_autorizacion,
-      data.empresa_seguro,
-      data.nro_poliza,
-      data.nro_sudeaseg,
-      data.fecha_emision_poliza,
-      data.fecha_venc_poliza,
-      data.img_certificado = img_certificado_path,
-      data.img_poliza = img_poliza_path
+     
+      data.nro_certificado_registro    = nro_certificado_registro,
+      data.placa                       = placa,
+      data.serial_niv                  = serial_niv,
+      data.serial_chasis               = serial_chasis,
+      data.serial_carroceria           = serial_carroceria, 
+      data.serial_motor                = serial_motor,
+      data.marcaid                     = marcaid,
+      data.modeloid                    = modeloid,
+      data.colorid                     = colorid,
+      data.anno                        = anno,
+      data.clase                       = clase,
+      data.tipo                        = tipo,
+      data.uso                         = uso,
+      data.servicio                    = servicio,
+      data.puestos                     = puestos, 
+      data.intt_nro                    = intt_nro,
+      data.fecha_emision_intt          = fecha_emision_intt,
+      data.nro_autorizacion            = nro_autorizacion,
+      data.empresa_seguro              = empresa_seguro,
+      data.nro_poliza                  = nro_poliza,
+      data.nro_sudeaseg                = nro_sudeaseg,
+      data.fecha_emision_poliza        = fecha_emision_poliza, 
+      data.fecha_venc_poliza           = fecha_venc_poliza,
+      data.img_certificado             = img_certificado_path,
+      data.img_poliza                  = img_poliza_path
 
       await data.save();
        
       return res.status(httpCode[200].code).json({         
-         data_send: {            
-            "Placa vehículo": data.placa,
-            "Marca vehículo:": data.marcaid,                      
-         },
+         data_send: data,
          num_status: httpCode[200].code,
          msg_status: 'Vehiculo updated successfully'
       });
