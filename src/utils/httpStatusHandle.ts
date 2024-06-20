@@ -69,16 +69,50 @@ export const httpCode = {
    510: { code: 510, message: 'Not Extended' },
    511: { code: 511, message: 'Network Authentication Required' },
    600: {code: 600, 
-         message_es: 'Usuario creado exitosamente, se envió un correo electrónico para confirmar su cuenta, revise su carpeta de spam.',
-         message_en: 'User created successfully, an email has been sent to confirm your account, check your spam folder.'
+         es: 'Usuario creado exitosamente, se envió un correo electrónico para confirmar su cuenta, revise su carpeta de spam.',
+         en: 'User created successfully, an email has been sent to confirm your account, check your spam folder.'
       },
    601:{code: 601, 
-         message_es: 'Usuario creado exitosamente, se envió un correo electrónico para confirmar su cuenta, revise su carpeta de spam.',
-         message_en: 'User created successfully, an email has been sent to confirm your account, check your spam folder.'
+         es: 'La cuenta debe ser confirmada por el usuario, para poder iniciar sesión.',
+         en: 'The account must be confirmed by the user, to be able to log in.'
    },
    602:{code: 602, 
-      message_es: 'La clave no puede estar vacía.',
-      message_en: 'The key cannot be empty.'
-}    
+      es: 'La clave no puede estar vacía.',
+      en: 'The key cannot be empty.'
+    },
+   603:{code: 603,
+      es: 'Datos encontrados con éxito.',
+      en: 'Data found successfully.'
+   }, 
+   604:{code: 604,
+      es: 'Datos no encontrados.',
+      en: 'Data not found.'
+   }, 
+   605:{code: 605,
+      es: 'Inicio de sesión exitoso.',
+      en: 'Login successfully.'
+   },
+   606:{code: 606,
+      es: 'Inicio de sesión exitoso.',
+      en: 'Login successfully.'
+   },
+   607:{code: 607,
+      es: 'Datos modificados con éxito.',
+      en: 'Data modified successfully.'
+   },
+   608:{code: 608,
+      es: 'Registro modificado con éxito.',
+      en: 'Successfully modified record.'
+   },
+   609:{code: 609,
+      es: 'Registro eliminado con éxito.',
+      en: 'Record deleted successfully.'
+   },
+   610:{code: 610,
+      es: 'Contraseña no válida, debe utilizar al menos una letra minúscula, una letra mayúscula, un número y al menos un carácter especial @$!%*#?&.',
+      en: 'Invalid password, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
+   },
+   
+   
    
 };

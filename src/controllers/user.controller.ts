@@ -19,6 +19,7 @@ import {ObjectId} from 'mongodb';
 import  {httpCode}  from "../utils/httpStatusHandle";
 import fs from 'fs-extra';
 import path from 'path';
+import config from '../config/config';
 
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
@@ -252,7 +253,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             "token": token
          },         
          num_status:httpCode[201].code,
-         msg_status: httpCode[600].message_es
+         msg_status: httpCode[600]+'.'+config.IDIOMA
       });
       
    } catch (error) {

@@ -12,7 +12,7 @@ import mongoose  from "mongoose";
 import config from "./config/config";
 
 var db_uri="";
-if(!config.RUN_MODE){ //false = desarrollo
+if(!config.RUN_MODE){
    //db_uri = "mongodb://localhost:27017/busskm"
    if(config.DB.URI !== undefined){
       db_uri = config.DB.URI;

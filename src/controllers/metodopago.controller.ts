@@ -107,6 +107,14 @@ export const getMetodoPagoByPais = async (req: Request, res: Response): Promise<
 
 export const create = async (req: Request, res: Response): Promise<Response> => {   
    const { paisid,titulo,referencia} = req?.body
+
+   if(paisid === null || paisid === undefined || !paisid || !ObjectId.isValid(paisid)){
+       return res.status(httpCode[409].code).json({
+          data_send: "",
+          num_status: httpCode[409].code,
+          msg_status: 'Paisid is invalid'
+       });
+    }
    if(!titulo || titulo == null || titulo == undefined || titulo == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         

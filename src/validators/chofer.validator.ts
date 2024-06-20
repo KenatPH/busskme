@@ -13,7 +13,7 @@ import { check } from 'express-validator';
 import { validateResult } from "../utils/validateHandle";
 import User from "../models/users.models";
 import { httpCode } from "../utils/httpStatusHandle";
-
+import config from '../config/config';
 
 var num_status = 0;
 var msg_status = "";
@@ -60,7 +60,7 @@ export const validateLogin = [
       .custom(async (value, { req }) => {
          if(value === undefined || value === null || value === "" || value === " "){
             num_status = httpCode[409].code
-            msg_status = httpCode[602].message_es;
+            msg_status = httpCode[602]+'.'+config.IDIOMA;;
             res_status = httpCode[409].code;
             throw new Error('The value of the email field is undefined!');
          }    

@@ -28,19 +28,19 @@ export const getRuta = async (req: Request, res: Response): Promise<Response> =>
       });
    }
    const rut = await Ruta.findOne({_id: id});
-   //validamos que exista la información
+   
    try {
       if(!rut){
-         return res.status(httpCode[404].code).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: httpCode[404].code,
+            num_status: httpCode[204].code,
             msg_status: 'No route found'
          });
       }
       return res.status(httpCode[200].code).json({
          data_send: rut,
          num_status: httpCode[200].code,
-         msg_status: 'Route found successfully'
+         msg_status: httpCode[200].message
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
@@ -54,20 +54,19 @@ export const getRuta = async (req: Request, res: Response): Promise<Response> =>
 
 export const getDataRutas = async (req: Request, res: Response): Promise<Response> => {
    const rutas = await Ruta.find();
-   
-   //validamos que exista la información
+      
    try {
       if(rutas.length === 0){
-         return res.status(httpCode[404].code).json({
+         return res.status(httpCode[204].code).json({
             data_send: "",
-            num_status: httpCode[404].code,
-            msg_status: 'No route found'
+            num_status: httpCode[204].code,
+            msg_status: 'Ruta no encontrada'
          });
       }
       return res.status(httpCode[200].code).json({
          data_send: rutas,
          num_status: httpCode[200].code,
-         msg_status: 'Route found successfully'
+         msg_status: httpCode[200].message
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
@@ -79,7 +78,6 @@ export const getDataRutas = async (req: Request, res: Response): Promise<Respons
    
 }
 
-//crear una ruta
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
    const { nombre, codigo, color} = req?.body            
@@ -88,6 +86,35 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       nombre: nombre.toUpperCase(),
       color: color.toUpperCase()
    });
+   if(!nombre || nombre === null || nombre =="" || nombre == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre es obligatorio, verifique.'         
+      });
+   } 
+   if(!color || color === null || color =="" || color == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo color es obligatorio, verifique.'         
+      });
+   } 
+   if(!codigo || codigo === null || codigo =="" || codigo == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo codigo es obligatorio, verifique.'         
+      });
+   }
+   const data = await Ruta.findOne({codigo: codigo});
+   if(data){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El código de la ruta ya existe, verifique.'         
+      });
+   } 
 
    try {
       
@@ -110,10 +137,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 }
 
 export const update = async (req: Request, res: Response): Promise<Response> => {
-   try {
-      
-      //const { id } = req.params; 
-      const { nombre, color, aprobado} = req.body;
+   try {            
+      const { nombre, color, codigo} = req.body;
       const id = req.params.id;
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
@@ -122,19 +147,48 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Id is invalid'
          });
       } 
-      const params = req.body;
+      if(!nombre || nombre === null || nombre =="" || nombre == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nombre es obligatorio, verifique.'         
+         });
+      } 
+      if(!color || color === null || color =="" || color == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo color es obligatorio, verifique.'         
+         });
+      } 
+      if(!codigo || codigo === null || codigo =="" || codigo == undefined){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo codigo es obligatorio, verifique.'         
+         });
+      }
+      const data = await Ruta.findOne({codigo: codigo});
+      if(data){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El código de la ruta ya existe, verifique.'         
+         });
+      }
+
       const updrut = await Ruta.findOneAndUpdate({_id: id}, 
          {$set: {
             nombre   : nombre.toUpperCase(),            
             color    : color.toUpperCase(),            
-            aprobado : aprobado 
+            codigo : codigo.toUpperCase() 
          }}, 
          {new: true});
       if(!updrut) {
          return res.status(httpCode[204].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'No route found'
+            msg_status: 'Ruta no encontrada.'
          });
       }
       return res.status(httpCode[200].code).json({
@@ -142,7 +196,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             updrut            
          },
          num_status: httpCode[200].code,
-         msg_status: 'Route updated successfully'
+         msg_status: 'Ruta modificada con éxito.'
       });
                               
    } catch (error) {
@@ -157,7 +211,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 export const deleteRuta = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      // Find the route by id and Delete the ruta cambiando activo a false      
+      
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
@@ -172,12 +226,8 @@ export const deleteRuta = async (req: Request, res: Response): Promise<Response>
             num_status: httpCode[204].code,
             msg_status: 'No route found'
          });
-      }
-
-      // Update the category properties      
-      rut.activo = false;
-
-      // Save the updated ruta      
+      }      
+      rut.activo = false;      
       await rut.save();
 
       return res.status(httpCode[200].code).json({
@@ -203,7 +253,7 @@ export const deleteRuta = async (req: Request, res: Response): Promise<Response>
 export const activarRuta = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      // Find the route by id and Delete the ruta cambiando activo a false      
+      
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
@@ -218,12 +268,8 @@ export const activarRuta = async (req: Request, res: Response): Promise<Response
             num_status: httpCode[204].code,
             msg_status: 'No route found'
          });
-      }
-
-      // Update the category properties      
-      rut.activo = true;
-
-      // Save the updated ruta      
+      }            
+      rut.activo = true;           
       await rut.save();
 
       return res.status(httpCode[200].code).json({

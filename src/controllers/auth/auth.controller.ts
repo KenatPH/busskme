@@ -16,11 +16,12 @@ import {sendMail, getTemplateHtml} from "../../config/config.mail";
 import  utilsHandle  from "../../utils/utilsHandle";
 import { httpCode } from "../../utils/httpStatusHandle";
 import {ObjectId} from 'mongodb';
+import config from "../../config/config";
 
 export const home = (req: Request, res: Response) => {
    res.send('Bienvenido al inicio del sistema Best Padel Ranking');   
 }
-
+console.log('idioma: ',config.IDIOMA);
 export const login = async (req: Request, res: Response) => {
    
    const { correo, clave } = req?.body
@@ -86,12 +87,12 @@ export const login = async (req: Request, res: Response) => {
       }
          
       
-      const token = getToken({ correo, id: user._id, afiliado: user.idcode,  roles: user.roles},'3d');
+      const token = getToken({ correo, id: user._id, afiliado: user.idcode, idioma: user.idioma, roles: user.roles},'3d');
     
       return res.status(httpCode[200].code).json({
         data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles},
         num_status:httpCode[200].code,
-        msg_status: 'Login successfully'
+        msg_status: httpCode[600].es
       })
    });   
 }
