@@ -46,8 +46,19 @@ export const getEstado = async (req: Request, res: Response): Promise<Response> 
 
 //mostrar todos los estados 
 export const getDataEdos = async (req: Request, res: Response): Promise<Response> => {
-   const edo = await Estado.find().populate('pais','nombre');
-   
+   //const edo = await Estado.find().populate('pais','nombre');
+   let limit = 2;
+   let page = 1;
+   const populateOptions = {
+      path: 'paisid',
+      select: 'nombre',     
+   };
+   const options = {
+      limit: limit,
+      page: page,    
+      populate: [populateOptions], 
+   };
+   const edo = await Estado.paginate({},{options});
    //validamos que exista la información
    try {
       if(edo.length === 0){

@@ -10,8 +10,9 @@
 */
 
 
-import { Schema, model, Document, ObjectId } from "mongoose";
+import { Schema, model, Document, ObjectId, PaginateModel } from "mongoose";
 import {ciudadSchema} from "../schemas/ciudad.schema";
+import paginate, { paginateSubDocs } from 'mongoose-paginate-v2';
 
 export interface ICiudad extends Document {   
    paisid: Schema.Types.ObjectId,
@@ -22,5 +23,5 @@ export interface ICiudad extends Document {
    createdAt: Date,
    updateAt: Date
 }
-
-export default model<ICiudad>('Ciudad', ciudadSchema);
+ciudadSchema.plugin(paginate);
+export default model<ICiudad, PaginateModel<ICiudad>>('Ciudad', ciudadSchema);

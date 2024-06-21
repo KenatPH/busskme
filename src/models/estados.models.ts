@@ -10,8 +10,9 @@
 */
 
 
-import { Schema, model, Document, ObjectId } from "mongoose";
+import { Schema, model, Document, ObjectId, PaginateModel } from "mongoose";
 import {estadoSchema} from "../schemas/estados.schema";
+import paginate, { paginateSubDocs } from 'mongoose-paginate-v2';
 
 export interface IEstado extends Document {   
    pais: string, //siglas del pais
@@ -22,5 +23,5 @@ export interface IEstado extends Document {
    createdAt: Date,
    updateAt: Date
 }
-
-export default model<IEstado>('Estado', estadoSchema);
+estadoSchema.plugin(paginate);
+export default model<IEstado, PaginateModel<IEstado>>('Estado', estadoSchema);

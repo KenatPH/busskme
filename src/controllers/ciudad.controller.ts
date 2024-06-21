@@ -90,7 +90,7 @@ export const getCiudadesPaisEdo = async (req: Request, res: Response): Promise<R
 export const getDataCiudades = async (req: Request, res: Response): Promise<Response> => {
    const { paisid, estadoid } = req?.body; 
    console.log("datos recibidos: ",paisid,estadoid);
-   const ciu = await Ciudad.find({paisid:paisid, estadoid:estadoid});
+   const ciu = await Ciudad.paginate({paisid:paisid, estadoid:estadoid},{limit:1,page:1});
    
    //validamos que exista la información
    try {
