@@ -15,6 +15,7 @@ import {ObjectId} from 'mongodb';
 import  {httpCode}  from "../utils/httpStatusHandle";
 import fs from 'fs-extra';
 import path from 'path';
+import utilsHandle from "../utils/utilsHandle";
 
 
 export const getVehiculo = async (req: Request, res: Response): Promise<Response> => {
@@ -82,18 +83,17 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
            serial_carroceria, serial_motor, marcaid, modeloid, colorid, anno, clase,
            tipo, uso, servicio, puestos, intt_nro, fecha_emision_intt,   
            nro_autorizacion, empresa_seguro, nro_poliza,
-           nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, 
-    } = req?.body
-
-    if(userid === null || userid === undefined || !userid || !ObjectId.isValid(userid)){
+           nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza} = req?.body
+   
+   if(!utilsHandle.validateFieldID(userid)){
       return res.status(httpCode[409].code).json({
          data_send: "",
          num_status: httpCode[409].code,
-         msg_status: 'El Id no es válido'
+         msg_status: 'El campo userid no es válido'
       });
    }
-
-    if(!nro_certificado_registro || nro_certificado_registro == null || nro_certificado_registro == undefined || nro_certificado_registro == ""){
+   
+   if(!utilsHandle.validateFieldNum(nro_certificado_registro)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -101,21 +101,21 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }   
        
-   if(!placa || placa == null || placa == undefined || placa == ""){
+   if(!utilsHandle.validateFieldAlfaNum(placa)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El campo placa es requerido.'
       });          
    }
-   if(!serial_niv || serial_niv == null || serial_niv == undefined || serial_niv == ""){
+   if(!utilsHandle.validateFieldAlfaNum(serial_niv)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El campo serial_niv es requerido.'
       });          
    }
-   if(!serial_chasis || serial_chasis == null || serial_chasis == undefined || serial_chasis == ""){
+   if(!utilsHandle.validateFieldAlfaNum(serial_chasis)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -123,7 +123,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if(!serial_carroceria || serial_carroceria == null || serial_carroceria == undefined || serial_carroceria == ""){
+   if(!utilsHandle.validateFieldAlfaNum(serial_carroceria)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -131,7 +131,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if(!serial_motor || serial_motor == null || serial_motor == undefined || serial_motor == ""){
+   if(!utilsHandle.validateFieldAlfaNum(serial_motor)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -139,7 +139,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
    
-   if(!marcaid || marcaid == null || marcaid == undefined || marcaid == ""){
+   if(!utilsHandle.validateFieldID(marcaid)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -147,7 +147,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
    
-   if(!modeloid || modeloid == null || modeloid == undefined || modeloid == ""){
+   if(!utilsHandle.validateFieldID(modeloid)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -155,7 +155,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if(!colorid || colorid == null || colorid == undefined || colorid == ""){
+   if(!utilsHandle.validateFieldID(colorid)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -163,30 +163,30 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if(!anno || anno == null || anno == undefined || anno == ""){
+   if(!utilsHandle.validateFieldNum(anno)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El campo anno es requerido.'
+         msg_status: httpCode[409].message+', El campo anno es númerico y requerido.'
       });          
    }
 
-   if(!puestos || puestos == null || puestos == undefined || puestos == ""){
+   if(!utilsHandle.validateFieldNum(puestos)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El campo puestos es requerido.'
+         msg_status: httpCode[409].message+', El campo puestos es númerico y requerido.'
       });          
    }
    
-   if(!intt_nro || intt_nro == null || intt_nro == undefined || intt_nro == ""){
+   if(!utilsHandle.validateFieldAlfaNum(intt_nro)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El campo intt_nro es requerido.'
       });          
    }
-   if(!nro_autorizacion || nro_autorizacion == null || nro_autorizacion == undefined || nro_autorizacion == ""){
+   if(!utilsHandle.validateFieldAlfaNum(nro_autorizacion)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -194,29 +194,30 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
    
-   if(!fecha_emision_intt || fecha_emision_intt == null || fecha_emision_intt == undefined || fecha_emision_intt == ""){
+   if(!utilsHandle.validateFecha(fecha_emision_intt)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El campo fecha_emision_intt es requerido.'
+         msg_status: httpCode[409].message+', El campo fecha_emision_intt no tiene un formato válido (YYYY-MM-DD).'
       });          
    }
 
-   if(!empresa_seguro || empresa_seguro == null || empresa_seguro == undefined || empresa_seguro == ""){
+   if(!utilsHandle.validateFieldLetra(empresa_seguro)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El campo empresa_seguro es requerido.'
       });          
    }
-   if(!nro_poliza || nro_poliza == null || nro_poliza == undefined || nro_poliza == ""){
+
+   if(!utilsHandle.validateFieldAlfaNum(nro_poliza)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El campo nro_poliza es requerido.'
       });          
    }
-   if(!nro_sudeaseg || nro_sudeaseg == null || nro_sudeaseg == undefined || nro_sudeaseg == ""){
+   if(!utilsHandle.validateFieldAlfaNum(nro_sudeaseg)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -224,19 +225,19 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if(!fecha_emision_poliza || fecha_emision_poliza == null || fecha_emision_poliza == undefined || fecha_emision_poliza == ""){
+   if(!utilsHandle.validateFecha(fecha_emision_poliza)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El campo fecha_emision_poliza es requerido.'
+         msg_status: httpCode[409].message+', El campo fecha_emision_poliza no tiene un formato válido (YYYY-MM-DD).'
       });          
    }
 
-   if(!fecha_venc_poliza || fecha_venc_poliza == null || fecha_venc_poliza == undefined || fecha_venc_poliza == ""){
+   if(!utilsHandle.validateFecha(fecha_venc_poliza)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El campo fecha_venc_poliza es requerido.'
+         msg_status: httpCode[409].message+', El campo fecha_venc_poliza no tiene un formato válido (YYYY-MM-DD).'
       });          
    }
    var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
@@ -260,7 +261,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    const newVehiculo = new Vehiculo({       
       userid: userid, 
       nro_certificado_registro, 
-      placa,
+      placa: placa.toUpperCase(), 
       serial_niv, 
       serial_chasis,
       serial_carroceria, 
@@ -316,50 +317,58 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const { nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
+      const { userid, nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
          serial_motor,marcaid,modeloid,colorid,anno,clase,tipo,uso,servicio,puestos, 
          intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
          nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza } = req.body
 
-      if(!nro_certificado_registro || nro_certificado_registro == null || nro_certificado_registro == undefined || nro_certificado_registro == ""){
+      if(!utilsHandle.validateFieldID(userid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El campo userid no es válido'
+         });
+      }
+      
+      if(!utilsHandle.validateFieldNum(nro_certificado_registro)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo nro_certificado_registro es requerido.'
          });          
       }   
-          
-      if(!placa || placa == null || placa == undefined || placa == ""){
+            
+      if(!utilsHandle.validateFieldAlfaNum(placa)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo placa es requerido.'
          });          
       }
-      if(!serial_niv || serial_niv == null || serial_niv == undefined || serial_niv == ""){
+      if(!utilsHandle.validateFieldAlfaNum(serial_niv)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo serial_niv es requerido.'
          });          
       }
-      if(!serial_chasis || serial_chasis == null || serial_chasis == undefined || serial_chasis == ""){
+      if(!utilsHandle.validateFieldAlfaNum(serial_chasis)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo serial_chasis es requerido.'
          });          
       }
-
-      if(!serial_carroceria || serial_carroceria == null || serial_carroceria == undefined || serial_carroceria == ""){
+   
+      if(!utilsHandle.validateFieldAlfaNum(serial_carroceria)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo serial_carroceria es requerido.'
          });          
       }
-
-      if(!serial_motor || serial_motor == null || serial_motor == undefined || serial_motor == ""){
+   
+      if(!utilsHandle.validateFieldAlfaNum(serial_motor)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
@@ -367,7 +376,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });          
       }
       
-      if(!marcaid || marcaid == null || marcaid == undefined || marcaid == ""){
+      if(!utilsHandle.validateFieldID(marcaid)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
@@ -375,46 +384,46 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });          
       }
       
-      if(!modeloid || modeloid == null || modeloid == undefined || modeloid == ""){
+      if(!utilsHandle.validateFieldID(modeloid)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo modeloid es requerido.'
          });          
       }
-
-      if(!colorid || colorid == null || colorid == undefined || colorid == ""){
+   
+      if(!utilsHandle.validateFieldID(colorid)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo colorid es requerido.'
          });          
       }
-
-      if(!anno || anno == null || anno == undefined || anno == ""){
+   
+      if(!utilsHandle.validateFieldNum(anno)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El campo anno es requerido.'
+            msg_status: httpCode[409].message+', El campo anno es númerico y requerido.'
          });          
       }
-
-      if(!puestos || puestos == null || puestos == undefined || puestos == ""){
+   
+      if(!utilsHandle.validateFieldNum(puestos)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El campo puestos es requerido.'
+            msg_status: httpCode[409].message+', El campo puestos es númerico y requerido.'
          });          
       }
       
-      if(!intt_nro || intt_nro == null || intt_nro == undefined || intt_nro == ""){
+      if(!utilsHandle.validateFieldAlfaNum(intt_nro)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo intt_nro es requerido.'
          });          
       }
-      if(!nro_autorizacion || nro_autorizacion == null || nro_autorizacion == undefined || nro_autorizacion == ""){
+      if(!utilsHandle.validateFieldAlfaNum(nro_autorizacion)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
@@ -422,49 +431,50 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });          
       }
       
-      if(!fecha_emision_intt || fecha_emision_intt == null || fecha_emision_intt == undefined || fecha_emision_intt == ""){
+      if(!utilsHandle.validateFecha(fecha_emision_intt)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El campo fecha_emision_intt es requerido.'
+            msg_status: httpCode[409].message+', El campo fecha_emision_intt no tiene un formato válido (YYYY-MM-DD).'
          });          
       }
-
-      if(!empresa_seguro || empresa_seguro == null || empresa_seguro == undefined || empresa_seguro == ""){
+   
+      if(!utilsHandle.validateFieldLetra(empresa_seguro)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo empresa_seguro es requerido.'
          });          
       }
-      if(!nro_poliza || nro_poliza == null || nro_poliza == undefined || nro_poliza == ""){
+   
+      if(!utilsHandle.validateFieldAlfaNum(nro_poliza)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo nro_poliza es requerido.'
          });          
       }
-      if(!nro_sudeaseg || nro_sudeaseg == null || nro_sudeaseg == undefined || nro_sudeaseg == ""){
+      if(!utilsHandle.validateFieldAlfaNum(nro_sudeaseg)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
             msg_status: httpCode[409].message+', El campo nro_sudeaseg es requerido.'
          });          
       }
-
-      if(!fecha_emision_poliza || fecha_emision_poliza == null || fecha_emision_poliza == undefined || fecha_emision_poliza == ""){
+   
+      if(!utilsHandle.validateFecha(fecha_emision_poliza)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El campo fecha_emision_poliza es requerido.'
+            msg_status: httpCode[409].message+', El campo fecha_emision_poliza no tiene un formato válido (YYYY-MM-DD).'
          });          
       }
-
-      if(!fecha_venc_poliza || fecha_venc_poliza == null || fecha_venc_poliza == undefined || fecha_venc_poliza == ""){
+   
+      if(!utilsHandle.validateFecha(fecha_venc_poliza)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El campo fecha_venc_poliza es requerido.'
+            msg_status: httpCode[409].message+', El campo fecha_venc_poliza no tiene un formato válido (YYYY-MM-DD).'
          });          
       }
 
@@ -506,7 +516,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          img_certificado_path = data.img_certificado;
          img_poliza_path = data.img_poliza;      
       }  
-     
+      data.userid = data.userid,    
       data.nro_certificado_registro    = nro_certificado_registro,
       data.placa                       = placa,
       data.serial_niv                  = serial_niv,

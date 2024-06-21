@@ -10,6 +10,8 @@
 */
 
 import * as dns from 'dns';
+import {ObjectId} from 'mongodb';
+import moment from 'moment';
 
 class utilsHandle {
    constructor() {
@@ -42,6 +44,60 @@ class utilsHandle {
          return false;
       }
    }
+
+   validateFieldID(fieldValue: any) {      
+      if (fieldValue === null || fieldValue === undefined || !fieldValue || !ObjectId.isValid(fieldValue)) {
+        return false; 
+      }          
+      return true; 
+   };
+
+   validateFieldAlfaNum(fieldValue: string | undefined | null) {
+      const validaRegex = /^[a-zA-Z0-9]+$/;
+      
+      if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+        return false; 
+      }
+    
+      if (!validaRegex.test(fieldValue)) {
+        return false; 
+      }    
+      return true; 
+   };
+
+   validateFieldNum(fieldValue: string | undefined | null) {
+      const validaRegex = /^[0-9]+$/;
+      
+      if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+         return false; 
+      }
+      
+      if (!validaRegex.test(fieldValue)) {
+         return false; 
+      }    
+      return true; 
+   };
+
+   validateFecha(fieldValue: string){
+      if (!moment(fieldValue, 'YYYY-MM-DD', true).isValid()) {
+         return false; 
+      }
+      return true;
+   }
+
+   validateFieldLetra(fieldValue: string | undefined | null) {
+      const validaRegex = /^[a-zA-Z ]+$/;
+      
+      if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+        return false; 
+      }
+    
+      if (!validaRegex.test(fieldValue)) {
+        return false; 
+      }    
+      return true; 
+   };
+
 }
 
 export default new utilsHandle();
