@@ -100,7 +100,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
+         msg_status: httpCode[409].message+', El nombre no es válido, y acepta sólo letras.'         
       });          
    }  
 
@@ -108,7 +108,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El dni es requerido.'         
+         msg_status: httpCode[409].message+', El dni no es válido, es un campo alfanumérico (V55555555).'         
       });          
    }
    
@@ -123,7 +123,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras.'
+         msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras (masculino, femenino).'
       }); 
    }else{
       if(genero !== "masculino" && genero !== "femenino"){
