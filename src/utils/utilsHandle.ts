@@ -53,7 +53,7 @@ class utilsHandle {
    };
 
    validateFieldAlfaNum(fieldValue: string | undefined | null) {
-      const validaRegex = /^[a-zA-Z0-9]+$/;
+      const validaRegex = /^[a-zA-ZÀÁÉÍÓÚàáéíóúñÑ0-9 ]+$/;
       
       if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
         return false; 
@@ -65,10 +65,25 @@ class utilsHandle {
       return true; 
    };
 
-   validateFieldNum(fieldValue: string | undefined | null) {
-      const validaRegex = /^[0-9]+$/;
+   validateFieldDireccion(fieldValue: string | undefined | null):boolean {
+      const validaRegex = /^[a-zA-ZÀÁÉÍÓÚàáéíóúñÑ0-9 ,.]+$/;
       
       if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+        return false; 
+      }
+    
+      if (!validaRegex.test(fieldValue)) {
+        return false; 
+      }    
+      return true; 
+   };
+
+   
+
+   validateFieldNum(fieldValue: string | undefined | null):boolean {
+      const validaRegex = /^[0-9]+$/;
+      
+      if (!fieldValue || fieldValue === 'null' || fieldValue === 'undefined') {
          return false; 
       }
       
@@ -78,17 +93,18 @@ class utilsHandle {
       return true; 
    };
 
-   validateFecha(fieldValue: string){
+   validateFecha(fieldValue: string):boolean{
       if (!moment(fieldValue, 'YYYY-MM-DD', true).isValid()) {
          return false; 
       }
       return true;
    }
 
-   validateFieldLetra(fieldValue: string | undefined | null) {
-      const validaRegex = /^[a-zA-Z ]+$/;
+   
+   validateFieldLetra(fieldValue: string | undefined | null): boolean {
+      const validaRegex = /^[a-zA-ZÀÁÉÍÓÚàáéíóúñÑ ]+$/;
       
-      if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+      if (!fieldValue || fieldValue === 'null' || fieldValue === 'undefined') {
         return false; 
       }
     
@@ -98,6 +114,18 @@ class utilsHandle {
       return true; 
    };
 
+   validateFieldClave(fieldValue: string | undefined | null): boolean {
+      const validaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      
+      if (!fieldValue || fieldValue === 'null' || fieldValue === 'undefined') {
+        return false; 
+      }
+    
+      if (!validaRegex.test(fieldValue)) {
+        return false; 
+      }    
+      return true; 
+   };
 }
 
 export default new utilsHandle();

@@ -72,7 +72,23 @@ router.post('/upload-imgs', function(req,res,next){upload(req, res, (err) => {
    }  
    next();      
  })},uploadimg);
-router.put('/update/:id',checkAuth, update);
+router.put('/update/:id',checkAuth, function(req,res,next ){upload(req, res, (err) => {
+   
+   if (err) {
+      return res.status(409).json({
+         data_send: "",         
+         num_status:409,
+         msg_status: err.message         
+      }); 
+   } else if (err) {
+      return res.status(500).json({
+         data_send: "",         
+         num_status:500,
+         msg_status: err.message         
+      }); 
+   } 
+   next();  
+ })}, update);
 router.delete('/delete/:id',checkAuth,deleteUser);
 router.post('/active/:id',checkAuth,activarUser);
 router.get('/show/role/:rol',checkAuth,getUserRole);

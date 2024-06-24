@@ -89,32 +89,41 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            clave, idioma, direccion, roles} = req?.body
 
-   if(!dni || dni == null || dni == undefined || dni == ""){
+   if(!correo || correo == null || correo == undefined || correo == ""){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El correo es requerido.'
+      });          
+   }
+   if(!utilsHandle.validateFieldLetra(nombre)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
+      });          
+   }  
+
+   if(!utilsHandle.validateFieldAlfaNum(dni)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El dni es requerido.'         
       });          
    }
-   if(!nombre || nombre == null || nombre == undefined || nombre == ""){
+   
+   if(!utilsHandle.validateFecha(fecha_nacimiento)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El nombre es requerido.'         
-      });          
-   }  
-   if(!fecha_nacimiento || fecha_nacimiento == null || fecha_nacimiento == undefined || fecha_nacimiento == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
+         msg_status: httpCode[409].message+', La fecha de nacimiento es requerida, formato (YYYY-MM-DD).'         
       });          
    }
-   if (!genero || genero === null || genero === undefined || genero === "" ) {
+   if (!utilsHandle.validateFieldLetra(genero)) {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El genero es requerido.'
+         msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras.'
       }); 
    }else{
       if(genero !== "masculino" && genero !== "femenino"){
@@ -125,52 +134,38 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          }); 
       }
    }
-   
-   if(!correo || correo == null || correo == undefined || correo == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El correo es requerido.'
-      });          
-   }
-   if(!telefono || telefono == null || telefono == undefined || telefono == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El teléfono es requerido.'
-      });          
-   }
-   if(!idioma || idioma == null || idioma == undefined || idioma == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El idioma es requerido.'
-      });          
-   }
-   if(!clave || clave == null || clave == undefined || clave == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La clave es requerida.'
-      });          
-   }else{
-      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
-      if(!passRegex.test(clave)) {            
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
-         });
          
-      }   
+   if(!utilsHandle.validateFieldNum(telefono)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El teléfono es requerido, y es sólo números.'
+      });          
    }
-   if(!direccion || direccion == null || direccion == undefined || direccion == ""){
+
+   if(!utilsHandle.validateFieldLetra(idioma)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El idioma es requerido, acepta sólo letras.'
+      });          
+   }
+   
+   if(!utilsHandle.validateFieldDireccion(direccion)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', La dirección es requerida.'
       }); 
    }
+   if(!utilsHandle.validateFieldClave(clave)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
+      });          
+   }
+
    if(!roles || roles == null || roles == undefined || roles == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -276,33 +271,35 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    }
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
            idioma, clave, direccion, roles} = req?.body
-   
-   if(!dni || dni == null || dni == undefined || dni == ""){
+                                
+   if(!utilsHandle.validateFieldLetra(nombre)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
+      });          
+   }  
+
+   if(!utilsHandle.validateFieldAlfaNum(dni)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
          msg_status: httpCode[409].message+', El dni es requerido.'         
       });          
    }
-   if(!nombre || nombre == null || nombre == undefined || nombre == ""){
+   
+   if(!utilsHandle.validateFecha(fecha_nacimiento)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El nombre es requerido.'         
-      });          
-   }  
-   if(!fecha_nacimiento || fecha_nacimiento == null || fecha_nacimiento == undefined || fecha_nacimiento == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
+         msg_status: httpCode[409].message+', La fecha de nacimiento es requerida, formato (YYYY-MM-DD).'         
       });          
    }
-   if (!genero || genero === null || genero === undefined || genero === "" ) {
+   if (!utilsHandle.validateFieldLetra(genero)) {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El genero es requerido.'
+         msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras.'
       }); 
    }else{
       if(genero !== "masculino" && genero !== "femenino"){
@@ -313,6 +310,30 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
          }); 
       }
    }
+         
+   if(!utilsHandle.validateFieldNum(telefono)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El teléfono es requerido, y es sólo números.'
+      });          
+   }
+
+   if(!utilsHandle.validateFieldLetra(idioma)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El idioma es requerido, acepta sólo letras.'
+      });          
+   }
+   
+   if(!utilsHandle.validateFieldDireccion(direccion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La dirección es requerida.'
+      }); 
+   }
    
    if(!correo || correo == null || correo == undefined || correo == ""){
       return res.status(httpCode[409].code).json({
@@ -321,44 +342,15 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
          msg_status: httpCode[409].message+', El correo es requerido.'
       });          
    }
-   if(!telefono || telefono == null || telefono == undefined || telefono == ""){
+   
+   if(!utilsHandle.validateFieldClave(clave)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El teléfono es requerido.'
+         msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
       });          
    }
-   if(!idioma || idioma == null || idioma == undefined || idioma == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', El idioma es requerido.'
-      });          
-   }
-   if(!clave || clave == null || clave == undefined || clave == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La clave es requerida.'
-      });          
-   }else{
-      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
-      if(!passRegex.test(clave)) {            
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', invalid password in authentication, you must use at least one lowercase letter, one uppercase letter, one number and at least one special character @$!%*#?&.'
-         });
-         
-      }   
-   }
-   if(!direccion || direccion == null || direccion == undefined || direccion == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La dirección es requerida.'
-      }); 
-   }
+   
    if(!roles || roles == null || roles == undefined || roles == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -460,10 +452,9 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      const { nombre, direccion, telefono, genero, fecha_nacimiento, 
-              idioma,  roles } = req?.body;
-       
-      if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
+      const { nombre, direccion, dni, telefono, genero, fecha_nacimiento, idioma, roles } = req?.body;
+      
+      if(!utilsHandle.validateFieldID(id)){
          return res.status(httpCode[409].code).json({
             data_send: "",
             num_status: httpCode[409].code,
@@ -471,25 +462,35 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });
       }
       
-      if(!nombre || nombre == null || nombre == undefined || nombre == ""){
+      
+      if(!utilsHandle.validateFieldLetra(nombre)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El nombre es requerido.'         
+            msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
          });          
       }  
-      if(!fecha_nacimiento || fecha_nacimiento == null || fecha_nacimiento == undefined || fecha_nacimiento == ""){
+
+      if(!utilsHandle.validateFieldAlfaNum(dni)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', La fecha de nacimiento es requerida.'         
+            msg_status: httpCode[409].message+', El dni es requerido.'         
          });          
       }
-      if (!genero || genero === null || genero === undefined || genero === "" ) {
+      
+      if(!utilsHandle.validateFecha(fecha_nacimiento)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El genero es requerido.'
+            msg_status: httpCode[409].message+', La fecha de nacimiento es requerida, formato (YYYY-MM-DD).'         
+         });          
+      }
+      if (!utilsHandle.validateFieldLetra(genero)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras.'
          }); 
       }else{
          if(genero !== "masculino" && genero !== "femenino"){
@@ -501,22 +502,23 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          }
       }
            
-      if(!telefono || telefono == null || telefono == undefined || telefono == ""){
+      if(!utilsHandle.validateFieldNum(telefono)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El teléfono es requerido.'
+            msg_status: httpCode[409].message+', El teléfono es requerido, y es sólo números.'
          });          
       }
-      if(!idioma || idioma == null || idioma == undefined || idioma == ""){
+
+      if(!utilsHandle.validateFieldLetra(idioma)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El idioma es requerido.'
+            msg_status: httpCode[409].message+', El idioma es requerido, acepta sólo letras.'
          });          
       }
       
-      if(!direccion || direccion == null || direccion == undefined || direccion == ""){
+      if(!utilsHandle.validateFieldDireccion(direccion)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
@@ -532,13 +534,6 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       }
    
 
-      if(!nombre){
-         return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'Nombre es requerido'
-         });
-      }
       
       const user = await User.findById(id);
 
