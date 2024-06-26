@@ -22,6 +22,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 
+
 export const getLinea = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params; 
    if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
@@ -88,9 +89,228 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          codigo_cps,modalidad_servicio,tipologia_unidades,cupo_autorizado,nombre_org,
          tipo_organizacion,fecha_registro,duracion_junta,fecha_venc_junta,nombre_oficina_registro,
          nro_rif,fecha_inscrip_rif,fecha_emision_rif,fecha_venc_rif,direccion_fiscal,nro_socios,
-         nro_rutas,descripcion_rutas,img_acta_constitutiva,img_rif,img_cps,
-         img_ult_acta_asamblea} = req?.body
+         nro_rutas,descripcion_rutas} = req?.body
+
       
+   if(!utilsHandle.validateFecha(fecha_registro)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_registro es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }  
+   if(!utilsHandle.validateFieldID(paisid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo paisid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(estadoid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo estadoid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(municipioid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo municipioid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(ciudadid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo ciudadid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(userid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo userid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nro_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro_cps es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_exp_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_exp_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_venc_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_inscrip_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_inscrip_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_emision_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_emision_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_venc_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_venc_junta)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_junta es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(codigo_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo codigo_cps es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(modalidad_servicio)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo modalidad_servicio es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(tipologia_unidades)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo tipologia_unidades es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(cupo_autorizado)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo cupo_autorizado es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nombre_org)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre_org es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(tipo_organizacion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo tipo_organizacion es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldNum(duracion_junta)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo duracion_junta es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nombre_oficina_registro)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre_oficina_registro es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nro_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro_rif es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldDireccion(direccion_fiscal)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo direccion_fiscal es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldNum(nro_socios)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_socios es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldNum(nro_rutas)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_rutas es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldAlfaNum(descripcion_rutas)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo descripcion_rutas es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   var imgs = Object();  let img_acta_constitutiva_path = ""; let img_rif_path =""; let img_cps_path =""; 
+   let img_ult_acta_asamblea_path =""; let fotoperfil_path ="";
+   imgs = req.files;  
+   if(imgs != undefined && imgs !== null && imgs){ 
+      if(imgs['img_acta_constitutiva'] != undefined && imgs['img_acta_constitutiva'] !== null && imgs['img_acta_constitutiva']){          
+         img_acta_constitutiva_path  = imgs['img_acta_constitutiva']?.[0].path ?? "";
+      }else{
+         img_acta_constitutiva_path = "";
+      }    
+      if(imgs['img_rif'] != undefined && imgs['img_rif'] !== null && imgs['img_rif']){          
+         img_rif_path  = imgs['img_rif']?.[0].path ?? "";
+      }else{
+         img_rif_path = "";
+      }   
+      if(imgs['img_cps'] != undefined && imgs['img_cps'] !== null && imgs['img_cps']){          
+         img_cps_path  = imgs['img_cps']?.[0].path ?? "";
+      }else{
+         img_cps_path = "";
+      } 
+      if(imgs['img_ult_acta_asamblea'] != undefined && imgs['img_ult_acta_asamblea'] !== null && imgs['img_ult_acta_asamblea']){          
+         img_ult_acta_asamblea_path  = imgs['img_ult_acta_asamblea']?.[0].path ?? "";
+      }else{
+         img_ult_acta_asamblea_path = "";
+      } 
+      if(imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']){          
+         fotoperfil_path  = imgs['fotoperfil']?.[0].path ?? "";
+      }else{
+         fotoperfil_path = "";
+      } 
+                        
+   }else{
+      img_acta_constitutiva_path = "";  
+      img_rif_path ="";  
+      img_cps_path =""; 
+      img_ult_acta_asamblea_path ="";
+      fotoperfil_path="";
+   }          
    const data = await Linea.findOne({nombre_org: nombre_org.toUpperCase()})
    if(data) {
       return res.status(httpCode[409].code).json({
@@ -127,10 +347,10 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       nro_socios,
       nro_rutas,
       descripcion_rutas,
-      img_acta_constitutiva,
-      img_rif,
-      img_cps,
-      img_ult_acta_asamblea  
+      img_acta_constitutiva: img_acta_constitutiva_path,
+      img_rif: img_rif_path,
+      img_cps: img_cps_path,
+      img_ult_acta_asamblea: img_ult_acta_asamblea_path,  
    });
 
    try {
@@ -161,9 +381,291 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             codigo_cps,modalidad_servicio,tipologia_unidades,cupo_autorizado,nombre_org,
             tipo_organizacion,fecha_registro,duracion_junta,fecha_venc_junta,nombre_oficina_registro,
             nro_rif,fecha_inscrip_rif,fecha_emision_rif,fecha_venc_rif,direccion_fiscal,nro_socios,
-            nro_rutas,descripcion_rutas,img_acta_constitutiva,img_rif,img_cps,
-            img_ult_acta_asamblea} = req?.body
-      
+            nro_rutas,descripcion_rutas} = req?.body
+   
+            
+   if(!utilsHandle.validateFieldAlfaNum(dni)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo dni es obligatorio, es un campo alfanumérico, formato (V55555555) verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFieldLetra(nombre)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre es obligatorio, es un campo alfabético, solo acepta letras, verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_nacimiento)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_nacimiento es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }   
+   if (!utilsHandle.validateFieldLetra(genero)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El genero es requerido, acepta sólo letras.'
+      }); 
+   }else{
+      if(genero !== "masculino" && genero !== "femenino"){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El valor de genero no es correcto, debe ser masculino o femenino.'
+         }); 
+      }
+   }
+   if(!correo && correo === null && correo =="" && correo == undefined){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo correo es obligatorio, verifique.'         
+      });
+   }  
+   if(!utilsHandle.validateFieldNum(telefono)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El teléfono es requerido, es un campo númerico, sólo acepta números, formato (041255555555).'
+      });          
+   }
+
+   if(!utilsHandle.validateFieldLetra(idioma)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El idioma es requerido, es un campo alfabético, sólo acepta letras, formato (es).'
+      });          
+   }
+   
+   if(!utilsHandle.validateFieldDireccion(direccion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', La dirección es requerida.'
+      }); 
+   }
+   if(!utilsHandle.validateFecha(fecha_registro)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_registro es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }  
+   if(!utilsHandle.validateFieldID(paisid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo paisid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(estadoid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo estadoid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldID(municipioid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo municipioid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   
+   if(!utilsHandle.validateFieldID(ciudadid)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo ciudadid es obligatorio, verifique que esté enviando un id válido.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nro_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro_cps es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_exp_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_exp_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_venc_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_inscrip_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_inscrip_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   } 
+   if(!utilsHandle.validateFecha(fecha_emision_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_emision_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_venc_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFecha(fecha_venc_junta)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo fecha_venc_junta es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(codigo_cps)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo codigo_cps es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(modalidad_servicio)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo modalidad_servicio es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(tipologia_unidades)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo tipologia_unidades es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(cupo_autorizado)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo cupo_autorizado es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nombre_org)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre_org es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(tipo_organizacion)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo tipo_organizacion es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldNum(duracion_junta)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo duracion_junta es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nombre_oficina_registro)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nombre_oficina_registro es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldAlfaNum(nro_rif)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo nro_rif es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldDireccion(direccion_fiscal)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo direccion_fiscal es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   if(!utilsHandle.validateFieldNum(nro_socios)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_socios es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldNum(nro_rutas)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: httpCode[409].message+', El campo nro_rutas es requerido, es un campo númerico, sólo acepta números.'
+      });          
+   }
+   if(!utilsHandle.validateFieldAlfaNum(descripcion_rutas)){
+      return res.status(httpCode[409].code).json({
+         data_send: "",         
+         num_status:httpCode[409].code,
+         msg_status: 'El campo descripcion_rutas es obligatorio, es un campo alfanumérico, verifique.'         
+      });
+   }
+   
+   
+   var imgs = Object();  let img_acta_constitutiva_path = ""; let img_rif_path =""; let img_cps_path =""; 
+   let img_ult_acta_asamblea_path =""; let fotoperfil_path ="";
+   imgs = req.files;  
+   if(imgs != undefined && imgs !== null && imgs){ 
+      if(imgs['img_acta_constitutiva'] != undefined && imgs['img_acta_constitutiva'] !== null && imgs['img_acta_constitutiva']){          
+         img_acta_constitutiva_path  = imgs['img_acta_constitutiva']?.[0].path ?? "";
+      }else{
+         img_acta_constitutiva_path = "";
+      }    
+      if(imgs['img_rif'] != undefined && imgs['img_rif'] !== null && imgs['img_rif']){          
+         img_rif_path  = imgs['img_rif']?.[0].path ?? "";
+      }else{
+         img_rif_path = "";
+      }   
+      if(imgs['img_cps'] != undefined && imgs['img_cps'] !== null && imgs['img_cps']){          
+         img_cps_path  = imgs['img_cps']?.[0].path ?? "";
+      }else{
+         img_cps_path = "";
+      } 
+      if(imgs['img_ult_acta_asamblea'] != undefined && imgs['img_ult_acta_asamblea'] !== null && imgs['img_ult_acta_asamblea']){          
+         img_ult_acta_asamblea_path  = imgs['img_ult_acta_asamblea']?.[0].path ?? "";
+      }else{
+         img_ult_acta_asamblea_path = "";
+      } 
+      if(imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']){          
+         fotoperfil_path  = imgs['fotoperfil']?.[0].path ?? "";
+      }else{
+         fotoperfil_path = "";
+      } 
+                       
+   }else{
+      img_acta_constitutiva_path = "";  
+      img_rif_path ="";  
+      img_cps_path =""; 
+      img_ult_acta_asamblea_path ="";
+      fotoperfil_path="";
+   } 
+
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -181,15 +683,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       })
    }
       
-   var imgs = Object();       
-   imgs = req.files; 
-   if(imgs != undefined && imgs !== null && imgs){      
-      var img_rif_path = imgs['img_rif'][0].path !== "" ? imgs['img_rif'][0].path : "";
-      var img_cps_path = imgs['img_cps'][0].path !== "" ? imgs['img_cps'][0].path : "";
-      var img_acta_constitutiva_path = imgs['img_acta_constitutiva'][0].path !== "" ? imgs['img_acta_constitutiva'][0].path : "";
-      var img_ult_acta_asamblea_path = imgs['img_ult_acta_asamblea'][0].path !== "" ? imgs['img_ult_acta_asamblea'][0].path : "";
-      var fotoperfil_path = imgs['fotoperfil'][0].path !== "" ? imgs['fotoperfil'][0].path : "";
-   } 
+   
    const last = await User.findOne().sort({idcode: -1});
    const idcode = last ? last.idcode + 1 : 1; 
    const newUser = new User({
@@ -251,10 +745,10 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          nro_socios,
          nro_rutas,
          descripcion_rutas,
-         img_acta_constitutiva,
-         img_rif,
-         img_cps,
-         img_ult_acta_asamblea  
+         img_acta_constitutiva: img_acta_constitutiva_path,
+         img_rif: img_rif_path,
+         img_cps: img_cps_path,
+         img_ult_acta_asamblea: img_ult_acta_asamblea_path,  
       });
       await newLinea.save();      
       
@@ -273,8 +767,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
             "fecha nacimiento": newUser.fecha_nacimiento,
             "ubicación": newUser.direccion,
             "email": newUser.correo,
-            "telefonos": newUser.telefono,            
-            "token": token
+            "telefonos": newUser.telefono, 
+            newLinea                       
          },         
          num_status:httpCode[201].code,
          msg_status: 'Usuario creado satisfactoriamente, se ha enviado un correo para confirmar su cuenta, verifique su carpeta spam.'
@@ -304,10 +798,194 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          codigo_cps,modalidad_servicio,tipologia_unidades,cupo_autorizado,nombre_org,
          tipo_organizacion,fecha_registro,duracion_junta,fecha_venc_junta,nombre_oficina_registro,
          nro_rif,fecha_inscrip_rif,fecha_emision_rif,fecha_venc_rif,direccion_fiscal,nro_socios,
-         nro_rutas,descripcion_rutas,img_acta_constitutiva,img_rif,img_cps,
-         img_ult_acta_asamblea} = req.body;
+         nro_rutas,descripcion_rutas} = req.body;
 
       
+      if(!utilsHandle.validateFecha(fecha_registro)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_registro es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      }  
+      if(!utilsHandle.validateFieldID(paisid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo paisid es obligatorio, verifique que esté enviando un id válido.'         
+         });
+      }
+      if(!utilsHandle.validateFieldID(estadoid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo estadoid es obligatorio, verifique que esté enviando un id válido.'         
+         });
+      }
+      if(!utilsHandle.validateFieldID(municipioid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo municipioid es obligatorio, verifique que esté enviando un id válido.'         
+         });
+      }
+      
+      if(!utilsHandle.validateFieldID(ciudadid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo ciudadid es obligatorio, verifique que esté enviando un id válido.'         
+         });
+      }
+      if(!utilsHandle.validateFieldID(userid)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo userid es obligatorio, verifique que esté enviando un id válido.'         
+         });
+      }
+      
+      if(!utilsHandle.validateFieldAlfaNum(nro_cps)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nro_cps es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      } 
+      if(!utilsHandle.validateFecha(fecha_exp_cps)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_exp_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      } 
+      if(!utilsHandle.validateFecha(fecha_venc_cps)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_venc_cps es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFecha(fecha_inscrip_rif)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_inscrip_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      } 
+      if(!utilsHandle.validateFecha(fecha_emision_rif)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_emision_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFecha(fecha_venc_rif)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_venc_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFecha(fecha_venc_junta)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo fecha_venc_junta es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(codigo_cps)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo codigo_cps es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(modalidad_servicio)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo modalidad_servicio es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(tipologia_unidades)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo tipologia_unidades es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(cupo_autorizado)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo cupo_autorizado es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(nombre_org)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nombre_org es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(tipo_organizacion)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo tipo_organizacion es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldNum(duracion_junta)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo duracion_junta es requerido, es un campo númerico, sólo acepta números.'
+         });          
+      }
+      if(!utilsHandle.validateFieldAlfaNum(nombre_oficina_registro)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nombre_oficina_registro es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldAlfaNum(nro_rif)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo nro_rif es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldDireccion(direccion_fiscal)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo direccion_fiscal es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+      if(!utilsHandle.validateFieldNum(nro_socios)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_socios es requerido, es un campo númerico, sólo acepta números.'
+         });          
+      }
+      if(!utilsHandle.validateFieldNum(nro_rutas)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: httpCode[409].message+', El campo nro_rutas es requerido, es un campo númerico, sólo acepta números.'
+         });          
+      }
+      if(!utilsHandle.validateFieldAlfaNum(descripcion_rutas)){
+         return res.status(httpCode[409].code).json({
+            data_send: "",         
+            num_status:httpCode[409].code,
+            msg_status: 'El campo descripcion_rutas es obligatorio, es un campo alfanumérico, verifique.'         
+         });
+      }
+            
       const data = await Linea.findById(id);
 
       if (!data) {
@@ -317,6 +995,38 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Organización no encontrada'
          });
       }
+      var imgs = Object();  let img_acta_constitutiva_path:any = []; let img_rif_path =""; let img_cps_path =""; 
+      let img_ult_acta_asamblea_path =""; let fotoperfil_path ="";
+      imgs = req.files;  
+      if(imgs != undefined && imgs !== null && imgs){ 
+         img_acta_constitutiva_path  = imgs['img_acta_constitutiva']?.[0].path ?? "";
+         img_rif_path = imgs['img_rif']?.[0].path ?? "";
+         img_cps_path = imgs['img_cps']?.[0].path ?? "";    
+         img_ult_acta_asamblea_path = imgs['img_ult_acta_asamblea']?.[0].path ?? "";
+
+         
+         if(img_rif_path !== "" && img_rif_path !== undefined && img_rif_path !== null) {
+            const storagePath = path.resolve(data.img_rif);      
+            if (fs.existsSync(storagePath)) {
+               await fs.unlink(storagePath);            
+            }
+         }else{
+            img_rif_path = data.img_rif;
+         }
+         if(img_cps_path !== "" && img_cps_path !== undefined && img_cps_path !== null) {
+            const storagePath = path.resolve(data.img_cps);      
+            if (fs.existsSync(storagePath)) {
+               await fs.unlink(storagePath);            
+            }
+         }else{
+            img_cps_path = data.img_cps;
+         }
+                    
+      }else{         
+         img_rif_path = data.img_rif;
+         img_cps_path = data.img_cps;
+      } 
+      
 
       
       data.paisid                      = paisid,
@@ -343,11 +1053,10 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       data.direccion_fiscal            = direccion_fiscal,
       data.nro_socios                  = nro_socios,
       data.nro_rutas                   = nro_rutas,
-      data.descripcion_rutas           = descripcion_rutas,
-      data.img_acta_constitutiva       = img_acta_constitutiva,
-      data.img_rif                     = img_rif,
-      data.img_cps                     = img_cps,
-      data.img_ult_acta_asamblea       = img_ult_acta_asamblea
+      data.descripcion_rutas           = descripcion_rutas,      
+      data.img_rif                     = img_rif_path,
+      data.img_cps                     = img_cps_path,
+      
 
       await data.save();
 
