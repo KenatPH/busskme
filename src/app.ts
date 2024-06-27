@@ -48,6 +48,7 @@ import organizacionRoutes from './routes/organizacion.routes'
 import municipioRoutes from './routes/municipio.routes'
 import metodoPagoRoutes from './routes/metodopago.routes'
 import calificarChoferRoutes from './routes/calificarchofer.routes'
+import BaseRoutes from './routes/base.routes'
 
 
 
@@ -132,6 +133,7 @@ app.use('/vehiculo/color',colorRoutes);
 app.use('/roles',roleRoutes);
 app.use('/metodo-pago',metodoPagoRoutes);
 app.use('/calificar-chofer',calificarChoferRoutes);
+app.use('/Base', BaseRoutes);
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);

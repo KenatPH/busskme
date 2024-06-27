@@ -77,6 +77,40 @@ export const getDataVehiculos = async (req: Request, res: Response): Promise<Res
    }   
 }
 
+export const getDataVehiculosbyDriver = async (req: Request, res: Response): Promise<Response> => {
+
+   const { id } = req.params;
+   if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El Id no es válido'
+      });
+   }
+   const data = await Vehiculo.find({ userid: id });
+
+   try {
+      if (data.length === 0) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'Vehículos no enconttrados.'
+         });
+      }
+      return res.status(httpCode[200].code).json({
+         data_send: data,
+         num_status: httpCode[200].code,
+         msg_status: 'Vehículos enconttrados satisfactoriamente.'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later (vehículos).'
+      });
+   }
+}
+
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
    const { userid,nro_certificado_registro, placa,serial_niv, serial_chasis,

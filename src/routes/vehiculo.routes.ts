@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteVehiculo, getDataVehiculos, getVehiculo, activarVehiculo } from "../controllers/vehiculo.controller";
+import { create, update, deleteVehiculo, getDataVehiculos, getVehiculo, activarVehiculo, getDataVehiculosbyDriver } from "../controllers/vehiculo.controller";
 import passport from 'passport';
 import {checkAuth} from '../config/config.jwt';
 import config from '../config/config';
@@ -62,6 +62,8 @@ router.delete('/delete/:id',checkAuth, deleteVehiculo);
 router.post('/active/:id',checkAuth, activarVehiculo);
 router.get('/show', getDataVehiculos);
 router.get('/show/:id', getVehiculo);
+
+router.get('/show/byDriver/:id', getDataVehiculosbyDriver);
 
 
 export default router;
