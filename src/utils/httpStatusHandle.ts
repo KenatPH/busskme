@@ -9,7 +9,7 @@
   Descripción     : Api para enviar y manejar la información de bpr
 */
 
-export const httpCode = {
+export const httpCode:any = {
    200: { code: 200, message: 'OK' },
    201: { code: 201, message: 'Created' },
    202: { code: 202, message: 'Accepted' },

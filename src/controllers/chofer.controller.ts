@@ -33,7 +33,7 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
       });
    }
    const data = await Chofer.findById(id)
-   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
+      .populate('userid','nombre genero fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
    
    try {
       if(!data){
@@ -92,7 +92,7 @@ export const getChoferByUserId = async (req: Request, res: Response): Promise<Re
 
 export const getDataChoferes = async (req: Request, res: Response): Promise<Response> => {
    const data = await Chofer.find()
-   .populate('userid','nombre fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
+      .populate('userid','nombre genero fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
       
    try {
       if(data.length === 0){
@@ -1034,7 +1034,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             "Idiomas":chofer.idiomas
          },         
          num_status:httpCode[201].code,
-         msg_status: httpCode[600]+'.'+config.IDIOMA
+         msg_status: httpCode[608][config.IDIOMA]
       });
       
    } catch (error) {
