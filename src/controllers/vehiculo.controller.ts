@@ -54,7 +54,7 @@ export const getVehiculo = async (req: Request, res: Response): Promise<Response
 
 export const getDataVehiculos = async (req: Request, res: Response): Promise<Response> => {
    const data = await Vehiculo.find()
-      .populate('userid marcaid modeloid colorid', 'nro_certificado_registro placa serial_niv serial_chasis serial_carroceria serial_motor marcaid modeloid colorid anno clase tipo uso servicio puestos intt_nro fecha_emision_intt nro_autorizacion img_certificado empresa_seguro nro_poliza nro_sudeaseg fecha_emision_poliza fecha_venc_poliza img_poliza aprobado activo createdAt updateAt ');
+      .populate('userid marcaid modeloid colorid', 'nombre');
    ;
       
    try {
