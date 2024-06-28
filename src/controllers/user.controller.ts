@@ -555,9 +555,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       
       if(fotoperfil_path !== "" && fotoperfil_path !== undefined && fotoperfil_path !== null) {
          const storagePath = path.resolve(user.fotoperfil);      
-         if (fs.existsSync(storagePath)) {
-            await fs.unlink(storagePath);            
-         }
+         deleteImage(storagePath)
       }else{
          fotoperfil_path = user.fotoperfil;
       } 
@@ -569,6 +567,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       user.fecha_nacimiento   = fecha_nacimiento;            
       user.fotoperfil         = fotoperfil_path;
       user.idioma             = idioma.toLowerCase()
+      user.dni                = dni
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
          user.roles = foundRoles.map(role => role._id);    
@@ -584,6 +583,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                      "telefono": user.telefono,
                      "confirmado": user.confirmado,                                          
                      "activo": user.activo,
+                     "dni":user.dni
          },
          num_status: httpCode[200].code,
          msg_status: 'User updated successfully'
@@ -756,3 +756,15 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
   }      
 }
 
+function deleteImage(storagePath: string) {
+      try {
+
+         if (fs.existsSync(storagePath)) {
+             fs.unlink(storagePath);
+         }
+
+      } catch (error) {
+         // Ignore errors
+         console.log((error))
+      }
+}
