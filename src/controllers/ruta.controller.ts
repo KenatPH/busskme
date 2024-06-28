@@ -168,7 +168,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El campo codigo es obligatorio, verifique.'         
          });
       }
-      const data = await Ruta.findOne({codigo: codigo});
+      const data = await Ruta.findOne({ codigo: codigo, _id: { $ne: id } });
       if(data){
          return res.status(httpCode[409].code).json({
             data_send: "",         
