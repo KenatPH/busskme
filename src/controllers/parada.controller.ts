@@ -113,7 +113,7 @@ export const getDataParadasByNombre = async (req: Request, res: Response): Promi
 export const getDataParadasByRuta = async (req: Request, res: Response): Promise<Response> => {
    const {rutaid} = req.params
    const dat = await Parada.find({ rutaid: rutaid , activo:true})
-   .populate('rutaid','nombre')
+   .populate('rutaid')
    .populate('municipioid','paisid estadoid nombre');
       
    try {
@@ -228,7 +228,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const id = req.params.id;
       const { rutaid,municipioid,nombre,latitud,longitud,distancia} = req?.body 
 
-      console.log(req?.body);
+
       
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)){
          return res.status(httpCode[409].code).json({
@@ -238,27 +238,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });
       } 
         
-      // if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)
-      // ||municipioid === null || municipioid === undefined || !municipioid || !ObjectId.isValid(municipioid)){
-      //    return res.status(httpCode[409].code).json({
-      //       data_send: "",
-      //       num_status: httpCode[409].code,
-      //       msg_status: 'Id (ruta) es inválido'
-      //    });
-      // } 
 
-      // if (rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)) {
-      //    return res.status(httpCode[409].code).json({
-      //       data_send: "",
-      //       num_status: httpCode[409].code,
-      //       msg_status: 'Id (municipio) es inválido'
-      //    });
-      // }
-      console.log('rutaid', rutaid);
-      console.log('!rutaid', !rutaid);
-      console.log('rutaid === null', rutaid === null);
-      console.log('rutaid ==""', rutaid == "");
-      console.log('rutaid == undefined', rutaid === undefined);
       if(!rutaid || rutaid === null || rutaid ==="" || rutaid === undefined){
          return res.status(httpCode[409].code).json({
             data_send: "",         
