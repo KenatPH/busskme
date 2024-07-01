@@ -173,8 +173,8 @@ export const modifyPassword = async (req: Request, res: Response): Promise<Respo
    }
 }
 
-export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
-   const { correo, newPassword } = req.body;
+export const solitudResetPassword = async (req: Request, res: Response): Promise<Response> => {
+   const { correo } = req.body;
 
    if(!correo || correo == null || correo == undefined || correo == ""){
       return res.status(httpCode[409].code).json({
@@ -183,23 +183,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
          msg_status: httpCode[409].message+', El correo es requerido.'
       });          
    }
-   if(!newPassword || newPassword == null || newPassword == undefined || newPassword == ""){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: httpCode[409].message+', La clave nueva es requerida.'
-      });          
-   }else{
-      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
-      if(!passRegex.test(newPassword)) {            
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', password incorrecto. El password debe tener al menos una letra minúscula, una mayúscula, un número y al menos uno de estos caracteres especiales @$!%*#?&.'
-         });
-         
-      }   
-   }
+
 
    try {
       
@@ -212,7 +196,68 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
             msg_status: 'User not found'
          });
       }
-            
+
+      const token = getToken({ correo, id: user._id, roles: user.roles, idcode: user.idcode }, '1h');
+      const html = getTemplateHtml(user.nombre, token, user.idcode, "resetpassword", "", "");
+
+      // Establece los campos de restablecimiento de contraseña en el usuario
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hora
+      await user.save();
+
+      await sendMail(correo, 'Reinicio de clave', html);
+
+      return res.status(httpCode[200].code).json({
+         data_send: "",
+         num_status: httpCode[200].code,
+         msg_status: 'Password reset prepared successfully'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem trying to modify the route, try again later (ruta)'         
+      });
+   }
+}
+
+export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+   const {  newPassword, token } = req.body;
+
+
+   if (!newPassword || newPassword == null || newPassword == undefined || newPassword == "") {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: httpCode[409].message + ', La clave nueva es requerida.'
+      });
+   } else {
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,50}$/;
+      if (!passRegex.test(newPassword)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', password incorrecto. El password debe tener al menos una letra minúscula, una mayúscula, un número y al menos uno de estos caracteres especiales @$!%*#?&.'
+         });
+
+      }
+   }
+
+   try {
+
+      const user = await User.findOne({ 
+         resetPasswordToken: token, 
+         resetPasswordExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'El token de restablecimiento de contraseña es inválido o ha expirado'
+         });
+      }
+
       user.clave = newPassword;
       await user.save();
 
@@ -225,7 +270,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
-         msg_status: 'There was a problem trying to modify the route, try again later (ruta)'         
+         msg_status: 'There was a problem trying to modify the route, try again later (ruta)'
       });
    }
 }

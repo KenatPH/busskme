@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { login, confirmAccount, validatedAccount, modifyPassword, resetPassword } from "../controllers/auth/auth.controller";
+import { login, confirmAccount, validatedAccount, modifyPassword, resetPassword, solitudResetPassword } from "../controllers/auth/auth.controller";
 import { fbkLogin, fbkCallback, fbkLogout } from "../controllers/auth/fbk.controller.auth";
 import { validateLogin } from '../validators/auth.validator';
 
@@ -21,6 +21,7 @@ const router = Router();
 router.post('/login', login);
 router.post('/modify-password', modifyPassword);
 router.post('/reset-password', resetPassword);
+router.post('/request-reset-password', solitudResetPassword);
 router.post('/confirm-account', confirmAccount);
 router.get('/validate-account', validatedAccount);
 

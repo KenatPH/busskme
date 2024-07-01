@@ -32,7 +32,9 @@ export interface IUser extends Document {
    roles: Schema.Types.ObjectId[] 
    intentos: number, 
    confirmado: boolean, 
-   activo: boolean, 
+   activo: boolean,
+  resetPasswordToken:string,
+  resetPasswordExpires:Date, 
    createdAt: Date,
    updateAt:Date      
    comparePassword: (clave: string) => Promise<boolean>;

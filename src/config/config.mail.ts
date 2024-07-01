@@ -16,6 +16,7 @@ import config from "./config";
 const path_confirm = config.MAIL.path_confirm;
 const path_validate  = config.MAIL.path_validate;
 const path_login     = config.MAIL.path_login;
+const path_resetPass = config.MAIL.path_resetPass;
 const empresa        = config.EMPRESA.nombre;
 const rif_empresa    = config.EMPRESA.rif;
 const dir_empresa    = config.EMPRESA.direccion;
@@ -95,7 +96,24 @@ export const getTemplateHtml = (nombre: string, token: string, afiliado:number, 
             <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
          </div>
       `
-   } 
+   }
+   
+   if (accion == "resetpassword"){
+      html = `
+         <div id="email__content">
+            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <h2>Estimados señores ${empresa}, Recibio este correo electrónico porque usted(u otra persona) solicito el restablecimiento de la contraseña de tu cuenta.</h2>
+            <h2>al usuario ${nombre}.</h2> 
+            <p>Si no solicitaste este cambio, ignora este correo electrónico y tu contraseña permanecerá sin cambios.</p>
+            <p>Haz clic en el siguiente enlace, o pégalo en tu navegador para completar el proceso.</p>
+            <a href="${path_resetPass}?token=${token}">Cambiar clave</a>
+            <p>Gracias, saludos cordiales.</p>
+            </br>
+            </br>
+            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+         </div>
+      `
+   }
 
    return html;     
 }

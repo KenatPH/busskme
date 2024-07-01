@@ -33,7 +33,8 @@ export default {
       path_confirm: "http://localhost:3000/auth/confirm-account/",
       path_confirm_admin: "http://localhost:3000/auth/account/confirm-admin",
       path_validate: "http://localhost:3000/auth/validar-cuenta/", 
-      path_login: "http://localhost:3000/auth/login/" 
+      path_login: "http://localhost:3000/auth/login/" ,
+      path_resetPass:"http://localhost:3000/nueva-clave"
    },
    FBK: {
       clientID: process.env.FBK_ID || "730716712424276",

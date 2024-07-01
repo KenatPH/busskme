@@ -94,6 +94,13 @@ export const userSchema = new Schema({
    activo: {    
       type: Boolean,
       default: true
+   },
+   resetPasswordToken:{
+      type: String
+   },
+   resetPasswordExpires:{
+      type: Date
+
    } 
 },{versionKey: false, timestamps: true}
 );
