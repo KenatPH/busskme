@@ -618,8 +618,9 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
             msg_status: 'User not found'
          });
       }else{
-         user.activo = false;  //modificamos el campo activo a false, hacemos un borrado lógico del usuario
-         await user.save();
+         // user.activo = false;  //modificamos el campo activo a false, hacemos un borrado lógico del usuario
+         // await user.save();
+         await user.updateOne({ _id: id }, { activo: false });
          return res.status(httpCode[200].code).json({
             //data_send:user,
             num_status: httpCode[200].code,
@@ -648,7 +649,7 @@ export const activarUser = async (req: Request, res: Response): Promise<Response
          });
       }
       
-      const user = await User.findById(id);
+      const user = await User.findOne({_id:id});
       
       if (!user) {
          return res.status(httpCode[404].code).json({
@@ -657,8 +658,15 @@ export const activarUser = async (req: Request, res: Response): Promise<Response
             msg_status: 'User not found'
          });
       }else{
-         user.activo = true;  
-         await user.save();
+         // user.activo = true;  
+         try {
+            // await user.save();
+            await user.updateOne({ _id: id }, {activo:true});
+         
+         } catch (error) {
+            console.log(error);
+            
+         }
          return res.status(httpCode[200].code).json({
             data_send: "",
             num_status: httpCode[200].code,
@@ -667,6 +675,7 @@ export const activarUser = async (req: Request, res: Response): Promise<Response
       }
                   
    } catch (error) {
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
