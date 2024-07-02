@@ -40,6 +40,13 @@ export const sendMail = async (email: string, subject: string, html: string) => 
          subject,
          text     : "Buenas tardes estimado usuario,",
          html,
+         attachments: [
+            {
+               filename: 'logo_busskm.svg', // Nombre del archivo adjunto
+               path: `${url_backend}storage/imgs/logo_busskm.svg`, // Ruta completa al archivo
+               cid: 'imglogobuskm', // Identificador único para la imagen (se usará en el cuerpo del correo)
+            },
+         ],
       });
    } catch (error) {
       console.log('No fue posible enviar email de confirmación, '+error)
@@ -48,12 +55,12 @@ export const sendMail = async (email: string, subject: string, html: string) => 
 
 export const getTemplateHtml = (nombre: string, token: string, afiliado:number, accion:string, aleatorio:string, origen:string) => {
    var html = ""; var path_confirm ="";
-   path_confirm = origen === "admin" ? config.MAIL.path_confirm_admin : config.MAIL.path_confirm;
+   path_confirm =  config.MAIL.path_confirm;
 
    if(accion === "confirmar"){
       html = `
       <div id="email__content">
-         <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+         <img src="cid:imglogobuskm" alt="logo busskm">
          <h2>Estimado usuario ${nombre}, usted es el afiliado nro: ${afiliado}</h2>
          <p>Para confirmar su cuenta ingresa al siguiente enlace</p>         
          <p>Recuerde cambiar su contraseña en el próximo inicio de sesión.</p>
@@ -61,14 +68,14 @@ export const getTemplateHtml = (nombre: string, token: string, afiliado:number, 
          <a href="${path_confirm}?token=${token}">Confirmar cuenta</a>
          </br>
          </br>
-         <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+         <img src="cid:imglogobuskm" alt="logo busskm">
       </div>
       `      
    }
    if(accion == "validar"){
       html =  `
          <div id="email__content">
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <img src="cid:imglogobuskm" alt="logo busskm">
             <h2>Estimado usuario ${nombre}, usted tuvo 3 intentos fallidos al tratar de iniciar sesión </h2>
             <p>Si se le olvidó su contraseña, por favor siga las instrucciones,</p>
             <p>para resetear su contraseña y vuelva a iniciar sesión.</p>
@@ -76,14 +83,14 @@ export const getTemplateHtml = (nombre: string, token: string, afiliado:number, 
             <a href="${path_validate}?token=${token}">Validar cuenta</a>
             </br>
             </br>
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <img src="cid:imglogobuskm" alt="logo busskm">
          </div>
       `
    }  
    if(accion == "aprobar"){
       html =  `
          <div id="email__content">
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <img src="cid:imglogobuskm" alt="logo busskm">
             <h2>Estimados señores ${empresa}, le informamos que tienen pendiente por aprobación,</h2>
             <h2>al usuario ${nombre}.</h2> 
             <p>Al momento de aprobar, se le enviará un correo al usuario</p>
@@ -93,7 +100,7 @@ export const getTemplateHtml = (nombre: string, token: string, afiliado:number, 
             <a href="${path_login}">Aprobar cuenta</a>
             </br>
             </br>
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <img src="cid:imglogobuskm" alt="logo busskm">
          </div>
       `
    }
@@ -101,16 +108,16 @@ export const getTemplateHtml = (nombre: string, token: string, afiliado:number, 
    if (accion == "resetpassword"){
       html = `
          <div id="email__content">
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
-            <h2>Estimados señores ${empresa}, Recibio este correo electrónico porque usted(u otra persona) solicito el restablecimiento de la contraseña de tu cuenta.</h2>
-            <h2>al usuario ${nombre}.</h2> 
+            <img src="cid:imglogobuskm" alt="logo busskm">
+            <h2> Ha recibido este correo electrónico porque usted (u otra persona) solicito el restablecimiento de la contraseña de la cuenta del </h2>
+            <h2> usuario ${nombre}.</h2> 
             <p>Si no solicitaste este cambio, ignora este correo electrónico y tu contraseña permanecerá sin cambios.</p>
             <p>Haz clic en el siguiente enlace, o pégalo en tu navegador para completar el proceso.</p>
             <a href="${path_resetPass}?token=${token}">Cambiar clave</a>
             <p>Gracias, saludos cordiales.</p>
             </br>
             </br>
-            <img src="${url_backend}storage/imgs/logo_busskm.svg" alt="logo busskm">
+            <img src="cid:imglogobuskm" alt="logo busskm">
          </div>
       `
    }
