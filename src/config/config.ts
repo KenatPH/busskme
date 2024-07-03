@@ -25,7 +25,8 @@ export default {
    URL:{
       FRONT: "https://padelwebvercel-ct3k7mrao-humbertodevelops-projects.vercel.app/",
       ADMIN: "https://padelwebvercel-ct3k7mrao-humbertodevelops-projects.vercel.app/",
-      BACKEND: "https://rhnrkzk3-3000.use2.devtunnels.ms/"
+      // BACKEND: "https://rhnrkzk3-3000.use2.devtunnels.ms/"
+      BACKEND: "http://nk4gcos.138.197.84.17.sslip.io/"
    },
    MAIL: {
       correo: "jlramirez17@gmail.com",
