@@ -40,13 +40,13 @@ export const sendMail = async (email: string, subject: string, html: string) => 
          subject,
          text     : "Buenas tardes estimado usuario,",
          html,
-         attachments: [
-            {
-               filename: 'logo_busskm.svg', // Nombre del archivo adjunto
-               path: `${url_backend}storage/imgs/logo_busskm.svg`, // Ruta completa al archivo
-               cid: 'imglogobuskm', // Identificador único para la imagen (se usará en el cuerpo del correo)
-            },
-         ],
+         // attachments: [
+         //    {
+         //       filename: 'logo_busskm.svg', // Nombre del archivo adjunto
+         //       path: `${url_backend}storage/imgs/logo_busskm.svg`, // Ruta completa al archivo
+         //       cid: 'imglogobuskm', // Identificador único para la imagen (se usará en el cuerpo del correo)
+         //    },
+         // ],
       });
    } catch (error) {
       console.log('No fue posible enviar email de confirmación, '+error)
