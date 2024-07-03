@@ -51,4 +51,4 @@ export interface IOrganizacion extends Document {
    updateAt:Date
 }
 
-export default model<IOrganizacion>('Organizacion', lineaSchema);
+export default model<IOrganizacion>('Organizaciones', lineaSchema);
