@@ -42,8 +42,8 @@ export const sendMail = async (email: string, subject: string, html: string) => 
          html,
          attachments: [
             {
-               filename: 'logo_busskm.svg', // Nombre del archivo adjunto
-               path: `${url_backend}storage/imgs/logo_busskm.svg`, // Ruta completa al archivo
+               filename: 'logo_busskm.jpg', // Nombre del archivo adjunto
+               path: `${url_backend}storage/imgs/logo_busskm.jpg`, // Ruta completa al archivo
                cid: 'imglogobuskm', // Identificador único para la imagen (se usará en el cuerpo del correo)
             },
          ],
