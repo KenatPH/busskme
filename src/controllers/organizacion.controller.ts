@@ -87,7 +87,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    
    const {userid,paisid,estadoid,municipioid,ciudadid,nro_cps,fecha_exp_cps,fecha_venc_cps,
          codigo_cps,modalidad_servicio,tipologia_unidades,cupo_autorizado,nombre_org,
-         tipo_organizacion,fecha_registro,duracion_junta,fecha_venc_junta,nombre_oficina_registro,
+         tipo_organizacion,fecha_registro,duracion_junta,/* fecha_venc_junta, */nombre_oficina_registro,
          nro_rif,fecha_inscrip_rif,fecha_emision_rif,fecha_venc_rif,direccion_fiscal,nro_socios,
          nro_rutas,descripcion_rutas} = req?.body
 
@@ -319,6 +319,10 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'The organization already exists!'         
       })
    }
+
+   let vec = fecha_registro.split('-'); // Parsea y pasa a un vector
+   let fecha = new Date(vec[0], vec[1], vec[2]); // crea el Date
+   fecha.setFullYear(fecha.getFullYear() + 3); // Hace el cálculo
       
    const newLinea = new Linea({       
       userid,
@@ -337,7 +341,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       tipo_organizacion,
       fecha_registro,
       duracion_junta,
-      fecha_venc_junta,
+      fecha_venc_junta: fecha,
       nombre_oficina_registro,
       nro_rif,
       fecha_inscrip_rif,
