@@ -176,13 +176,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo fecha_venc_rif es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
       });
    }
-   if(!utilsHandle.validateFecha(fecha_venc_junta)){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'El campo fecha_venc_junta es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
-      });
-   }
+   // if(!utilsHandle.validateFecha(fecha_venc_junta)){
+   //    return res.status(httpCode[409].code).json({
+   //       data_send: "",         
+   //       num_status:httpCode[409].code,
+   //       msg_status: 'El campo fecha_venc_junta es obligatorio, es un campo fecha, formato (YYYY-MM-DD) verifique.'         
+   //    });
+   // }
    if(!utilsHandle.validateFieldAlfaNum(codigo_cps)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
