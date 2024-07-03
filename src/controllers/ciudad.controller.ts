@@ -115,6 +115,34 @@ export const getDataCiudades = async (req: Request, res: Response): Promise<Resp
    }   
 }
 
+export const getDataCiudadesNoPaginate = async (req: Request, res: Response): Promise<Response> => {
+   const { paisid, estadoid } = req?.body;
+   console.log("datos recibidos: ", paisid, estadoid);
+   const ciu = await Ciudad.find({ paisid: paisid, estadoid: estadoid });
+
+   //validamos que exista la información
+   try {
+      if (ciu.length === 0) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: 'No cities found'
+         });
+      }
+      return res.status(httpCode[200].code).json({
+         data_send: ciu,
+         num_status: httpCode[200].code,
+         msg_status: 'Cities found successfully!!!'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later.'
+      })
+   }
+}
+
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
    //declaramos los parametros recibidos en el req.body

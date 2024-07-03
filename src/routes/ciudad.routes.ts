@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteCiudad, getDataCiudades, getCiudad, getCiudadesPaisEdo } from "../controllers/ciudad.controller";
+import { create, update, deleteCiudad, getDataCiudades, getCiudad, getCiudadesPaisEdo, getDataCiudadesNoPaginate } from "../controllers/ciudad.controller";
 
 const router = Router();
 
@@ -18,7 +18,7 @@ router.post('/create', create);
 router.put('/update/:id', update);
 router.delete('/delete/:id', deleteCiudad);
 router.get('/show', getDataCiudades); 
-router.post('/show', getDataCiudades);
+router.post('/show', getDataCiudadesNoPaginate);
 router.get('/show/:id', getCiudad);
 router.get('/pais/estado/show', getCiudadesPaisEdo);
 export default router;
