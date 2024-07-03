@@ -78,7 +78,10 @@ const corsOptions = {
    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
    credentials: true, // Si estás manejando cookies o autenticación
  };
-app.use(cors());
+ app.use(cors({
+   origin: '*',
+   credentials: true
+ }));
 app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Methods', '*')
    res.setHeader('Access-Control-Allow-Headers', '*')
