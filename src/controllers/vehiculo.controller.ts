@@ -54,8 +54,7 @@ export const getVehiculo = async (req: Request, res: Response): Promise<Response
 
 export const getDataVehiculos = async (req: Request, res: Response): Promise<Response> => {
    const data = await Vehiculo.find()
-      .populate('marcaid modeloid colorid', 'nombre color')
-      .populate('userid', 'nombre' );
+      .populate('userid choferid marcaid modeloid colorid', 'nombre color');
    ;
       
    try {
@@ -116,7 +115,7 @@ export const getDataVehiculosbyDriver = async (req: Request, res: Response): Pro
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
-   const { userid,nro_certificado_registro, placa,serial_niv, serial_chasis,
+   const { userid,choferid,nro_certificado_registro, placa,serial_niv, serial_chasis,
            serial_carroceria, serial_motor, marcaid, modeloid, colorid, anno, clase,
            tipo, uso, servicio, puestos, intt_nro, fecha_emision_intt,   
            nro_autorizacion, empresa_seguro, nro_poliza,
@@ -129,7 +128,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo userid no es válido'
       });
    }
-   
+   if (!utilsHandle.validateFieldID(choferid)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El campo choferid no es válido'
+      });
+   }
    if(!utilsHandle.validateFieldNum(nro_certificado_registro)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -297,6 +302,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    
    const newVehiculo = new Vehiculo({       
       userid: userid, 
+      choferid:choferid,
       nro_certificado_registro, 
       placa: placa.toUpperCase(), 
       serial_niv, 
@@ -354,7 +360,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const { userid, nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
+      const { userid, choferid, nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
          serial_motor,marcaid,modeloid,colorid,anno,clase,tipo,uso,servicio,puestos, 
          intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
          nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza } = req.body
@@ -364,6 +370,14 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             data_send: "",
             num_status: httpCode[409].code,
             msg_status: 'El campo userid no es válido'
+         });
+      }
+
+      if (!utilsHandle.validateFieldID(choferid)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El campo choferid no es válido'
          });
       }
       
@@ -554,6 +568,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          img_poliza_path = data.img_poliza;      
       }  
       data.userid = data.userid,    
+      data.choferid = data.choferid,   
       data.nro_certificado_registro    = nro_certificado_registro,
       data.placa                       = placa,
       data.serial_niv                  = serial_niv,

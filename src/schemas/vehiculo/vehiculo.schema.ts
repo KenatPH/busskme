@@ -15,7 +15,11 @@ export const vehiculoSchema = new Schema({
    userid: { //id del usuario registrado como conductor propietario
       type: Schema.Types.ObjectId,
       ref: 'User'
-   },   
+   },
+   choferid: { //id del usuario registrado como conductor propietario
+      type: Schema.Types.ObjectId,
+      ref: 'Chofer'
+   },    
    nro_certificado_registro:{
       type: String
    }, 

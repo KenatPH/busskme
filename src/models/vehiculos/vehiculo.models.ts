@@ -14,7 +14,8 @@ import { vehiculoSchema } from "../../schemas/vehiculo/vehiculo.schema";
 
 
 export interface IVehiculo extends Document { 
-   userid: Schema.Types.ObjectId,        
+   userid: Schema.Types.ObjectId,
+   choferid: Schema.Types.ObjectId,         
    nro_certificado_registro: string,    
    placa: string,
    serial_niv:string,
