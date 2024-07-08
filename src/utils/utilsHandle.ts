@@ -126,6 +126,21 @@ class utilsHandle {
       }    
       return true; 
    };
+   validateTime24HourFormat(timeStr: string): boolean {
+      // Expresión regular para validar el formato HH:MM
+      const regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+      return regex.test(timeStr);
+      
+   }
+
+   // // Ejemplos de uso:
+   // console.log(isValidTime24HourFormat("13:05")); // true
+   // console.log(isValidTime24HourFormat("02:15")); // true
+   // console.log(isValidTime24HourFormat("24:00")); // false
+   // console.log(isValidTime24HourFormat("10:60")); // false
+   // console.log(isValidTime24HourFormat("10:15 PM")); // false
+
 }
 
 export default new utilsHandle();
