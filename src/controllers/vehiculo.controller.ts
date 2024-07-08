@@ -54,7 +54,8 @@ export const getVehiculo = async (req: Request, res: Response): Promise<Response
 
 export const getDataVehiculos = async (req: Request, res: Response): Promise<Response> => {
    const data = await Vehiculo.find()
-      .populate('userid marcaid modeloid colorid', 'nombre color');
+      .populate('marcaid modeloid colorid', 'nombre color')
+      .populate('userid', 'nombre' );
    ;
       
    try {
