@@ -90,7 +90,7 @@ export const login = async (req: Request, res: Response) => {
       const token = getToken({ correo, id: user._id, afiliado: user.idcode, idioma: user.idioma, roles: user.roles},'3d');
     
       return res.status(httpCode[200].code).json({
-        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles},
+        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles, fecha_nacimiento: user.fecha_nacimiento, dni:user.dni, direccion: user.direccion, telefono: user.telefono, genero:user.genero, imagen: user.fotoperfil},
         num_status:httpCode[200].code,
         msg_status: httpCode[600].es
       })
