@@ -135,7 +135,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             return res.status(httpCode[409].code).json({
                 data_send: "",
                 num_status: httpCode[409].code,
-                msg_status: 'El nombre, es obligatorio (marca)'
+                msg_status: 'El nombre, es obligatorio'
             })
         }
 
@@ -148,7 +148,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                 "activo": data.activo,
             },
             num_status: httpCode[200].code,
-            msg_status: 'BAse modificada satisfactoriamente.'
+            msg_status: 'Base modificada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -176,7 +176,7 @@ export const deleteBase = async (req: Request, res: Response): Promise<Response>
             return res.status(httpCode[204].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
-                msg_status: 'Marca no encontrada.'
+                msg_status: 'Base no encontrada.'
             });
         } else {
             if (data.activo === true) {
