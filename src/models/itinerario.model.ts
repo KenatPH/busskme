@@ -5,11 +5,11 @@ import { itinerarioSchema } from "../schemas/itinerario.schema";
 
 export interface IItinerario extends Document {
 
-    vehiculoid:string,
-    rutaid:string,
-    choferid:string,
-    colectorid:string,
-    baseid:string,
+    vehiculoid:Schema.Types.ObjectId,
+    rutaid:Schema.Types.ObjectId,
+    choferid:Schema.Types.ObjectId,
+    colectorid:Schema.Types.ObjectId,
+    baseid:Schema.Types.ObjectId,
     fecha: Date,
     hora_salida:string,
     activo: boolean,

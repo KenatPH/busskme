@@ -443,7 +443,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          imagen_cermed: imagen_cermed_path, 
          carga_familiar: carga_familiar, 
          grado_instruccion,
-         idiomas: idiomas
+         idiomas: idiomas,
+         activo:true
       });
       await chofer.save();
 
@@ -637,7 +638,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          imagen_cermed: imagen_cermed_path, 
          carga_familiar, 
          grado_instruccion,
-         idiomas
+         idiomas,
+         activo:true
       });
       await chofer.save();      
       

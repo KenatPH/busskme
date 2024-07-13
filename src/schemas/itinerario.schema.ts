@@ -3,23 +3,28 @@ import { Schema, Document } from "mongoose";
 export const itinerarioSchema = new Schema({
 
     vehiculoid: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Vehiculo',
         required: true
     },
     rutaid: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Ruta',
         required: true
     },
     choferid: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Chofer',
         required: true
     },
     colectorid: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Chofer',
         required: true
     },
     baseid: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Base',
         required: true
     },
     fecha: {

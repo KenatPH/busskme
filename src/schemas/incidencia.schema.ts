@@ -29,6 +29,9 @@ export const incidenciaSchema = new Schema({
         type: Boolean,
         default: true
     },
+    imagen: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: Date.now

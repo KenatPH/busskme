@@ -58,5 +58,6 @@ export default {
       imgsvehiculo:"storage/imgs/vehiculo",
       imgsorganizacion:"storage/imgs/organizacion",
       imgmetodopago:"storage/imgs/metodopago",
+      imgincidencia: "storage/imgs/incidencia"
    }
 }

@@ -3,11 +3,11 @@ import { baseSchema } from "../schemas/base.schema";
 
 
 
-export interface IBases extends Document {
+export interface IBase extends Document {
     nombre: string,
     activo: boolean,
     createdAt: Date,
     updateAt: Date
 }
 
-export default model<IBases>('bases', baseSchema);
+export default model<IBase>('Base', baseSchema);

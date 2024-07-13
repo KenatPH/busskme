@@ -14,7 +14,24 @@ export const getItinerario = async (req: Request, res: Response): Promise<Respon
             msg_status: 'El Id no es válido'
         });
     }
-    const data = await Itinerario.findById(id);
+    const data = await Itinerario.findById(id)
+    .populate({
+        path: 'vehiculoid',
+        select: 'marcaid modeloid marcaid userid',
+        populate: {
+            path: 'colorid modeloid marcaid userid',
+            select: 'color nombre'
+        },
+    })
+    .populate({
+        path: 'choferid colectorid',
+        select: 'userid',
+        populate: {
+            path: 'userid',
+            select: 'nombre'
+        },
+    })
+    .populate('rutaid baseid')
 
     try {
         if (!data) {
@@ -39,10 +56,30 @@ export const getItinerario = async (req: Request, res: Response): Promise<Respon
 }
 
 export const getDataItinerario = async (req: Request, res: Response): Promise<Response> => {
-    const data = await Itinerario.find();
+    // const data = await Itinerario.find().populate(
+    //     'vehiculoid rutaid choferid colectorid baseid'
+    // );
+    const data = await Itinerario.find().populate({
+        path: 'vehiculoid',
+        select: 'marcaid modeloid marcaid userid',
+        populate:{
+            path:'colorid modeloid marcaid userid',
+            select:'color nombre'
+        },      
+    })
+    .populate({
+        path: 'choferid colectorid',
+        select: 'userid',
+        populate: {
+            path: 'userid',
+            select: 'nombre'
+        },
+    })
+    .populate('rutaid baseid')
+    ;
 
     try {
-        if (data.length === 0) {
+        if ( data && data.length === 0) {
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
@@ -160,7 +197,6 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         });
     }
 }
-
 
 export const update = async (req: Request, res: Response): Promise<Response> => {
     try {

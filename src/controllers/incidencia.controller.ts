@@ -4,6 +4,8 @@ import Incidencia from "../models/incidencia.model";
 import { ObjectId } from 'mongodb';
 import { httpCode } from "../utils/httpStatusHandle";
 import utilsHandle from "../utils/utilsHandle";
+import path from 'path';
+import fs from 'fs-extra';
 
 export const getIncidencia = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
@@ -14,7 +16,23 @@ export const getIncidencia = async (req: Request, res: Response): Promise<Respon
             msg_status: 'El Id no es válido'
         });
     }
-    const data = await Incidencia.findById(id);
+    const data = await Incidencia.findById(id).populate({
+        path: 'vehiculoid',
+        select: 'marcaid modeloid marcaid userid',
+        populate: {
+            path: 'colorid modeloid marcaid userid',
+            select: 'color nombre'
+        },
+    })
+        .populate({
+            path: 'choferid colectorid',
+            select: 'userid',
+            populate: {
+                path: 'userid',
+                select: 'nombre'
+            },
+        })
+        .populate('rutaid baseid');
 
     try {
         if (!data) {
@@ -39,7 +57,23 @@ export const getIncidencia = async (req: Request, res: Response): Promise<Respon
 }
 
 export const getDataIncidencia = async (req: Request, res: Response): Promise<Response> => {
-    const data = await Incidencia.find();
+    const data = await Incidencia.find().populate({
+        path: 'vehiculoid',
+        select: 'marcaid modeloid marcaid userid',
+        populate: {
+            path: 'colorid modeloid marcaid userid',
+            select: 'color nombre'
+        },
+    })
+        .populate({
+            path: 'choferid colectorid',
+            select: 'userid',
+            populate: {
+                path: 'userid',
+                select: 'nombre'
+            },
+        })
+        .populate('rutaid baseid');
 
     try {
         if (data.length === 0) {
@@ -70,8 +104,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         choferid,
         colectorid,
         baseid,
-        fecha,
-        hora_salida } = req?.body
+        fecha } = req?.body
 
     if (vehiculoid === null || vehiculoid === undefined || !vehiculoid || !ObjectId.isValid(vehiculoid)) {
         return res.status(httpCode[409].code).json({
@@ -121,13 +154,14 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         });
     }
 
-    if (!utilsHandle.validateTime24HourFormat(hora_salida)) {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: httpCode[409].message + ', La hora de salida es requerida, formato (HH:MM).'
-        });
-    }
+    
+    var img = Object(); let imagen_incidencia = "";
+    img = req.file;
+    if (img != undefined && img !== null && img) {
+        imagen_incidencia = img.path ? img.path : "";
+    } else {
+        imagen_incidencia = "";
+    }  
 
 
     const newInt = new Incidencia({
@@ -137,6 +171,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         colectorid,
         baseid,
         fecha,
+        imagen: imagen_incidencia,
         activo: true,
     });
 
@@ -160,7 +195,6 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
     }
 }
 
-
 export const update = async (req: Request, res: Response): Promise<Response> => {
     try {
 
@@ -177,8 +211,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             choferid,
             colectorid,
             baseid,
-            fecha,
-            hora_salida } = req?.body
+            fecha } = req?.body
 
         if (vehiculoid === null || vehiculoid === undefined || !vehiculoid || !ObjectId.isValid(vehiculoid)) {
             return res.status(httpCode[409].code).json({
@@ -228,14 +261,6 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             });
         }
 
-        if (!utilsHandle.validateTime24HourFormat(hora_salida)) {
-            return res.status(httpCode[409].code).json({
-                data_send: "",
-                num_status: httpCode[409].code,
-                msg_status: httpCode[409].message + ', La hora de salida es requerida, formato (HH:MM).'
-            });
-        }
-
         const data = await Incidencia.findById(id);
 
         if (!data) {
@@ -246,6 +271,22 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             });
         }
 
+        var img = Object();
+        let imagen_incidencia = "";
+        img = req.file;
+        if (img != undefined && img !== null && img) {
+            imagen_incidencia = img.path ? img.path : "";
+        } else {
+            imagen_incidencia = "";
+        }
+
+        if (imagen_incidencia !== "" && imagen_incidencia !== undefined && imagen_incidencia !== null) {
+            const storagePath = path.resolve(data.imagen);
+            deleteImage(storagePath)
+        } else {
+            imagen_incidencia = data.imagen;
+        }
+
 
 
         data.vehiculoid = vehiculoid;
@@ -254,7 +295,6 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         data.colectorid = colectorid;
         data.baseid = baseid;
         data.fecha = fecha;
-        data.hora_salida = hora_salida;
         await data.save();
 
         return res.status(httpCode[200].code).json({
@@ -364,5 +404,19 @@ export const activar = async (req: Request, res: Response): Promise<Response> =>
             num_status: httpCode[500].code,
             msg_status: 'There was a problem with the server, try again later '
         });
+    }
+}
+
+
+function deleteImage(storagePath: string) {
+    try {
+
+        if (fs.existsSync(storagePath)) {
+            fs.unlink(storagePath);
+        }
+
+    } catch (error) {
+        // Ignore errors
+        console.log((error))
     }
 }
