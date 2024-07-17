@@ -52,7 +52,7 @@ import BaseRoutes from './routes/base.routes'
 import notificacionesRoutes from './routes/notificacion.route'
 import ItinerariosRoutes from  './routes/itineratio.routes'
 import IncidenciasRoutes from './routes/Incidencia.routes'
-
+import PagosRoutes from './routes/pago.routes'
 
 
 //import fbkRoutes from './routes/fbk.routes'
@@ -142,6 +142,7 @@ app.use('/Base', BaseRoutes);
 app.use('/notificaciones', notificacionesRoutes);
 app.use('/itinerario/', ItinerariosRoutes)
 app.use('/incidencia/', IncidenciasRoutes)
+app.use('/pago/', PagosRoutes)
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);

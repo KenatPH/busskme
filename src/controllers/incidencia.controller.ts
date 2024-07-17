@@ -104,6 +104,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         choferid,
         colectorid,
         baseid,
+        descripcion,
         fecha } = req?.body
 
     if (vehiculoid === null || vehiculoid === undefined || !vehiculoid || !ObjectId.isValid(vehiculoid)) {
@@ -130,21 +131,21 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         });
     }
 
-    if (colectorid === null || colectorid === undefined || !colectorid || !ObjectId.isValid(colectorid)) {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'colectorid no es válido'
-        });
-    }
+    // if (colectorid === null || colectorid === undefined || !colectorid || !ObjectId.isValid(colectorid)) {
+    //     return res.status(httpCode[409].code).json({
+    //         data_send: "",
+    //         num_status: httpCode[409].code,
+    //         msg_status: 'colectorid no es válido'
+    //     });
+    // }
 
-    if (baseid === null || baseid === undefined || !baseid || !ObjectId.isValid(baseid)) {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'baseid no es válido'
-        });
-    }
+    // if (baseid === null || baseid === undefined || !baseid || !ObjectId.isValid(baseid)) {
+    //     return res.status(httpCode[409].code).json({
+    //         data_send: "",
+    //         num_status: httpCode[409].code,
+    //         msg_status: 'baseid no es válido'
+    //     });
+    // }
 
     if (!utilsHandle.validateFecha(fecha)) {
         return res.status(httpCode[409].code).json({
@@ -170,6 +171,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         choferid,
         colectorid,
         baseid,
+        descripcion,
         fecha,
         imagen: imagen_incidencia,
         activo: true,
@@ -211,6 +213,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             choferid,
             colectorid,
             baseid,
+            descripcion,
             fecha } = req?.body
 
         if (vehiculoid === null || vehiculoid === undefined || !vehiculoid || !ObjectId.isValid(vehiculoid)) {
@@ -293,6 +296,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         data.rutaid = rutaid;
         data.choferid = choferid;
         data.colectorid = colectorid;
+        data.descripcion = descripcion;
         data.baseid = baseid;
         data.fecha = fecha;
         await data.save();

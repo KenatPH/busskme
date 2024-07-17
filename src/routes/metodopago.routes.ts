@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteMetodopago, getDataMetodoPagos, getMetodoPagoById, getMetodoPagoByPais, activarMetodoPago } from "../controllers/metodopago.controller";
+import { create, update, deleteMetodopago, getDataMetodoPagos, getMetodoPagoById, getMetodoPagoByPais, activarMetodoPago, getDatatipoPagos } from "../controllers/metodopago.controller";
 import {checkAuth} from '../config/config.jwt';
 import MulterMiddleware from '../middlewares/MulterPhotosMiddleware'
 import config from '../config/config';
@@ -59,4 +59,5 @@ router.post('/active/:id', checkAuth, activarMetodoPago);
 router.get('/show', getDataMetodoPagos);
 router.get('/show/:id', getMetodoPagoById);
 router.get('/pais/show/:paisid', getMetodoPagoByPais); 
+router.get('/tipos/show', getDatatipoPagos)
 export default router;

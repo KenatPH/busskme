@@ -12,6 +12,7 @@ export interface IIncidencia extends Document {
     baseid: string,
     fecha: Date,
     activo: boolean,
+    descripcion: string,
     imagen: string,
     createdAt: Date,
     updateAt: Date

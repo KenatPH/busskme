@@ -13,10 +13,10 @@ import config from "./config/config";
 
 var db_uri="";
 if(!config.RUN_MODE){
-   //db_uri = "mongodb://localhost:27017/busskm"
-   if(config.DB.URI !== undefined){
-      db_uri = config.DB.URI;
-   }
+   db_uri = "mongodb://127.0.0.1:27017/busskm"
+   // if(config.DB.URI !== undefined){
+   //    db_uri = config.DB.URI;
+   // }
 }else{
    if(config.DB.URI !== undefined){
       db_uri = config.DB.URI;
@@ -25,6 +25,8 @@ if(!config.RUN_MODE){
 
 export const connectDB = async () => {   
    try {
+      console.log(db_uri);
+      
       await mongoose.connect(db_uri)
       console.log('Mongodb connection stablished');
       const connection = mongoose.connection;

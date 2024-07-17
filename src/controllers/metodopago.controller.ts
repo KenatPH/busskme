@@ -11,6 +11,7 @@
 
 import express, { Request, Response } from "express";
 import Metodopago from "../models/metodopago.models";
+import Tipopago from "../models/tipoPago.models";
 import path from 'path';
 import config from '../config/config';
 import mongoose from "mongoose";
@@ -102,8 +103,6 @@ export const getMetodoPagoByPais = async (req: Request, res: Response): Promise<
        })
     }   
  }
-
-
 
 export const create = async (req: Request, res: Response): Promise<Response> => {   
    const { paisid,titulo,referencia} = req?.body
@@ -334,4 +333,27 @@ export const activarMetodoPago = async (req: Request, res: Response): Promise<Re
 }
 
 
+export const getDatatipoPagos = async (req: Request, res: Response): Promise<Response> => {
+   const dat = await Tipopago.find()
+   try {
+      if (dat.length === 0) {
+         return res.status(httpCode[204].code).json({
+            data_send: "",
+            num_status: httpCode[204].code,
+            msg_status: httpCode[204].message
+         });
+      }
+      return res.status(httpCode[200].code).json({
+         data_send: dat,
+         num_status: httpCode[200].code,
+         msg_status: 'tipo de pago encontrados.'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later'
+      })
+   }
+}
 

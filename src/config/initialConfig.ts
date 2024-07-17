@@ -12,6 +12,7 @@
 import { ObjectId } from "mongoose";
 import Role from "../models/role.models";
 import User from "../models/users.models";
+import TipoPago from "../models/tipoPago.models"
 import config from "../config/config";
 import fs from 'fs-extra';
 import path from 'path';
@@ -47,6 +48,7 @@ class initialConfig {
       try {
         await this.createRoles(); // Espera a que se creen los roles
         await this.createUser(); // Luego crea el usuario
+        await this.createTipoPagos();
       } catch (error) {
         console.error('Error al configurar roles y usuario:');
       }
@@ -85,6 +87,29 @@ class initialConfig {
       }catch (error) {
          console.error(error);
       }      
+   }
+
+   async createTipoPagos() {
+      try {
+         const count = await TipoPago.estimatedDocumentCount();
+
+         if (count > 0) return;
+
+
+         const values = await Promise.all([
+            new TipoPago({ nombre: "Efectivo USD", activo: true }).save(),
+            new TipoPago({ nombre: "Efectivo Bs ", activo: true }).save(),
+            new TipoPago({ nombre: "Binance", activo: true }).save(),
+            new TipoPago({ nombre: "Pago movil ", activo: true }).save(),
+            new TipoPago({ nombre: "Trasferencia Bs", activo: true }).save(),
+            new TipoPago({ nombre: "Trasferencia Dollares", activo: true }).save(),
+            new TipoPago({ nombre: "Otro exterior", activo: true }).save(),
+         ]);
+
+         console.log(values);
+      } catch (error) {
+         console.error(error);
+      }
    }
 
    async createUser() {

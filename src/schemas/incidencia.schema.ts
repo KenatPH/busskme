@@ -16,14 +16,15 @@ export const incidenciaSchema = new Schema({
     },
     colectorid: {
         type: String,
-        required: true
     },
     baseid: {
         type: String,
-        required: true
     },
     fecha: {
         type: Date,
+    },
+    descripcion:{
+        type: String,
     },
     activo: {
         type: Boolean,
