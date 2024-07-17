@@ -65,7 +65,7 @@ const app = express()
 
 // settings
 
-app.set('port', process.env.PORT || 3401)
+app.set('port', process.env.PORT || 4000)
 
 //crear directorio storage si no existe
 initialConfig.cerateDirStorage();
