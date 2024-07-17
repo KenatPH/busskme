@@ -13,7 +13,7 @@ import config from "./config/config";
 
 var db_uri="";
 if(!config.RUN_MODE){
-   db_uri = "mongodb://127.0.0.1:27017/busskm"
+   db_uri = "mongodb://138.197.84.17:27017/busskm"
    // if(config.DB.URI !== undefined){
    //    db_uri = config.DB.URI;
    // }
