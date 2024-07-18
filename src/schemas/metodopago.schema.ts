@@ -15,7 +15,11 @@ export const metodopagoSchema = new Schema ({
     paisid: {
         type: Schema.Types.ObjectId,
         ref: 'Pais'
-    },        
+    },  
+    tipoid: {
+        type: Schema.Types.ObjectId,
+        ref: 'Tipopago'
+    },       
     titulo: {
         type: String,
         required: true

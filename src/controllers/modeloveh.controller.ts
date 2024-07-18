@@ -91,9 +91,9 @@ export const getDataModelos = async (req: Request, res: Response): Promise<Respo
    
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelos no enconttrados.'
          });
       }

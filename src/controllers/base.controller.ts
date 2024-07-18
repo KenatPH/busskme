@@ -17,9 +17,9 @@ export const getBase = async (req: Request, res: Response): Promise<Response> =>
 
     try {
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no enconttrada'
             });
         }
@@ -42,9 +42,9 @@ export const getDataBases = async (req: Request, res: Response): Promise<Respons
 
     try {
         if (data.length === 0) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no enconttrada'
             });
         }
@@ -124,9 +124,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         const data = await Bases.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
             });
         }
@@ -173,9 +173,9 @@ export const deleteBase = async (req: Request, res: Response): Promise<Response>
         const data = await Bases.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
             });
         } else {
@@ -227,9 +227,9 @@ export const activarBase = async (req: Request, res: Response): Promise<Response
         const data = await Bases.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
             });
         } else {

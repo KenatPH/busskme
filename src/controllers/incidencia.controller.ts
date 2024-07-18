@@ -36,9 +36,9 @@ export const getIncidencia = async (req: Request, res: Response): Promise<Respon
 
     try {
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Incidencia no encontrado'
             });
         }
@@ -267,9 +267,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         const data = await Incidencia.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
             });
         }
@@ -329,9 +329,9 @@ export const deleteIncidencia = async (req: Request, res: Response): Promise<Res
         const data = await Incidencia.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Incidencia no encontrado.'
             });
         } else {
@@ -377,9 +377,9 @@ export const activar = async (req: Request, res: Response): Promise<Response> =>
         const data = await Incidencia.findById(id);
 
         if (!data) {
-            return res.status(httpCode[204].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
             });
         } else {

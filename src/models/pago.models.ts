@@ -4,7 +4,7 @@ import { pagoSchema } from "../schemas/pago.schema";
 export interface IPago extends Document {
     userid: Schema.Types.ObjectId,
     servicioid: string,
-    tipoid:string,
+    metodopagoid:string,
     referencia: string,
     imagen: string,
     activo: boolean,

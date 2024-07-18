@@ -14,9 +14,10 @@ import { Schema, model, Document, ObjectId } from "mongoose";
 import {metodopagoSchema} from "../schemas/metodopago.schema";
 
 export interface IMetodopago extends Document {
-   paisid: Schema.Types.ObjectId,   
+   paisid: Schema.Types.ObjectId,
+   tipoid: Schema.Types.ObjectId, 
    titulo: string,      
-   referencia: string,
+   referencia: string, 
    imagen: string,
    activo: boolean,
    createdAt: Date,

@@ -3,13 +3,14 @@ import { Schema, Document } from "mongoose";
 export const pagoSchema = new Schema({
     userid: {
         type: Schema.Types.ObjectId,
-        ref: 'Pais'
+        ref: 'User'
     },
     servicioid:{
         type: String,      
     },
-    tipoid: {
+    metodopagoid: {
         type: String,
+        ref: 'Metodopago',
         required: true
     },
     referencia: {

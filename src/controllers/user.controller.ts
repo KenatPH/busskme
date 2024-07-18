@@ -12,6 +12,7 @@
 import express, { Request, Response } from "express";
 import User from "../models/users.models";
 import Role from "../models/role.models";
+import Wallet from "../models/wallet.model";
 import {getToken, getTokenData} from "../config/config.jwt";
 import {sendMail, getTemplateHtml} from "../config/config.mail";
 import  utilsHandle  from "../utils/utilsHandle";
@@ -229,8 +230,14 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    try {
       
       await newUser.save();
-
       const id = newUser._id;                  
+
+      const newWallet = new Wallet({
+         userid: id
+      })
+
+      newWallet.save()
+
       const token = getToken({ correo, id, idcode, nombre, telefono, idioma, roles},'2d');   
       const accion = "confirmar";
       const html = getTemplateHtml(nombre, token, idcode, accion, "", "");
