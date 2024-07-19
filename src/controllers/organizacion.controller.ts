@@ -62,9 +62,9 @@ export const getDataLineas = async (req: Request, res: Response): Promise<Respon
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
+         return res.status(httpCode[200].code).json({
             data_send: [],
-            num_status: httpCode[204].code,
+            num_status: httpCode[200].code,
             msg_status: 'Organización no encontrada'
          });
       }
