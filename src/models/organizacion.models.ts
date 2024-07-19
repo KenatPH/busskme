@@ -12,6 +12,7 @@
 
 import { Schema, model, Document } from "mongoose";
 import { lineaSchema } from "../schemas/linea.schema";
+import { organizacionSchema } from "../schemas/organizacion.schema";
 
 
 export interface IOrganizacion extends Document {  
@@ -26,7 +27,7 @@ export interface IOrganizacion extends Document {
    codigo_cps: string,
    modalidad_servicio:string,
    tipologia_unidades: string,
-   cupo_autorizado: number,
+   cupo_autorizado: string,
    nombre_org: string,
    tipo_organizacion: string,
    fecha_registro: Date,
@@ -51,4 +52,4 @@ export interface IOrganizacion extends Document {
    updateAt:Date
 }
 
-export default model<IOrganizacion>('Organizaciones', lineaSchema);
+export default model<IOrganizacion>('Organizaciones', organizacionSchema);

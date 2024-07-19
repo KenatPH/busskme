@@ -29,9 +29,9 @@ export const getModelo = async (req: Request, res: Response): Promise<Response> 
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelo no enconttrado'
          });
       }
@@ -64,9 +64,9 @@ export const getModeloByMarcaid = async (req: Request, res: Response): Promise<R
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelo no enconttrado.'
          });
       }
@@ -184,9 +184,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       .populate('marcaid', 'nombre');
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelo no enconttrados.'
          });
       }
@@ -224,9 +224,9 @@ export const deleteModeloVeh = async (req: Request, res: Response): Promise<Resp
       const data = await Modeloveh.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelo no enconttrados.'
          });
       }else{         
@@ -267,9 +267,9 @@ export const activarModeloVeh = async (req: Request, res: Response): Promise<Res
       const data = await Modeloveh.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Modelo no enconttrados.'
          });
       }else{         

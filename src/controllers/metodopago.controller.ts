@@ -33,9 +33,9 @@ export const getMetodoPagoById = async (req: Request, res: Response): Promise<Re
    
    try {
       if(!dat){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: httpCode[204].message
          });
       }
@@ -59,9 +59,9 @@ export const getDataMetodoPagos = async (req: Request, res: Response): Promise<R
    .populate('paisid', 'nombre');      
    try {
       if(dat.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: httpCode[204].message
          });
       }
@@ -337,9 +337,9 @@ export const getDatatipoPagos = async (req: Request, res: Response): Promise<Res
    const dat = await Tipopago.find()
    try {
       if (dat.length === 0) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: httpCode[204].message
          });
       }

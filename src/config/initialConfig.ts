@@ -13,6 +13,10 @@ import { ObjectId } from "mongoose";
 import Role from "../models/role.models";
 import User from "../models/users.models";
 import TipoPago from "../models/tipoPago.models"
+import Pais from "../models/paises.models"
+import Estado from "../models/estados.models"
+import Municipio from "../models/municipio.models"
+import Ciudad from "../models/ciudad.models"
 import config from "../config/config";
 import fs from 'fs-extra';
 import path from 'path';
@@ -46,6 +50,7 @@ class initialConfig {
 
    async createRolesAndUser() {
       try {
+         await this.createPaisCiudadEstado();
         await this.createRoles(); // Espera a que se creen los roles
         await this.createUser(); // Luego crea el usuario
         await this.createTipoPagos();
@@ -107,6 +112,70 @@ class initialConfig {
          ]);
 
          console.log(values);
+      } catch (error) {
+         console.error(error);
+      }
+   }
+
+   async createPaisCiudadEstado() {
+      try {
+         const count = await Pais.estimatedDocumentCount();
+
+         if (count > 0) return;
+
+
+         // 
+
+           const newPais =  new Pais({
+               idcode: 1,
+               pais: 'VE',
+               nombre: 'Venezuela',
+               bandera: '🇻🇪',
+               moneda: 'Bolívar',
+               zonahoraria: 'GMT-4',
+               idioma: 'Español',
+               activo: 1,
+               createdAt: new Date('2023-01-01'),
+               updateAt: new Date('2023-01-01')
+            })
+            await newPais.save()
+
+           const newEstado =  new Estado({
+               paisid: newPais._id,
+               pais: 'VE',
+               estado: 'Lara',
+               nombre: 'Estado Lara',
+               activo: true,
+               createdAt: new Date('2023-01-01'),
+               updateAt: new Date('2023-01-01')
+            })
+
+            await newEstado.save()
+
+           const newMun = new Municipio({
+               paisid: newPais._id,
+               estadoid:newEstado._id,
+               nombre: 'Municipio Libertador',
+               activo: true,
+               createdAt: new Date('2023-01-01'),
+               updateAt: new Date('2023-01-01')
+            })
+            await newMun.save()
+
+
+            await  new Ciudad({
+               paisid: newPais._id,
+               estadoid: newEstado._id,
+               municipioid: newMun._id,
+               nombre: 'Caracas',
+               activo: true,
+               createdAt: new Date('2023-01-01'),
+               updateAt: new Date('2023-01-01')
+            }).save()
+
+
+
+         // console.log(values);
       } catch (error) {
          console.error(error);
       }

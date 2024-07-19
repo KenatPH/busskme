@@ -37,9 +37,9 @@ export const getChofer = async (req: Request, res: Response): Promise<Response> 
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }      
@@ -70,9 +70,9 @@ export const getChoferByUserId = async (req: Request, res: Response): Promise<Re
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }      
@@ -96,9 +96,9 @@ export const getDataChoferes = async (req: Request, res: Response): Promise<Resp
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }
@@ -1062,9 +1062,9 @@ export const deleteChofer = async (req: Request, res: Response): Promise<Respons
       const chofer = await Chofer.findById(id);
 
       if (!chofer) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }
@@ -1109,9 +1109,9 @@ export const activarChofer = async (req: Request, res: Response): Promise<Respon
       const chofer = await Chofer.findById(id);
 
       if (!chofer) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }

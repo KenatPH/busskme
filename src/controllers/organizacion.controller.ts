@@ -36,9 +36,9 @@ export const getLinea = async (req: Request, res: Response): Promise<Response> =
    
    try {
       if(!org){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Organización no encontrada'
          });
       }
@@ -58,19 +58,19 @@ export const getLinea = async (req: Request, res: Response): Promise<Response> =
 }
 
 export const getDataLineas = async (req: Request, res: Response): Promise<Response> => {
-   const data = await Linea.find();
+   const data = await Linea.find().populate('ciudadid estadoid paisid municipioid');
       
    try {
       if(data.length === 0){
          return res.status(httpCode[204].code).json({
-            data_send: "",
+            data_send: [],
             num_status: httpCode[204].code,
             msg_status: 'Organización no encontrada'
          });
       }
-      return res.status(httpCode[204].code).json({
+      return res.status(httpCode[200].code).json({
          data_send: data,
-         num_status: httpCode[204].code,
+         num_status: httpCode[200].code,
          msg_status: 'Organización no encontrada'
       });
    } catch (error) {
@@ -369,6 +369,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });
       
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
@@ -993,9 +995,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const data = await Linea.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Organización no encontrada'
          });
       }

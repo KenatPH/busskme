@@ -51,7 +51,7 @@ export const organizacionSchema = new Schema({
       type: String
    },
    cupo_autorizado:{
-      type: Number
+      type: String
    },
    nombre_org:{
       type: String

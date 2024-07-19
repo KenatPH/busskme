@@ -331,9 +331,9 @@ export const deleteParada = async (req: Request, res: Response): Promise<Respons
       } 
       const dat = await Parada.findById(id);
       if (!dat) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Parada no encontrada.'
          });
       }

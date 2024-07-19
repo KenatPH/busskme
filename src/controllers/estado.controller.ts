@@ -99,9 +99,9 @@ export const getEstadosPais = async (req: Request, res: Response): Promise<Respo
    
    try {
       if(!edo){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No hay estados para este país'
          });
       }

@@ -28,9 +28,9 @@ export const getColor = async (req: Request, res: Response): Promise<Response> =
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Color no enconttrado'
          });
       }
@@ -54,9 +54,9 @@ export const getColores = async (req: Request, res: Response): Promise<Response>
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No existen datos de colores.'
          });
       }
@@ -143,9 +143,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const data = await Color.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Color no enconttrado'
          });
       }
@@ -181,9 +181,9 @@ export const deleteColor = async (req: Request, res: Response): Promise<Response
       const data = await Color.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Color no enconttrado'
          });
       }else{         
@@ -219,9 +219,9 @@ export const activarColor = async (req: Request, res: Response): Promise<Respons
       const data = await Color.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Color no enconttrado'
          });
       }else{         

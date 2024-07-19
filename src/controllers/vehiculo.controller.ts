@@ -31,9 +31,9 @@ export const getVehiculo = async (req: Request, res: Response): Promise<Response
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículo no enconttrado'
          });
       }
@@ -59,9 +59,9 @@ export const getDataVehiculos = async (req: Request, res: Response): Promise<Res
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículos no enconttrados.'
          });
       }
@@ -93,9 +93,9 @@ export const getDataVehiculosbyDriver = async (req: Request, res: Response): Pro
 
    try {
       if (data.length === 0) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículos no enconttrados.'
          });
       }
@@ -531,9 +531,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 
       const data = await Vehiculo.findOne({_id: id});
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículo no encontrado.'
          });
       }
@@ -624,9 +624,9 @@ export const deleteVehiculo = async (req: Request, res: Response): Promise<Respo
       const data = await Vehiculo.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículo no encontrado.'
          });
       }
@@ -665,9 +665,9 @@ export const activarVehiculo = async (req: Request, res: Response): Promise<Resp
       const data = await Vehiculo.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Vehículo no encontrado.'
          });
       }

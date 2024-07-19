@@ -21,9 +21,9 @@ export const getPais = async (req: Request, res: Response): Promise<Response> =>
    //validamos que exista la información
    try {
       if(!pais){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No country found'
          });
       }
@@ -49,9 +49,9 @@ export const getDataPaises = async (req: Request, res: Response): Promise<Respon
    //validamos que exista la información
    try {
       if(paises.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No country found'
          });
       }

@@ -35,9 +35,9 @@ export const getDataCalificarChofer = async (req: Request, res: Response): Promi
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Calificación de Chofer no encontrada.'
          });
       }      
@@ -68,9 +68,9 @@ export const getCalificarChoferByUserId = async (req: Request, res: Response): P
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }      
@@ -129,9 +129,9 @@ export const getDataCalificarChoferes = async (req: Request, res: Response): Pro
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Chofer no encontrado.'
          });
       }

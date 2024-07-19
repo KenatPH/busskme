@@ -27,9 +27,9 @@ export const getCiudad = async (req: Request, res: Response): Promise<Response> 
    
    try {
       if(!ciu){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No city found'
          });
       }
@@ -65,9 +65,9 @@ export const getCiudadesPaisEdo = async (req: Request, res: Response): Promise<R
    
    try {
       if(!ciu){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'There is no city for the country and state sent'
          });
       }
@@ -95,9 +95,9 @@ export const getDataCiudades = async (req: Request, res: Response): Promise<Resp
    //validamos que exista la información
    try {
       if(ciu.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No cities found'
          });
       }
@@ -123,9 +123,9 @@ export const getDataCiudadesNoPaginate = async (req: Request, res: Response): Pr
    //validamos que exista la información
    try {
       if (ciu.length === 0) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No cities found'
          });
       }

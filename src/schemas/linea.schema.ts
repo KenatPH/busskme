@@ -15,7 +15,7 @@ export const lineaSchema = new Schema ({
    idcode: {
       type: Number      
     },   
-   nombre: {
+   nombre_org: {
       type: String,
       required: true
    },
@@ -24,33 +24,28 @@ export const lineaSchema = new Schema ({
       required: true
    },
    paisid: {
-      type: Number
+      type: Schema.Types.ObjectId,
+      ref: 'Pais'
     },
    estadoid: {
-      type: Number
+      type: Schema.Types.ObjectId,
+      ref: 'Estado'
    },
    ciudadid: {
-      type: Number
+      type: Schema.Types.ObjectId,
+      ref: 'Ciudad'
    },
    direccion: {
       type: String      
    }, 
-   correo_org:{
-      type: String,
-      required: true
-   },
+
    telefono_org: {
       type: String
    }, 
    instagram:  {
       type: String
    }, 
-   web:  {
-      type: String
-   }, 
-   redx:  {  //twitter
-      type: String
-   }, 
+
    facebook:  {
       type: String
    }, 
@@ -60,14 +55,7 @@ export const lineaSchema = new Schema ({
    logo: {
       type: String
    },  
-   gerente: {
-      type: String,
-      required: true
-   }, 
-   correo_gerente:{
-      type: String,
-      required: true
-   },
+
    telefono_gerente: {
       type: String
    },  

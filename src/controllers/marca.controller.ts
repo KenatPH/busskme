@@ -27,9 +27,9 @@ export const getMarca = async (req: Request, res: Response): Promise<Response> =
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Marca no enconttrada'
          });
       }
@@ -52,9 +52,9 @@ export const getDataMarcas = async (req: Request, res: Response): Promise<Respon
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Marca no enconttrada'
          });
       }
@@ -134,9 +134,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const data = await Marcas.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Marca no encontrada.'
          });
       }
@@ -183,9 +183,9 @@ export const deleteMarca = async (req: Request, res: Response): Promise<Response
       const data = await Marcas.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Marca no encontrada.'
          });
       }else{
@@ -237,9 +237,9 @@ export const activarMarca = async (req: Request, res: Response): Promise<Respons
       const data = await Marcas.findById(id);
       
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Marca no encontrada.'
          });
       }else{

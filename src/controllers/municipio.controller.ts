@@ -27,9 +27,9 @@ export const getMunicipio = async (req: Request, res: Response): Promise<Respons
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Municipio no encontrado.'
          });
       }
@@ -63,9 +63,9 @@ export const getMunicipiosPaisEdo = async (req: Request, res: Response): Promise
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No hay municipios para éste país y estado'
          });
       }
@@ -98,9 +98,9 @@ export const getDataMunicipios = async (req: Request, res: Response): Promise<Re
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Municipios no encontrados.'
          });
       }
@@ -191,9 +191,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const data = await Municipio.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Municipio no encontrado'
          });
       }

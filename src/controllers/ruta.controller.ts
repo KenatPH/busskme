@@ -31,9 +31,9 @@ export const getRuta = async (req: Request, res: Response): Promise<Response> =>
    
    try {
       if(!rut){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No route found'
          });
       }
@@ -57,9 +57,9 @@ export const getDataRutas = async (req: Request, res: Response): Promise<Respons
       
    try {
       if(rutas.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Ruta no encontrada'
          });
       }
@@ -185,9 +185,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          }}, 
          {new: true});
       if(!updrut) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Ruta no encontrada.'
          });
       }
@@ -221,9 +221,9 @@ export const deleteRuta = async (req: Request, res: Response): Promise<Response>
       } 
       const rut = await Ruta.findById(id);
       if (!rut) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No route found'
          });
       }      
@@ -263,9 +263,9 @@ export const activarRuta = async (req: Request, res: Response): Promise<Response
       } 
       const rut = await Ruta.findById(id);
       if (!rut) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'No route found'
          });
       }            

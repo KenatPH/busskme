@@ -545,9 +545,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const user = await User.findById(id);
 
       if (!user) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'User not found'
          });
       }

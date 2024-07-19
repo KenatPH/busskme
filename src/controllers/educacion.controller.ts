@@ -27,9 +27,9 @@ export const getEducacion = async (req: Request, res: Response): Promise<Respons
    
    try {
       if(!data){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Tipo de educación no encontrada.'
          });
       }
@@ -53,9 +53,9 @@ export const getDataEducacion = async (req: Request, res: Response): Promise<Res
       
    try {
       if(data.length === 0){
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Tipo de educación no encontrada.'
          });
       }
@@ -125,9 +125,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       const data = await Educacion.findById(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Tipo de educación no encontrada.'
          });
       }      
@@ -164,9 +164,9 @@ export const deleteEducacion = async (req: Request, res: Response): Promise<Resp
       const data = await Educacion.findByIdAndDelete(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Tipo de educación no encontrada.'
          });
       }else{
@@ -201,9 +201,9 @@ export const activarEducacion = async (req: Request, res: Response): Promise<Res
       const data = await Educacion.findByIdAndDelete(id);
 
       if (!data) {
-         return res.status(httpCode[204].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Tipo de educación no encontrada.'
          });
       }else{
