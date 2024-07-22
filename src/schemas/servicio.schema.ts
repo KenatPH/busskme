@@ -9,6 +9,12 @@ export const servicioSchema = new Schema({
         type: Boolean,
         default: true
     },
+    latitud: {  //nombre o descripción de la ruta RUTA 201
+        type: String,
+    },
+    longitud: {  //nombre o descripción de la ruta RUTA 201
+        type: String,
+    },    
     activo: {
         type: Boolean,
         default: true

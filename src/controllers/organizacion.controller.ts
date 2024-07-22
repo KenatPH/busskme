@@ -32,7 +32,7 @@ export const getLinea = async (req: Request, res: Response): Promise<Response> =
          msg_status: 'Id no es válido'
       });
    }
-   const org = await Linea.findById(id);
+   const org = await Linea.findById(id).populate('ciudadid estadoid paisid municipioid');;
    
    try {
       if(!org){

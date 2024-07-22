@@ -18,7 +18,7 @@ export const metodopagoSchema = new Schema ({
     },  
     tipoid: {
         type: Schema.Types.ObjectId,
-        ref: 'Tipopago'
+        ref: 'TipoPago'
     },       
     titulo: {
         type: String,

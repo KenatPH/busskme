@@ -56,7 +56,7 @@ export const getMetodoPagoById = async (req: Request, res: Response): Promise<Re
 
 export const getDataMetodoPagos = async (req: Request, res: Response): Promise<Response> => {
    const dat = await Metodopago.find()
-   .populate('paisid', 'nombre');      
+      .populate('paisid tipoid', 'nombre');      
    try {
       if(dat.length === 0){
          return res.status(httpCode[200].code).json({
@@ -105,7 +105,7 @@ export const getMetodoPagoByPais = async (req: Request, res: Response): Promise<
  }
 
 export const create = async (req: Request, res: Response): Promise<Response> => {   
-   const { paisid,titulo,referencia} = req?.body
+   const { paisid, titulo, referencia, tipoid } = req?.body
 
    if(paisid === null || paisid === undefined || !paisid || !ObjectId.isValid(paisid)){
        return res.status(httpCode[409].code).json({
@@ -114,6 +114,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
           msg_status: 'Paisid is invalid'
        });
     }
+   if (tipoid === null || tipoid === undefined || !tipoid || !ObjectId.isValid(tipoid)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'tipoid is invalid'
+      });
+   }
    if(!titulo || titulo == null || titulo == undefined || titulo == ""){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -128,15 +135,15 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: httpCode[409].message+', La referencia  es requerida.'
       });          
    }   
-   var img = Object();  
-   if(!img || img === undefined || img === null){
-      return res.status(httpCode[409].code).json({
-         data_send: "",         
-         num_status:httpCode[409].code,
-         msg_status: 'La imagen no es válida.'         
-      }); 
-   }        
-   img = req.file; 
+   // var img = Object();  
+   // if(!img || img === undefined || img === null){
+   //    return res.status(httpCode[409].code).json({
+   //       data_send: "",         
+   //       num_status:httpCode[409].code,
+   //       msg_status: 'La imagen no es válida.'         
+   //    }); 
+   // }        
+   // img = req.file; 
       
    const dat = await Metodopago.findOne({titulo: titulo.toUpperCase()})
    if(dat) {
@@ -152,7 +159,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       titulo        : titulo,
       referencia    : referencia,
       paisid        : paisid,
-      imagen        : img.path     
+      tipoid: tipoid
+      // imagen        : img.path     
    });
 
    try {
@@ -179,7 +187,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    try {
       
       const { id } = req.params; 
-      const { paisid,titulo,referencia} = req?.body
+      const { paisid, titulo, referencia, tipoid } = req?.body
       
       if(id === null || id === undefined || !id || !ObjectId.isValid(id)
         ||paisid === null || paisid === undefined || !paisid || !ObjectId.isValid(paisid)){
@@ -187,6 +195,13 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             data_send: "",
             num_status: httpCode[409].code,
             msg_status: 'Id or paisid is invalid'
+         });
+      }
+      if (tipoid === null || tipoid === undefined || !tipoid || !ObjectId.isValid(tipoid)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'tipoid is invalid'
          });
       }
       if(!titulo || titulo == null || titulo == undefined || titulo == ""){
@@ -228,6 +243,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       dat.titulo        = titulo,
       dat.referencia    = referencia,
       dat.paisid        = paisid,
+      dat.tipoid = tipoid
       dat.imagen        = imgpath     
       await dat.save();
       const mp = await Metodopago.find({_id:id})

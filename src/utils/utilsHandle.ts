@@ -93,6 +93,19 @@ class utilsHandle {
       return true; 
    };
 
+   validateFieldLatitudLongitud(fieldValue: string | undefined | null): boolean {
+      const validaRegex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
+      if (!fieldValue || fieldValue === 'null' || fieldValue === 'undefined') {
+         return false;
+      }
+
+      if (!validaRegex.test(fieldValue)) {
+         return false;
+      }
+      return true;
+   };
+
    validateFecha(fieldValue: string):boolean{
       if (!moment(fieldValue, 'YYYY-MM-DD', true).isValid()) {
          return false; 

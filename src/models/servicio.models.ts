@@ -6,6 +6,8 @@ export interface IServicio extends Document {
     itinerarioid: Schema.Types.ObjectId,
     finalizado: boolean,
     activo: boolean,
+    latitud: String,
+    longitud: String,
     createdAt: Date,
     updateAt: Date
 }

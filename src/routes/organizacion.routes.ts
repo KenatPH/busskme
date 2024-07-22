@@ -18,9 +18,9 @@ import { register } from "../controllers/user.controller";
 
 const multer = new MulterMiddleware(config.STORAGEAPI.imgsorganizacion,'organizacion');
 
-const upload = multer.getMiddlewareArch().fields([{ name: 'img_rif', maxCount: 1 }, 
+const upload = multer.getMiddlewareArch().fields([
+{ name: 'img_rif', maxCount: 1 }, 
 { name: 'img_cps', maxCount: 1 },
-{ name: 'img_rif', maxCount: 1 },
 { name: 'img_acta_constitutiva', maxCount: 12 },
 { name: 'img_ult_acta_asamblea', maxCount: 12 },]);
 

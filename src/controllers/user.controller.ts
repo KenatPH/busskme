@@ -29,9 +29,9 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
       const users = await User.find({},{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})
       .populate("roles","nombre");
       if(!users){
-         return res.status(httpCode[204].code).json({
-            data_send: users,
-            num_status: httpCode[204].code,
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
             msg_status: 'Users not found',
         });
       }               
@@ -745,7 +745,7 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
       
       if (!role) {          
           return res.status(httpCode[404].code).json({
-              data_send: "",
+              data_send: [],
               num_status: httpCode[404].code,
               msg_status: `Role ${rol} not found`,
           });
@@ -753,6 +753,13 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
       const usersWithAdminRole = await User.find({ roles: role._id },{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})      
       .populate("roles","nombre");
       
+      if (usersWithAdminRole.length === 0) {
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
+            msg_status: httpCode[204].message
+         });
+      }
       
       return res.status(httpCode[200].code).json({
           data_send: usersWithAdminRole,

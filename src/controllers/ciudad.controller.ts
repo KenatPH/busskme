@@ -118,10 +118,26 @@ export const getDataCiudades = async (req: Request, res: Response): Promise<Resp
 export const getDataCiudadesNoPaginate = async (req: Request, res: Response): Promise<Response> => {
    const { paisid, estadoid } = req?.body;
    console.log("datos recibidos: ", paisid, estadoid);
-   const ciu = await Ciudad.find({ paisid: paisid, estadoid: estadoid });
 
+   if (paisid === null || paisid === undefined || !paisid || !ObjectId.isValid(paisid)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'paisid is invalid'
+      });
+   }
+
+   if (estadoid === null || estadoid === undefined || !estadoid || !ObjectId.isValid(estadoid)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'estadoid is invalid'
+      });
+   }
+   
    //validamos que exista la información
    try {
+      const ciu = await Ciudad.find({ paisid: paisid, estadoid: estadoid });
       if (ciu.length === 0) {
          return res.status(httpCode[200].code).json({
             data_send: [],
