@@ -1190,3 +1190,28 @@ export const uploadimg = async (req: Request, res: Response): Promise<Response> 
    }
 
 }
+
+export const testmailChofer = async (req: Request, res: Response): Promise<Response> => {
+   try {
+      const correo = 'krtabares@gmail.com'
+
+      const token = getToken({ correo, id:'1321321', idcode:'987', telefono:"123", roles:[] }, '2d');
+
+      const accion = "confirmar";
+      const html = getTemplateHtml("test", token, 987, accion, "", "");
+
+      await sendMail(correo, 'Confirmar cuenta', html);
+      return res.status(httpCode[200].code).json({
+         data_send: "",
+         num_status: httpCode[200].code,
+         msg_status: 'correo enbviado  con éxito.'
+      });
+
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '
+      });
+   }
+}

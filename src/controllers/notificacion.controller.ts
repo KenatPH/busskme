@@ -20,15 +20,51 @@ export const getListNotificacion = async (req: Request, res: Response): Promise<
     try {
         const data = await Notificaciones
                 .find({
-                    userId: id 
+                    userid: id 
                 }).sort([['createdAt', 'desc']]).skip(offset).limit(10);
 
 
-        const notificiacionesNoLeidas = await Notificaciones.countDocuments({ userId: id, leida: false })
+        const notificiacionesNoLeidas = await Notificaciones.countDocuments({ userid: id, leida: false })
 
         return res.status(200).json({
             data_send: { data, notificiacionesNoLeidas },
+            num_status: 200,
+            msg_status: 'Notificaciones completadas'
+        })
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({
+            message: error
+        });
+    }
+
+}
+
+export const getListNotificacionAdmin = async (req: Request, res: Response): Promise<Response> => {
+    const { page, id } = req.params;
+    let where = {}
+
+    if (!id) {
+        return res.status(409).json({
+            data_send: "",
             num_status: 1,
+            msg_status: 'Los campos "id" son obligatorios'
+        })
+    }
+    const offset = (parseInt((page) ? page : '1') - 1) * 10
+    try {
+        const data = await Notificaciones
+            .find({
+                admin: true
+            }).sort([['createdAt', 'desc']]).skip(offset).limit(10);
+
+
+        const notificiacionesNoLeidas = await Notificaciones.countDocuments({ userid: id, leida: false })
+
+        return res.status(200).json({
+            data_send: { data, notificiacionesNoLeidas },
+            num_status: 200,
             msg_status: 'Notificaciones completadas'
         })
     } catch (error) {
@@ -57,7 +93,7 @@ export const getnotificacion = async (req: Request, res: Response): Promise<Resp
         return res.status(201).json(
             {
                 data_send: notificacion,
-                num_status: 0,
+                num_status: 200,
                 msg_status: 'Notificación encontrada.'
             }
         );
@@ -68,10 +104,10 @@ export const getnotificacion = async (req: Request, res: Response): Promise<Resp
     }
 }
 
-export const crearNotificacion = async (titulo: string, cuerpo: string, link: string, userId: string) => {
+export const crearNotificacion = async (titulo: string, cuerpo: string, link: string, userid: string, admin:boolean = false) => {
 
     const notificacion = new Notificaciones({
-        userId,
+        userid,
         cuerpo,
         titulo,
         link,

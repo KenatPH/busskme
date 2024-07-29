@@ -3,11 +3,11 @@ import { Schema, Document } from "mongoose";
 export const servicioSchema = new Schema({
     itinerarioid: {
         type: Schema.Types.ObjectId,
-        ref: 'Ruta'
+        ref: 'itinerarios'
     },
     finalizado: {
         type: Boolean,
-        default: true
+        default: false
     },
     latitud: {  //nombre o descripción de la ruta RUTA 201
         type: String,

@@ -13,6 +13,10 @@ export const notificacionSchema = new Schema({
         type: Boolean,
         default: false
     },
+    admin:{
+        type: Boolean,
+        default: false
+    },
     titulo: {
         type: String
     },

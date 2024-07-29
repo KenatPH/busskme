@@ -14,12 +14,12 @@ export const itinerarioSchema = new Schema({
     },
     choferid: {
         type: Schema.Types.ObjectId,
-        ref:'Chofer',
+        ref:'User',
         required: true
     },
     colectorid: {
         type: Schema.Types.ObjectId,
-        ref:'Chofer',
+        ref:'User',
         required: true
     },
     baseid: {

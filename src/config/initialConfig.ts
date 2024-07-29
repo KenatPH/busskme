@@ -17,6 +17,7 @@ import Pais from "../models/paises.models"
 import Estado from "../models/estados.models"
 import Municipio from "../models/municipio.models"
 import Ciudad from "../models/ciudad.models"
+import Educacion from "../models/educacion.models"
 import config from "../config/config";
 import fs from 'fs-extra';
 import path from 'path';
@@ -50,6 +51,7 @@ class initialConfig {
 
    async createRolesAndUser() {
       try {
+         await this.createEducacion()
          await this.createPaisCiudadEstado();
         await this.createRoles(); // Espera a que se creen los roles
         await this.createUser(); // Luego crea el usuario
@@ -176,6 +178,29 @@ class initialConfig {
 
 
          // console.log(values);
+      } catch (error) {
+         console.error(error);
+      }
+   }
+
+   async createEducacion() {
+      try {
+         const count = await Educacion.estimatedDocumentCount();
+
+         console.log("createEducacion: ",count);
+         
+
+         if (count > 0) return;
+
+
+         const values = await Promise.all([
+            new Educacion({ nombre: "sin estudio", activo: true }).save(),
+            new Educacion({ nombre: "Bachiller", activo: true }).save(),
+            new Educacion({ nombre: "Universitario", activo: true }).save(),
+
+         ]);
+
+         console.log(values);
       } catch (error) {
          console.error(error);
       }

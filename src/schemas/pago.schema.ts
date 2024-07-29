@@ -5,6 +5,9 @@ export const pagoSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    monto:{
+        type:Number
+    },
     servicioid:{
         type: String,      
     },

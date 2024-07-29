@@ -61,25 +61,71 @@ export const getDataItinerario = async (req: Request, res: Response): Promise<Re
     // );
     const data = await Itinerario.find().populate({
         path: 'vehiculoid',
-        select: 'marcaid modeloid marcaid userid',
+        select: 'colorid modeloid marcaid userid',
         populate:{
             path:'colorid modeloid marcaid userid',
             select:'color nombre'
         },      
     })
-    .populate({
-        path: 'choferid colectorid',
-        select: 'userid',
-        populate: {
-            path: 'userid',
-            select: 'nombre'
-        },
-    })
-    .populate('rutaid baseid')
+    // .populate({
+    //     path: 'choferid colectorid',
+    //     select: 'userid',
+    //     populate: {
+    //         path: 'userid',
+    //         select: 'nombre'
+    //     },
+    // })
+        .populate('rutaid baseid choferid colectorid', 'nombre')
     ;
 
     try {
         if ( data && data.length === 0) {
+            return res.status(httpCode[200].code).json({
+                data_send: "",
+                num_status: httpCode[204].code,
+                msg_status: 'Base no enconttrada'
+            });
+        }
+        return res.status(httpCode[200].code).json({
+            data_send: data,
+            num_status: httpCode[200].code,
+            msg_status: 'Base encontrada satisfactoriamente.'
+        });
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later '
+        });
+    }
+}
+
+export const getDataItinerarioByChofer = async (req: Request, res: Response): Promise<Response> => {
+    // const data = await Itinerario.find().populate(
+    //     'vehiculoid rutaid choferid colectorid baseid'
+    // );
+    const { id } = req.params;
+    const data = await Itinerario.find({choferid:id}).populate({
+        path: 'vehiculoid',
+        select: 'marcaid modeloid marcaid userid',
+        populate: {
+            path: 'colorid modeloid marcaid userid',
+            select: 'color nombre'
+        },
+    })
+        // .populate({
+        //     path: 'choferid colectorid',
+        //     select: 'userid',
+        //     populate: {
+        //         path: 'userid',
+        //         select: 'nombre'
+        //     },
+        // })
+        .populate('rutaid baseid choferid colectorid', 'nombre')
+        ;
+
+    try {
+        if (data && data.length === 0) {
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,

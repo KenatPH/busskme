@@ -371,7 +371,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'The user already exists!'         
+         msg_status: 'Ya existe un usuario con este correo'         
       });
    }
    
@@ -425,8 +425,15 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
 
    try {
       
-      await newUser.save();
-      const id = newUser._id;                     
+      await newUser.save();    
+      
+      const id = newUser._id;
+
+      const newWallet = new Wallet({
+         userid: id
+      })
+
+      newWallet.save()
       const token = getToken({ correo, id, idcode, telefono, roles},'2d');         
       const accion = "confirmar";
       const html = getTemplateHtml(nombre, token, idcode, accion, "", "admin");      
@@ -517,13 +524,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });          
       }
 
-      if(!utilsHandle.validateFieldLetra(idioma)){
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El idioma es requerido, acepta sólo letras.'
-         });          
-      }
+
       
       if(!utilsHandle.validateFieldDireccion(direccion)){
          return res.status(httpCode[409].code).json({
@@ -573,7 +574,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       user.genero             = genero.toLowerCase();
       user.fecha_nacimiento   = fecha_nacimiento;            
       user.fotoperfil         = fotoperfil_path;
-      user.idioma             = idioma.toLowerCase()
+      user.idioma             = idioma? idioma.toLowerCase():null
       user.dni                = dni
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
@@ -590,10 +591,11 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                      "telefono": user.telefono,
                      "confirmado": user.confirmado,                                          
                      "activo": user.activo,
-                     "dni":user.dni
+                     "dni":user.dni,
+                     "genero": user.genero
          },
          num_status: httpCode[200].code,
-         msg_status: 'User updated successfully'
+         msg_status: 'Usuario actualizado con exito'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({

@@ -5,9 +5,9 @@ import { incidenciaSchema } from "../schemas/incidencia.schema";
 
 export interface IIncidencia extends Document {
 
-    vehiculoid: string,
-    rutaid: string,
-    choferid: string,
+    vehiculoid: Schema.Types.ObjectId,
+    rutaid: Schema.Types.ObjectId, 
+    choferid: Schema.Types.ObjectId, 
     colectorid: string,
     baseid: string,
     fecha: Date,

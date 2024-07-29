@@ -1,3 +1,5 @@
+
+
 /*
   Empresa         : Bioonix
   Aplicación      : Api de Busskm
@@ -11,6 +13,8 @@
 
 import express, { Request, Response } from "express";
 import Parada from "../models/parada.models";
+import Itinerario from "../models/itinerario.model"
+import Servicio from "../models/servicio.models"
 import mongoose from "mongoose";
 import { paradaSchema } from "../schemas/parada.schema";
 import { httpCode } from "../utils/httpStatusHandle";
@@ -115,7 +119,21 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
    const dat = await Parada.find({ rutaid: rutaid , activo:true})
    .populate('rutaid')
    .populate('municipioid','paisid estadoid nombre');
-      
+
+   const itin = await Itinerario.find({rutaid:rutaid},{_id:1})
+   
+   const arregloItinerarios  =  itin.map((it)=>{ return it._id})
+   
+   const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate('itinerarioid')
+      // .populate({
+      //    path: 'itinerarioid',
+      //    select: 'vehiculoid modeloid marcaid userid',
+      //    populate: {
+      //       path: 'colorid modeloid marcaid userid',
+      //       select: 'color nombre'
+      //    },
+      // })
+
    try {
       if(dat.length === 0){
          return res.status(httpCode[404].code).json({
@@ -125,7 +143,7 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
          });
       }
       return res.status(httpCode[200].code).json({
-         data_send: dat,
+         data_send: { paradas:dat, servicios:Servs },
          num_status: httpCode[200].code,
          msg_status: 'Data found successfully'
       });

@@ -7,9 +7,9 @@ export interface IWallet extends Document {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    activo: number,
-    balance_usd:number,
-    balance_bs: number,
+    activo: Number,
+    balance_usd:Number,
+    balance_bs: Number,
     createdAt: Date,
     updateAt: Date
 }

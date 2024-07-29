@@ -6,9 +6,10 @@ export interface IPago extends Document {
     servicioid: string,
     metodopagoid:string,
     referencia: string,
+    monto:Number,
     imagen: string,
     activo: boolean,
-    confirmado: boolean,
+    aprobado: boolean,
     createdAt: Date,
     updateAt: Date
 }

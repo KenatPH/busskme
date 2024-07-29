@@ -26,16 +26,16 @@ export default {
       FRONT: "https://padelwebvercel-ct3k7mrao-humbertodevelops-projects.vercel.app/",
       ADMIN: "https://padelwebvercel-ct3k7mrao-humbertodevelops-projects.vercel.app/",
       // BACKEND: "https://rhnrkzk3-3000.use2.devtunnels.ms/"
-      BACKEND: "http://nk4gcos.138.197.84.17.sslip.io/"
+      BACKEND: "http://dev.bioonix.com:4000/"
    },
    MAIL: {
       correo: "jlramirez17@gmail.com",
       passw: process.env.MAIL_PASSW,
-      path_confirm: "http://localhost:3000/auth/confirm-account/",
-      path_confirm_admin: "http://localhost:3000/auth/account/confirm-admin",
-      path_validate: "http://localhost:3000/auth/validar-cuenta/", 
-      path_login: "http://localhost:3000/auth/login/" ,
-      path_resetPass:"http://localhost:3000/nueva-clave"
+      path_confirm: "http://localhost:5173/auth/confirm-account/",
+      path_confirm_admin: "http://localhost:5173/auth/account/confirm-admin",
+      path_validate: "http://localhost:5173/auth/validar-cuenta/", 
+      path_login: "http://localhost:5173/auth/login/" ,
+      path_resetPass:"http://localhost:5173/nueva-clave"
    },
    FBK: {
       clientID: process.env.FBK_ID || "730716712424276",

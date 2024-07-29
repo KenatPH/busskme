@@ -4,10 +4,12 @@ import path from 'path';
 import config from '../config/config';
 import mongoose from "mongoose";
 import User from "../models/users.models";
+import Wallet from "../models/wallet.model"
 import { httpCode } from "../utils/httpStatusHandle";
 import { ObjectId } from 'mongodb';
 import fs from 'fs-extra';
 import { crearNotificacion } from "./notificacion.controller";
+import { populate } from "dotenv";
 
 
 // export const getMetodoPagoById = async (req: Request, res: Response): Promise<Response> => {
@@ -327,8 +329,16 @@ import { crearNotificacion } from "./notificacion.controller";
 // }
 
 export const registarPago = async (req: Request, res: Response): Promise<Response> => {
-    const { userid, titulo, referencia, tipoid, servicioid } = req?.body
+    const { userid, titulo, referencia, metodopagoid, servicioid, monto } = req?.body
     // const { titulo, referencia, nombre, telefono, cedula, userId, torneoId } = req.body;
+
+    if (!titulo || titulo == null || titulo == undefined || titulo == "") {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', La titulo  es requerido.'
+        });
+    }
 
     if (!referencia || referencia == null || referencia == undefined || referencia == "") {
         return res.status(httpCode[409].code).json({
@@ -346,48 +356,53 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
         });
     }
 
-    if (tipoid === null || tipoid === undefined || !tipoid || !ObjectId.isValid(tipoid)) {
+    if (metodopagoid === null || metodopagoid === undefined || !metodopagoid || !ObjectId.isValid(metodopagoid)) {
         return res.status(httpCode[409].code).json({
             data_send: "",
             num_status: httpCode[409].code,
-            msg_status: 'tipoid no es válido'
+            msg_status: 'metodopagoid no es válido'
         });
     }
 
-    // if (servicioid === null || servicioid === undefined || !servicioid || !ObjectId.isValid(servicioid)) {
-    //     return res.status(httpCode[409].code).json({
-    //         data_send: "",
-    //         num_status: httpCode[409].code,
-    //         msg_status: 'servicioid no es válido'
-    //     });
-    // }
+
+    if (monto === null || monto === undefined || !monto ) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'monto no es válido'
+        });
+    }
 
     try {
 
-        var img = Object();
-        if (!img || img === undefined || img === null) {
-            return res.status(httpCode[409].code).json({
-                data_send: "",
-                num_status: httpCode[409].code,
-                msg_status: 'La imagen no es válida.'
-            });
-        }
+        var img = Object(); let fotoReferencia = "";
         img = req.file;
+        if (img != undefined && img !== null && img) {
+            fotoReferencia = img.path ? img.path : "";
+        } else {
+            fotoReferencia = "";
+        }   
 
 
         const pago = new Pago({
             titulo,
             referencia,
             // servicioid,
-            tipoid,
+            metodopagoid,
             userid,
-            aprobado:false
+            monto,
+            aprobado:false,
+            imagen: fotoReferencia
         });
 
-        const titulo1 = "Usted a recibido un pago.";
-        const cuerpo = `Recibido un pago`;
+        await pago.save();
+
+        const titulo1 = "Registro de pago";
+        const cuerpo = `Se a registrado un pago a su cuenta`;
         const link = "";
         const notificacion = await crearNotificacion(titulo1, cuerpo, link, userid);
+
+
         if (!notificacion || notificacion.success === false) {
             return res.status(409).json({
                 data_send: "",
@@ -396,8 +411,20 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
             });
         }
 
+        const titulo2 = "Registro de pago";
+        const cuerpo1 = `Se a registrado un pago a su cuenta`;
+        const link1 = "";
+        const notificacion1 = await crearNotificacion(titulo2, cuerpo1, link1, '',true );
 
-        await pago.save();
+        if (!notificacion1 || notificacion1.success === false) {
+            return res.status(409).json({
+                data_send: "",
+                num_status: httpCode[201].code,
+                msg_status: notificacion.msg
+            });
+        }
+
+
         return res.status(201).json(
             {
                 data_send: pago,
@@ -406,6 +433,8 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
             });
 
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({
             message: error
         })
@@ -423,11 +452,24 @@ export const getListPagos = async (req: Request, res: Response): Promise<Respons
         where = { clubId: id }
     }
 
-    const data = await Pago.find().sort([['createdAt', 'desc']]).skip(offset).limit(10);
+    const data = await Pago.find().populate('userid metodopagoid', 'nombre titulo').sort([['createdAt', 'desc']]).skip(offset).limit(10);
 
     try {
 
-        return res.status(201).json(data);
+        if (data.length === 0) {
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[204].code,
+                msg_status: 'pagos no encontrados'
+            });
+        }
+
+        return res.status(200).json(
+            {
+                data_send: data,
+                num_status: 0,
+                msg_status: 'Pago obtenidos correctamente.'
+            });
     } catch (error) {
 
         console.log(error);
@@ -437,6 +479,44 @@ export const getListPagos = async (req: Request, res: Response): Promise<Respons
     }
 }
 
+export const getListPagosByUser = async (req: Request, res: Response): Promise<Response> => {
+
+    const { pag, id } = req.params;
+    const offset = (parseInt(pag) - 1) * 10
+
+    let where: any = {}
+    if (id) {
+        where = { clubId: id }
+    }
+
+    const data = await Pago.find({userid:id}).populate('userid metodopagoid', 'nombre titulo').sort([['createdAt', 'desc']]).skip(offset).limit(10);
+
+    try {
+
+        if (data.length === 0) {
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[204].code,
+                msg_status: 'pagos no enconttrada'
+            });
+        }
+
+        return res.status(200).json(
+            {
+                data_send: data,
+                num_status: 0,
+                msg_status: 'Pago obtenidos correctamente.'
+            });
+
+        // return res.status(201).json(data);
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({
+            message: error
+        });
+    }
+}
 
 
 export const getPago = async (req: Request, res: Response): Promise<Response> => {
@@ -491,10 +571,41 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
 
 
 
-        data.confirmado = true
+        data.aprobado = true
         await data.save()
 
         const user = await User.findById(data.userid)
+
+        if (!user) {
+            return res.status(200).json({
+                data_send: "",
+                num_status: 6,
+                msg_status: 'usuario no Encontrado'
+            });
+        }
+
+        const wallet = await Wallet.findOne({ userid: data.userid });
+
+        if (!wallet) {
+            return res.status(200).json({
+                data_send: "",
+                num_status: 6,
+                msg_status: 'wallet no Encontrado'
+            });
+        }
+
+        const suma = (a:any, b:any)=>{
+            return parseFloat(a) + parseFloat(b);
+        }
+        // console.log("data.monto", data.monto);
+        // console.log("wallet.balance_usd", wallet.balance_usd);
+        // console.log("wallet.balance_bs", wallet.balance_bs);
+        // console.log("suma(wallet.balance_usd, data.monto)", suma(wallet.balance_usd, data.monto));
+        // console.log("suma(wallet.balance_bs, data.monto)", suma(wallet.balance_bs, data.monto));
+        
+        wallet.balance_usd = (data && data.monto) ? suma(wallet.balance_usd, data.monto) : wallet.balance_usd;
+        wallet.balance_bs = (data && data.monto) ? suma(wallet.balance_bs, data.monto) : wallet.balance_bs;
+        await wallet.save();
 
         const titulo = "Pago Confirmado";
         const cuerpo = `Su pago fue confirmado con exito`;
@@ -502,7 +613,7 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
 
         // console.log(data.user.id);
         
-        await crearNotificacion(titulo, cuerpo, "", user?._id);
+        await crearNotificacion(titulo, cuerpo, "", user._id);
 
         return res.status(200).json(
             {

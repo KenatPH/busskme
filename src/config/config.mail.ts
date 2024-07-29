@@ -20,7 +20,8 @@ const path_resetPass = config.MAIL.path_resetPass;
 const empresa        = config.EMPRESA.nombre;
 const rif_empresa    = config.EMPRESA.rif;
 const dir_empresa    = config.EMPRESA.direccion;
-const url_backend    = config.URL.BACKEND;
+// const url_backend    = config.URL.BACKEND;
+const url_backend = 'https://fkt9b3xc-3000.use2.devtunnels.ms/';
 
 let transporter = nmailer.createTransport({
    host  : "smtp.gmail.com",
@@ -34,6 +35,8 @@ let transporter = nmailer.createTransport({
 
 export const sendMail = async (email: string, subject: string, html: string) => {
    try {
+      console.log("email", email, "config.MAIL.correo", config.MAIL.correo );
+      
       await transporter.sendMail({
          from     : `JLRAMIREZ <${config.MAIL.correo}>`,
          to       : email,
@@ -49,7 +52,9 @@ export const sendMail = async (email: string, subject: string, html: string) => 
          ],
       });
    } catch (error) {
-      console.log('No fue posible enviar email de confirmación, '+error)
+      console.log(error);
+      
+      console.log('No fue posible enviar email , '+error)
    }
 }
 

@@ -21,13 +21,13 @@ export const getWallet = async (req: Request, res: Response): Promise<Response> 
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Itinerario no encontrado'
+                msg_status: 'Wallet no encontrado'
             });
         }
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Itinerario encontrada satisfactoriamente.'
+            msg_status: 'Wallet encontrada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -55,13 +55,13 @@ export const getWalletByUser = async (req: Request, res: Response): Promise<Resp
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Itinerario no encontrado'
+                msg_status: 'wallet no encontrado'
             });
         }
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Itinerario encontrada satisfactoriamente.'
+            msg_status: 'wallet encontrada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({

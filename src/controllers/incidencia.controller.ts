@@ -65,22 +65,22 @@ export const getDataIncidencia = async (req: Request, res: Response): Promise<Re
             select: 'color nombre'
         },
     })
-        .populate({
-            path: 'choferid colectorid',
-            select: 'userid',
-            populate: {
-                path: 'userid',
-                select: 'nombre'
-            },
-        })
-        .populate('rutaid baseid');
+        // .populate({
+        //     path: 'choferid',
+        //     select: 'userid',
+        //     populate: {
+        //         path: 'userid',
+        //         select: 'nombre'
+        //     },
+        // })
+        .populate('rutaid baseid choferid','nombre');
 
     try {
         if (data.length === 0) {
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'incidencia no enconttrada'
             });
         }
         return res.status(httpCode[200].code).json({
