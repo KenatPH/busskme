@@ -153,6 +153,9 @@ export const getDataCalificarChoferes = async (req: Request, res: Response): Pro
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
    const { userid,choferid,comentario,calificacion} = req?.body
+
+   console.log(req.body);
+   
    
    if(!utilsHandle.validateFieldID(userid)){
         return res.status(httpCode[409].code).json({
@@ -197,7 +200,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
             newCalif
          },         
          num_status:httpCode[201].code,
-         msg_status: httpCode[600].es
+         msg_status: "Calificacion guardada con exito"
       });
       
    } catch (error) {

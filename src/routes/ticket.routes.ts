@@ -12,6 +12,7 @@ router.post('/create', checkAuth, createSimple);
 // router.post('/active/:id', checkAuth, activarBase);
 router.get('/show', getDataTicket);
 // router.get('/show/:id', getBase);
+router.post('/pay', checkAuth, createSimple);
 
 
 export default router;

@@ -5,11 +5,11 @@ import { Schema, Document } from "mongoose";
 export const ticketSchema = new Schema({
     userid: {
         type: Schema.Types.ObjectId,
-        ref: 'Ruta'
+        ref: 'User'
     },
     servicioid: {
         type: Schema.Types.ObjectId,
-        ref: 'Ruta'
+        ref: 'Servicio'
     },
     monto: {
         type: Number
