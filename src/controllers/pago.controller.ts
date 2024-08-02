@@ -608,7 +608,7 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
         await wallet.save();
 
         const titulo = "Pago Confirmado";
-        const cuerpo = `Su pago fue confirmado con exito`;
+        const cuerpo = `Su pago fue confirmado con éxito`;
         // const link = `/resumenTorneo/${torneo.id}`;
 
         // console.log(data.user.id);

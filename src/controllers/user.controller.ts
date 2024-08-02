@@ -451,7 +451,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
             "token": token
          },         
          num_status:httpCode[201].code,
-         msg_status: 'User created successfully, an email has been sent to confirm your account, check your spam folder.'
+            msg_status: 'Usuario creado exitosamente, se envió un correo electrónico para confirmar su cuenta, revise su carpeta de spam.'
       });
       
    } catch (error) {
@@ -595,7 +595,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                      "genero": user.genero
          },
          num_status: httpCode[200].code,
-         msg_status: 'Usuario actualizado con exito'
+         msg_status: 'Usuario actualizado con éxito'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({

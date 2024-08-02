@@ -1,6 +1,7 @@
 
 import express, { Request, Response } from "express";
 import Servicio from "../models/servicio.models";
+import Itinerario from "../models/itinerario.model";
 import mongoose from "mongoose";
 import { paradaSchema } from "../schemas/parada.schema";
 import { httpCode } from "../utils/httpStatusHandle";
@@ -74,7 +75,65 @@ export const getServicio = async (req: Request, res: Response): Promise<Response
         });
     }
 }
+export const getServicioActivoByUser = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+        });
+    }
+    const itin = await Itinerario.find({$or:[{ choferid: id }, { colectorid: id }]})
 
+    if (itin.length === 0) {
+        return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No Itinerario found'
+        });
+    }
+
+    const arregloItinerarios = itin.map((it) => { return it._id })
+
+    const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+        path: 'itinerarioid',
+        populate: [
+            {
+                path: 'vehiculoid',
+                select: 'colorid modeloid marcaid',
+                populate: [
+                    { path: 'colorid', select: 'color' },
+                    { path: 'modeloid', select: 'nombre' },
+                    { path: 'marcaid', select: 'nombre' }
+                ]
+            },
+            { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+        ]
+    })
+
+    try {
+        if (Servs.length === 0) {
+            return res.status(httpCode[404].code).json({
+                data_send: "",
+                num_status: httpCode[404].code,
+                msg_status: 'No Servicio found'
+            });
+        }
+
+        return res.status(httpCode[200].code).json({
+            data_send: Servs,
+            num_status: httpCode[200].code,
+            msg_status: 'Data found successfully'
+        });
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later '
+        });
+    }
+}
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
     const { itinerarioid, latitud, longitud } = req.body

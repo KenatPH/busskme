@@ -200,7 +200,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
             newCalif
          },         
          num_status:httpCode[201].code,
-         msg_status: "Calificacion guardada con exito"
+         msg_status: "Calificacion guardada con éxito"
       });
       
    } catch (error) {

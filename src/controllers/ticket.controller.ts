@@ -42,7 +42,26 @@ export const getTicket = async (req: Request, res: Response): Promise<Response> 
 
 export const getDataTicket = async (req: Request, res: Response): Promise<Response> => {
     
-    const data = await Ticket.find();
+    const data = await Ticket.find().populate({
+        path:'servicioid',
+        populate:[
+            {
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+}
+        ]
+    }).populate('userid','nombre');
 
     try {
         if (data.length === 0) {
@@ -179,7 +198,10 @@ export const createSimple = async (req: Request, res: Response): Promise<Respons
 
     const { userid,
         servicioid,
-        monto } = req?.body
+        monto } = req.body
+
+    console.log(req.body);
+    
 
     if (!utilsHandle.validateFieldID(userid)) {
         return res.status(httpCode[409].code).json({
@@ -234,6 +256,8 @@ export const createSimple = async (req: Request, res: Response): Promise<Respons
             walletUser.balance_bs = resta(walletUser.balance_bs, monto)
             walletUser.balance_usd = resta(walletUser.balance_usd, monto)
 
+            await walletUser.save()
+
         }else{
             return res.status(httpCode[404].code).json({
                 data_send: {},
@@ -252,7 +276,7 @@ export const createSimple = async (req: Request, res: Response): Promise<Respons
     });
 
 
-    const titulo = "Pasaje pagado Con exito";
+    const titulo = "Pasaje pagado Con éxito";
     const cuerpo = `El ticket de su pasaje fue pagado satisfactoriamente`;
     // const link = `/resumenTorneo/${torneo.id}`;
 

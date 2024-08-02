@@ -21,7 +21,7 @@ export const getListNotificacion = async (req: Request, res: Response): Promise<
         const data = await Notificaciones
                 .find({
                     userid: id 
-                }).sort([['createdAt', 'desc']]).skip(offset).limit(10);
+                }).sort([['createdAt', 'desc']])/* .skip(offset).limit(10); */
 
 
         const notificiacionesNoLeidas = await Notificaciones.countDocuments({ userid: id, leida: false })

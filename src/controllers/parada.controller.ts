@@ -125,14 +125,6 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
    const arregloItinerarios  =  itin.map((it)=>{ return it._id})
    
    const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate('itinerarioid')
-      // .populate({
-      //    path: 'itinerarioid',
-      //    select: 'vehiculoid modeloid marcaid userid',
-      //    populate: {
-      //       path: 'colorid modeloid marcaid userid',
-      //       select: 'color nombre'
-      //    },
-      // })
 
    try {
       if(dat.length === 0){
@@ -154,6 +146,81 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
          msg_status: 'There was a problem with the server, try again later '
       })
    }   
+}
+export const getDataServiciosByParada = async (req: Request, res: Response): Promise<Response> => {
+   const { id } = req.params;
+   if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'Id is invalid'
+      });
+   }
+   
+   try {
+      const dat = await Parada.findById(id)
+
+      if (!dat) {
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No parada found'
+         });
+      }
+
+      const itin = await Itinerario.find({ rutaid: dat.rutaid }, { _id: 1 })
+
+      if (itin.length === 0) {
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No Itinerario found'
+         });
+      }
+
+      const arregloItinerarios = itin.map((it) => { return it._id })
+
+      const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+         path: 'itinerarioid',
+         populate: [
+            {
+               path: 'vehiculoid',
+               select:'colorid modeloid marcaid',
+               populate: [
+                  { path: 'colorid', select:'color' },
+                  { path: 'modeloid', select: 'nombre' },
+                  { path: 'marcaid', select: 'nombre' }
+               ]
+            }, 
+            { path: 'choferid colectorid baseid rutaid', select:'nombre genero fotoperfil'},
+
+         
+
+         ]
+      })
+
+      if (Servs.length === 0) {
+         return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No Servicio found'
+         });
+      }
+
+      return res.status(httpCode[200].code).json({
+         data_send: Servs ,
+         num_status: httpCode[200].code,
+         msg_status: 'Data found successfully'
+      });
+   } catch (error) {
+      console.log(error);
+      
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'There was a problem with the server, try again later '
+      })
+   }
 }
 
 export const create = async (req: Request, res: Response): Promise<Response> => {

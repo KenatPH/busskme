@@ -195,14 +195,16 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'baseid no es válido'
         });
     }
-
-    if (!utilsHandle.validateFecha(fecha)) {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: httpCode[409].message + ', La fecha es requerida, formato (YYYY-MM-DD).'
-        });
+    if(fecha){
+        if (!utilsHandle.validateFecha(fecha)) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: httpCode[409].message + ', formato de fecha invalido, formato (YYYY-MM-DD).'
+            });
+        }
     }
+
 
     if (!utilsHandle.validateTime24HourFormat(hora_salida)) {
         return res.status(httpCode[409].code).json({

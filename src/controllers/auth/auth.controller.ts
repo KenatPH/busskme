@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
    const user = await User.findOne({correo: correo}).populate('roles','nombre');
    if(!user) {
       return res.status(httpCode[404].code).json({
-         data_send: "",         
+         data_send: "Usuario no encontrado",         
          num_status:httpCode[404].code,
          msg_status: 'The user does not exist!'         
       })
@@ -67,7 +67,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
-         msg_status: 'Your account needs to be validated, Best padel ranking has sent you an email, verify and follow the instructions!'         
+         msg_status: 'Su cuenta debe ser validada, se ha enviado un email a su correo, verifica y sigue las instrucciones!'         
       })
    }
    
@@ -193,7 +193,7 @@ export const solitudResetPassword = async (req: Request, res: Response): Promise
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'User not found'
+            msg_status: 'Usuario no encontrado'
          });
       }
 
@@ -210,7 +210,7 @@ export const solitudResetPassword = async (req: Request, res: Response): Promise
       return res.status(httpCode[200].code).json({
          data_send: "",
          num_status: httpCode[200].code,
-         msg_status: 'Password reset prepared successfully'
+         msg_status: 'Restablecimiento de contraseña preparado exitosamente'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({
