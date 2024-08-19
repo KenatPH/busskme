@@ -1,15 +1,22 @@
+
 import { Router } from "express";
-//import { validateCreate } from '../validators/categoria.validator';
-import MulterMiddleware from '../middlewares/MulterPhotosMiddleware';
+import { create, update, register, deleteOperador, getDataOperadores, getOperador, getOperadorByUserId, testmailOperador } from "../controllers/operador.controller";
 import { checkAuth } from '../config/config.jwt';
-import { activar, create, deleteIncidencia, getDataIncidencia, update, validarIncidencia } from "../controllers/incidencia.controller";
 import config from '../config/config';
-const multer = new MulterMiddleware(config.STORAGEAPI.imgincidencia, 'incidencia');
-const upload = multer.getMiddleware().single('imagen');
+import MulterMiddleware from '../middlewares/MulterPhotosMiddleware';
+
+const multer = new MulterMiddleware(config.STORAGEAPI.imgsOperador, 'operador');
+
+const upload = multer.getMiddleware().fields([{ name: 'fotoperfil', maxCount: 1 },
+{ name: 'imagen_dni', maxCount: 1 },
+{ name: 'imagen_licencia', maxCount: 1 },
+{ name: 'imagen_cermed', maxCount: 1 },]);
+
+
 
 const router = Router();
 
-router.post('/create',  checkAuth, function (req, res, next) {
+router.post('/create', function (req, res, next) {
     upload(req, res, (err) => {
 
         if (err) {
@@ -27,7 +34,8 @@ router.post('/create',  checkAuth, function (req, res, next) {
         }
         next();
     })
-}, create);
+}, register);
+
 router.put('/update/:id', checkAuth, function (req, res, next) {
     upload(req, res, (err) => {
 
@@ -47,10 +55,13 @@ router.put('/update/:id', checkAuth, function (req, res, next) {
         next();
     })
 }, update);
-router.delete('/delete/:id', checkAuth, deleteIncidencia);
-router.post('/active/:id', checkAuth, activar);
-router.get('/show', getDataIncidencia);
-router.get('/show/:id', getDataIncidencia);
-router.post('/validar/:id', checkAuth, validarIncidencia);
+
+router.delete('/delete/:id', checkAuth, deleteOperador);
+router.get('/show', getDataOperadores);
+router.get('/show/:id', getOperador);
+router.get('/show/user/:id', getOperadorByUserId);
+router.get('/correo', testmailOperador)
+
 
 export default router;
+

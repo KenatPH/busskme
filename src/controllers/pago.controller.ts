@@ -1,10 +1,14 @@
 import express, { Request, Response } from "express";
 import Pago from "../models/pago.models";
+import Reserva from "../models/reserva.models";
+import Tarifa from "../models/tarifa.models";
+import Wallet from "../models/wallet.model";
+import Ticket from "../models/ticket.models";
+import Vehiculo from "../models/vehiculos/vehiculo.models";
 import path from 'path';
 import config from '../config/config';
 import mongoose from "mongoose";
 import User from "../models/users.models";
-import Wallet from "../models/wallet.model"
 import { httpCode } from "../utils/httpStatusHandle";
 import { ObjectId } from 'mongodb';
 import fs from 'fs-extra';
@@ -332,21 +336,21 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
     const { userid, titulo, referencia, metodopagoid, servicioid, monto } = req?.body
     // const { titulo, referencia, nombre, telefono, cedula, userId, torneoId } = req.body;
 
-    if (!titulo || titulo == null || titulo == undefined || titulo == "") {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: httpCode[409].message + ', La titulo  es requerido.'
-        });
-    }
+    // if (!titulo || titulo == null || titulo == undefined || titulo == "") {
+    //     return res.status(httpCode[409].code).json({
+    //         data_send: "",
+    //         num_status: httpCode[409].code,
+    //         msg_status: httpCode[409].message + ', La titulo  es requerido.'
+    //     });
+    // }
 
-    if (!referencia || referencia == null || referencia == undefined || referencia == "") {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: httpCode[409].message + ', La referencia  es requerida.'
-        });
-    }
+    // if (!referencia || referencia == null || referencia == undefined || referencia == "") {
+    //     return res.status(httpCode[409].code).json({
+    //         data_send: "",
+    //         num_status: httpCode[409].code,
+    //         msg_status: httpCode[409].message + ', La referencia  es requerida.'
+    //     });
+    // }
 
     if (userid === null || userid === undefined || !userid || !ObjectId.isValid(userid)) {
         return res.status(httpCode[409].code).json({
@@ -363,7 +367,6 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
             msg_status: 'metodopagoid no es válido'
         });
     }
-
 
     if (monto === null || monto === undefined || !monto ) {
         return res.status(httpCode[409].code).json({
@@ -404,6 +407,8 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
 
 
         if (!notificacion || notificacion.success === false) {
+            console.log("fallo 1", notificacion);
+            
             return res.status(409).json({
                 data_send: "",
                 num_status: httpCode[201].code,
@@ -414,9 +419,10 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
         const titulo2 = "Registro de pago";
         const cuerpo1 = `Se a registrado un pago a su cuenta`;
         const link1 = "";
-        const notificacion1 = await crearNotificacion(titulo2, cuerpo1, link1, '',true );
+        const notificacion1 = await crearNotificacion(titulo2, cuerpo1, link1, null ,true );
 
         if (!notificacion1 || notificacion1.success === false) {
+            console.log("fallo 2", notificacion1);
             return res.status(409).json({
                 data_send: "",
                 num_status: httpCode[201].code,
@@ -597,11 +603,7 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
         const suma = (a:any, b:any)=>{
             return parseFloat(a) + parseFloat(b);
         }
-        // console.log("data.monto", data.monto);
-        // console.log("wallet.balance_usd", wallet.balance_usd);
-        // console.log("wallet.balance_bs", wallet.balance_bs);
-        // console.log("suma(wallet.balance_usd, data.monto)", suma(wallet.balance_usd, data.monto));
-        // console.log("suma(wallet.balance_bs, data.monto)", suma(wallet.balance_bs, data.monto));
+
         
         wallet.balance_usd = (data && data.monto) ? suma(wallet.balance_usd, data.monto) : wallet.balance_usd;
         wallet.balance_bs = (data && data.monto) ? suma(wallet.balance_bs, data.monto) : wallet.balance_bs;
@@ -631,4 +633,190 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
     }
 }
 
+export const pagarViaje = async (req: Request, res: Response): Promise<Response> => {
 
+    const {ispreferencial, cantidad_pasajes, codigo_unidad} =  req.body
+
+    const userid = req.user
+
+
+    try {
+
+
+        const reserva:any = await Reserva.findOne({ userid, activo: true }).populate('paradadestinoid paradaorigenid', 'nombre orden').populate({
+            path: 'servicioid',
+            populate: {
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            }
+        });
+
+        if (!reserva) {
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[204].code,
+                msg_status: 'Reserva no encontrada'
+            });
+        }
+        
+        // if  (!codigo_unidad || codigo_unidad === "" || codigo_unidad === undefined) {
+        //     return res.status(httpCode[200].code).json({
+        //         data_send: [],
+        //         num_status: httpCode[204].code,
+        //         msg_status: 'Reserva no encontrada y no suminitro codigo de unidad'
+        //     });
+        // }
+
+        let choferId = reserva.servicioid.itinerarioid.choferid._id
+        // let vehiculo:any
+
+        // if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
+        //     vehiculo = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
+        //         .populate('userid choferid marcaid modeloid colorid', 'nombre color');
+
+        //     if(vehiculo){
+        //         return res.status(httpCode[200].code).json({
+        //             data_send: [],
+        //             num_status: httpCode[200].code,
+        //             msg_status: 'Vehículo no encontrado'
+        //         });
+        //     }
+
+        //     choferId = vehiculo.choferid    
+        // }
+
+
+
+
+        
+        const calculoParadas = (a:number, b:number) => {
+            if (b > a) {
+                return b - a;
+            } else {
+                return a - b;
+            }
+        }
+
+        const cantidadParadasRecorridas = calculoParadas(reserva.paradaorigenid.orden, reserva.paradadestinoid.orden)
+
+        const tarifa = await Tarifa.findOne({
+            cantidadMinimaParadas: { $lte: cantidadParadasRecorridas },
+            cantidadMaximaParadas: { $gte: cantidadParadasRecorridas }
+        });
+
+
+        if (!tarifa) {
+            return res.status(httpCode[200].code).json({
+                data_send: [],
+                num_status: httpCode[204].code,
+                msg_status: 'tarifa no encontrada'
+            });
+        }
+
+        if (ispreferencial){
+
+            const walletUser = await Wallet.findOne({ userid: userid })
+    
+            if (!walletUser) {
+                return res.status(httpCode[404].code).json({
+                    data_send: "",
+                    num_status: httpCode[404].code,
+                    msg_status: 'wallet no encontrada.'
+                });
+            } else {
+                const validaMonto = (a: any, b: any) => {
+                    const wall = parseFloat(a)
+                    const mont = parseFloat(b)
+    
+                    if (wall >= mont) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+    
+                const resta = (a: any, b: any) => {
+                    return parseFloat(a) - parseFloat(b);
+                }
+    
+                if (validaMonto(walletUser.balance_bs, 1)) {
+    
+                    walletUser.balance_bs = resta(walletUser.balance_bs, 1)
+                    walletUser.balance_usd = resta(walletUser.balance_usd, 1)
+    
+                    await walletUser.save()
+
+                    const newTicket = new Ticket({
+                        userid,
+                        servicioid: reserva.servicioid,
+                        monto:0,
+                        pagado: true
+                    });
+
+                    await newTicket.save();
+
+                    reserva.activo = false
+
+                    await reserva.save()
+    
+                } else {
+                    return res.status(httpCode[404].code).json({
+                        data_send: {},
+                        num_status: httpCode[404].code,
+                        msg_status: 'saldo en wallet insuficiente.'
+                    });
+                }
+            }
+        }else{
+            return res.status(httpCode[404].code).json({
+                data_send: {},
+                num_status: httpCode[404].code,
+                msg_status: 'chupe guadalupe.'
+            });
+        }
+
+        
+
+        const titulo1 = "Servicio pagado con exito";
+        const cuerpo = `Se a registrado un pago de ${cantidad_pasajes} pasaje/s `;
+        const link = "";
+        const notificacion = await crearNotificacion(titulo1, cuerpo, link, choferId);
+
+
+        if (!notificacion || notificacion.success === false) {
+            console.log("fallo 1", notificacion);
+
+            return res.status(409).json({
+                data_send: "",
+                num_status: httpCode[201].code,
+                msg_status: notificacion.msg
+            });
+        }
+
+
+        return res.status(201).json(
+            {
+                data_send: "",
+                num_status: httpCode[201].code,
+                msg_status: 'Pago creado correctamente.'
+            });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: error
+        })
+    }
+}

@@ -17,7 +17,10 @@ import config from '../config/config';
 import {checkAuth} from '../config/config.jwt';
 const router = Router();
 const multer = new MulterMiddleware(config.STORAGEAPI.fotop,'user');
-const upload = multer.getMiddleware().single('fotoperfil');
+// const upload = multer.getMiddleware().single('fotoperfil');
+
+const upload = multer.getMiddleware().fields([{ name: 'fotoperfil', maxCount: 1 },
+{ name: 'imagen_preferencial', maxCount: 1 }]);
 
 
 router.post('/register', function(req,res,next){upload(req, res, (err) => {

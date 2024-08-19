@@ -50,7 +50,8 @@ export const checkAuth = async (req: Request, res: Response, next:any) => {
    const tokenVerified = await getTokenData(token);
    
    if(tokenVerified !== null && tokenVerified.data.id){         
-      const currentTimestamp = Math.floor(Date.now() / 1000); // Fecha actual en segundos         
+      const currentTimestamp = Math.floor(Date.now() / 1000); // Fecha actual en segundos 
+      req.user = tokenVerified.data.id;        
       next();          
    }else{
       return res.status(httpCode[401].code).json({

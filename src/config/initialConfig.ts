@@ -76,8 +76,9 @@ class initialConfig {
    async createRoles() {
       try {
          const count = await Role.estimatedDocumentCount();
-   
+         
          if (count > 0) return;
+         
          
 
          const values = await Promise.all([      
@@ -88,6 +89,7 @@ class initialConfig {
             new Role({ nombre: "colector", activo:true }).save(),
             new Role({ nombre: "avance", activo:true }).save(),
             new Role({ nombre: "organizador", activo:true }).save(),
+            new Role({ nombre: "operador", activo: true }).save(),
          ]);
    
          console.log(values);

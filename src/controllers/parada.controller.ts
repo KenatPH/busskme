@@ -68,7 +68,7 @@ export const getDataParadas = async (req: Request, res: Response): Promise<Respo
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'No parada found'
+            msg_status: 'No existen paradas'
          });
       }
       return res.status(httpCode[200].code).json({
@@ -147,6 +147,7 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
       })
    }   
 }
+
 export const getDataServiciosByParada = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params;
    if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
@@ -164,7 +165,7 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'No parada found'
+            msg_status: 'no existen paradas'
          });
       }
 
@@ -174,7 +175,7 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'No Itinerario found'
+            msg_status: 'Itinerario no encontrado'
          });
       }
 
@@ -193,9 +194,6 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
                ]
             }, 
             { path: 'choferid colectorid baseid rutaid', select:'nombre genero fotoperfil'},
-
-         
-
          ]
       })
 
@@ -203,14 +201,14 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
          return res.status(httpCode[404].code).json({
             data_send: "",
             num_status: httpCode[404].code,
-            msg_status: 'No Servicio found'
+            msg_status: 'Servicios no encontrados'
          });
       }
 
       return res.status(httpCode[200].code).json({
          data_send: Servs ,
          num_status: httpCode[200].code,
-         msg_status: 'Data found successfully'
+         msg_status: 'Servicios encontrados con éxito'
       });
    } catch (error) {
       console.log(error);
@@ -225,7 +223,7 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
-   const { rutaid,municipioid,nombre,latitud,longitud,distancia} = req?.body   
+   const { rutaid,municipioid,nombre,latitud,longitud,distancia, orden} = req?.body   
    if(rutaid === null || rutaid === undefined || !rutaid || !ObjectId.isValid(rutaid)
    ||municipioid === null || municipioid === undefined || !municipioid || !ObjectId.isValid(municipioid)){
       return res.status(httpCode[409].code).json({
@@ -276,6 +274,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'El campo distancia es obligatorio, verifique.'         
       });
    }
+   if (!orden || orden === null || orden == "" || orden == undefined) {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: 'El campo orden es obligatorio, verifique.'
+      });
+   }
    const qr ="";       
    const newParada = new Parada({
       rutaid:rutaid,
@@ -284,7 +289,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       latitud:latitud,
       longitud:longitud,
       distancia:distancia,
-      cod_qr:qr 
+      cod_qr:qr, 
+      orden
    });
 
    try {
@@ -311,7 +317,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    try {
                   
       const id = req.params.id;
-      const { rutaid,municipioid,nombre,latitud,longitud,distancia} = req?.body 
+      const { rutaid,municipioid,nombre,latitud,longitud,distancia, orden} = req?.body 
 
 
       
@@ -366,6 +372,13 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El campo distancia es obligatorio, verifique.'         
          });
       }
+      if (!orden || orden === null || orden == "" || orden == undefined) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El campo orden es obligatorio, verifique.'
+         });
+      }
       
       const qr = "";
       const updrut = await Parada.findOneAndUpdate({_id: id}, 
@@ -376,7 +389,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             latitud:latitud,
             longitud:longitud,
             distancia:distancia,
-            cod_qr:qr            
+            cod_qr:qr, 
+            orden:orden           
          }}, 
          {new: true});
       if(!updrut) {

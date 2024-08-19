@@ -35,6 +35,9 @@ export const paradaSchema = new Schema ({
    distancia:{
       type: Schema.Types.Decimal128,
    },
+   orden:{
+      type: Number
+   },
    cod_qr: {
       type: String,      
    },

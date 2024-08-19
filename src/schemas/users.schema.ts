@@ -53,6 +53,9 @@ export const userSchema = new Schema({
    fotoperfil: {
       type: String      
    },
+   fotopreferencial: { 
+      type: String
+    },
    clave: {
       type: String,
       required: [true, 'La contraseña es necesaria']
@@ -94,6 +97,10 @@ export const userSchema = new Schema({
    activo: {    
       type: Boolean,
       default: true
+   },
+   preferencialid: {
+      ref: 'TipoPreferencial',
+      type: Schema.Types.ObjectId,
    },
    resetPasswordToken:{
       type: String

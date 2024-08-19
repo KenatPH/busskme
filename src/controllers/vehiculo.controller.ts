@@ -11,6 +11,7 @@
 
 import express, { Request, Response } from "express";
 import Vehiculo from "../models/vehiculos/vehiculo.models";
+import Reporte from "../models/reporteOperativo.models"
 import {ObjectId} from 'mongodb';
 import {httpCode}  from "../utils/httpStatusHandle";
 import fs from 'fs-extra';
@@ -115,19 +116,14 @@ export const getDataVehiculosbyDriver = async (req: Request, res: Response): Pro
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
    
-   const { userid,choferid,nro_certificado_registro, placa,serial_niv, serial_chasis,
+   const { choferid,nro_certificado_registro, placa,serial_niv, serial_chasis,
            serial_carroceria, serial_motor, marcaid, modeloid, colorid, anno, clase,
            tipo, uso, servicio, puestos, intt_nro, fecha_emision_intt,   
            nro_autorizacion, empresa_seguro, nro_poliza,
-           nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza} = req?.body
+      nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, codigo_unidad } = req?.body
+
+   const userid = req.user
    
-   if(!utilsHandle.validateFieldID(userid)){
-      return res.status(httpCode[409].code).json({
-         data_send: "",
-         num_status: httpCode[409].code,
-         msg_status: 'El campo userid no es válido'
-      });
-   }
    if (!utilsHandle.validateFieldID(choferid)) {
       return res.status(httpCode[409].code).json({
          data_send: "",
@@ -282,6 +278,14 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: httpCode[409].message+', El campo fecha_venc_poliza no tiene un formato válido (YYYY-MM-DD).'
       });          
    }
+
+   if (!codigo_unidad || codigo_unidad === null || codigo_unidad === "") {
+      return res.status(httpCode[409].code).json({
+         data_send: "",
+         num_status: httpCode[409].code,
+         msg_status: httpCode[409].message + ', El campo codigo unidad requerido.'
+      });
+   }
    var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
    imgs = req.files;  
    if(imgs != undefined && imgs !== null && imgs){ 
@@ -327,7 +331,9 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       fecha_emision_poliza, 
       fecha_venc_poliza,
       img_certificado: img_certificado_path,
-      img_poliza: img_poliza_path                  
+      img_poliza: img_poliza_path,
+      codigo_unidad
+
    });
 
    try {      
@@ -341,6 +347,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });
       
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
@@ -360,18 +368,18 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'El Id no es válido'
          });
       }
-      const { userid, choferid, nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
+      const {  choferid, nro_certificado_registro,placa,serial_niv,serial_chasis,serial_carroceria, 
          serial_motor,marcaid,modeloid,colorid,anno,clase,tipo,uso,servicio,puestos, 
          intt_nro,fecha_emision_intt,nro_autorizacion,empresa_seguro,nro_poliza,
-         nro_sudeaseg,fecha_emision_poliza,fecha_venc_poliza } = req.body
-
-      if(!utilsHandle.validateFieldID(userid)){
-         return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'El campo userid no es válido'
-         });
-      }
+         nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, codigo_unidad } = req.body
+      const userid:any = req.user
+      // if(!utilsHandle.validateFieldID(userid)){
+      //    return res.status(httpCode[409].code).json({
+      //       data_send: "",
+      //       num_status: httpCode[409].code,
+      //       msg_status: 'El campo userid no es válido'
+      //    });
+      // }
 
       if (!utilsHandle.validateFieldID(choferid)) {
          return res.status(httpCode[409].code).json({
@@ -529,6 +537,14 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          });          
       }
 
+      if (!codigo_unidad || codigo_unidad === null || codigo_unidad===""){
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', El campo codigo unidad requerido.'
+         });          
+      }
+
       const data = await Vehiculo.findOne({_id: id});
       if (!data) {
          return res.status(httpCode[200].code).json({
@@ -566,9 +582,23 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       }else{
          img_certificado_path = data.img_certificado;
          img_poliza_path = data.img_poliza;      
-      }  
-      data.userid = data.userid,    
-      data.choferid = data.choferid,   
+      } 
+      
+      if (data.choferid != choferid){
+         const choferAnterior = data.choferid;
+   
+         const reporte = new Reporte({
+            vehiculoId: data._id,
+            choferAnterior: choferAnterior,
+            choferNuevo: choferid
+         });
+   
+         await reporte.save();
+      }
+
+
+      data.userid                      = userid,    
+      data.choferid                    = choferid,   
       data.nro_certificado_registro    = nro_certificado_registro,
       data.placa                       = placa,
       data.serial_niv                  = serial_niv,
@@ -594,13 +624,14 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       data.fecha_venc_poliza           = fecha_venc_poliza,
       data.img_certificado             = img_certificado_path,
       data.img_poliza                  = img_poliza_path
+      data.codigo_unidad               = codigo_unidad
 
       await data.save();
        
       return res.status(httpCode[200].code).json({         
          data_send: data,
          num_status: httpCode[200].code,
-         msg_status: 'Vehiculo updated successfully'
+         msg_status: 'Vehiculo actualizado con exito'
       });
    } catch (error) {
       return res.status(httpCode[500].code).json({

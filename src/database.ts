@@ -13,7 +13,8 @@ import config from "./config/config";
 
 var db_uri="";
 if(!config.RUN_MODE){
-   db_uri = "mongodb://buskm:FdXspPNirP4Q7M8Pr6tIuunHSvmXn1712%23adhH6zsZn5d3xenEqqN9ZQv0409@206.189.198.108:32770/busskm?authMechanism=DEFAULT"
+   db_uri = "mongodb://busskm:FdXspPNirP4Q7M8Pr6tIuunHSvmXn1712%23adhH6zsZn5d3xenEqqN9ZQv0409@206.189.198.108:27017/bdbusskm?tls=false&authMechanism=DEFAULT"
+   // db_uri = "mongodb+srv://krtabares:e7PPfzmdPxOTprsI@mongotest.ub8zvum.mongodb.net/"
    // db_uri = "mongodb://127.0.0.1:27017/busskm"
    // if(config.DB.URI !== undefined){
    //    db_uri = config.DB.URI;

@@ -1,11 +1,14 @@
 
 import express, { Request, Response } from "express";
 import Incidencia from "../models/incidencia.model";
+import User from "../models/users.models";
+import Role from "../models/role.models";
 import { ObjectId } from 'mongodb';
 import { httpCode } from "../utils/httpStatusHandle";
 import utilsHandle from "../utils/utilsHandle";
 import path from 'path';
 import fs from 'fs-extra';
+import { crearNotificacion } from "./notificacion.controller";
 
 export const getIncidencia = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
@@ -107,6 +110,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         descripcion,
         fecha } = req?.body
 
+    const  userId  = req.user
+
     if (vehiculoid === null || vehiculoid === undefined || !vehiculoid || !ObjectId.isValid(vehiculoid)) {
         return res.status(httpCode[409].code).json({
             data_send: "",
@@ -131,21 +136,6 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         });
     }
 
-    // if (colectorid === null || colectorid === undefined || !colectorid || !ObjectId.isValid(colectorid)) {
-    //     return res.status(httpCode[409].code).json({
-    //         data_send: "",
-    //         num_status: httpCode[409].code,
-    //         msg_status: 'colectorid no es válido'
-    //     });
-    // }
-
-    // if (baseid === null || baseid === undefined || !baseid || !ObjectId.isValid(baseid)) {
-    //     return res.status(httpCode[409].code).json({
-    //         data_send: "",
-    //         num_status: httpCode[409].code,
-    //         msg_status: 'baseid no es válido'
-    //     });
-    // }
 
     if (!utilsHandle.validateFecha(fecha)) {
         return res.status(httpCode[409].code).json({
@@ -164,6 +154,29 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         imagen_incidencia = "";
     }  
 
+    const admin = await Role.find({ $or: [{ nombre: "admin" }, { nombre: "superadmin" }] });
+
+    // console.log(admin);
+    let aprobado = false
+    let adminuser = null
+
+
+    
+    if (admin) {
+
+        // console.log(admin.map((a: any) => { return a._id }));
+        
+        // Busca el usuario con el rol de admin
+        adminuser = await User.findOne({ $and: [{ _id: new ObjectId(`${userId}`) },{$or:admin.map((a:any)=>{return {roles : a._id}})}]  });
+        // console.log(adminuser);
+    
+        if(adminuser){
+            aprobado = true
+        }
+    } else {
+        console.log('No se encontró el rol de admin');
+    }
+    // return res.status(httpCode[500].code).json({})
 
     const newInt = new Incidencia({
         vehiculoid,
@@ -175,11 +188,32 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         fecha,
         imagen: imagen_incidencia,
         activo: true,
+        aprobado
     });
 
     try {
 
         await newInt.save();
+
+        if(!adminuser){
+
+            const titulo1 = "Nueva de incidencia";
+            const cuerpo = `Se a registrado una incidencia`;
+            const link = "/incidencias?id="+ newInt._id;
+            const notificacion = await crearNotificacion(titulo1, cuerpo, link, null, true);
+
+            if (!notificacion || notificacion.success === false) {
+                console.log("fallo 1", notificacion);
+
+                return res.status(409).json({
+                    data_send: "",
+                    num_status: httpCode[201].code,
+                    msg_status: notificacion.msg
+                });
+            }
+
+        }
+
 
         return res.status(httpCode[201].code).json(
             {
@@ -407,6 +441,60 @@ export const activar = async (req: Request, res: Response): Promise<Response> =>
             data_send: "",
             num_status: httpCode[500].code,
             msg_status: 'There was a problem with the server, try again later '
+        });
+    }
+}
+
+export const validarIncidencia = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    console.log(req.user);
+ 
+    
+    try {
+        if (!id) {
+
+            return res.status(200).json({
+                data_send: "",
+                num_status: 1,
+                msg_status: 'Los campos id son obligatorios'
+            })
+
+        }
+        const data = await Incidencia.findById(id)
+
+        if (!data) {
+            return res.status(200).json({
+                data_send: "",
+                num_status: 6,
+                msg_status: 'Incidencia no Encontrada'
+            });
+        }
+
+
+
+        data.aprobado = true
+
+
+        const titulo = "incidencia Confirmada";
+        const cuerpo = `Su incidencia fue confirmado con éxito`;
+        const link = `/incidencias/?id=${data._id}`;
+
+        // console.log(data.user.id);
+
+        await crearNotificacion(titulo, cuerpo, link, data._id);
+
+        return res.status(200).json(
+            {
+                data_send: data,
+                num_status: 0,
+                msg_status: 'success'
+            }
+        );
+    } catch (error) {
+
+        console.log(error);
+        return res.status(500).json({
+            message: error
         });
     }
 }

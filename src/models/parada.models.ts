@@ -21,7 +21,8 @@ export interface IParada extends Document {
    longitud: string,
    distancia: Schema.Types.Decimal128,
    cod_qr: string,     
-   aprobado: boolean, 
+   aprobado: boolean,
+   orden:Number, 
    activo: boolean, 
    createdAt: Date,
    updateAt:Date         

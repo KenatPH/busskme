@@ -5,6 +5,7 @@ export interface IPago extends Document {
     userid: Schema.Types.ObjectId,
     servicioid: string,
     metodopagoid:string,
+    tipopagoid: Schema.Types.ObjectId,
     referencia: string,
     monto:Number,
     imagen: string,

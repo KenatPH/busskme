@@ -7,6 +7,7 @@ export interface INotificaciones extends Document {
     cuerpo: string,
     titulo: string,
     leida: boolean,
+    admin: boolean,
     fecha: Date,
     link: string,
     createdAt: Date,

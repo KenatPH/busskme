@@ -36,6 +36,10 @@ export const incidenciaSchema = new Schema({
     imagen: {
         type: String
     },
+    aprobado: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

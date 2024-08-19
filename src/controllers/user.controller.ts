@@ -27,7 +27,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
       
    try {      
       const users = await User.find({},{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})
-      .populate("roles","nombre");
+      .populate("roles preferencialid","nombre");
       if(!users){
          return res.status(httpCode[200].code).json({
             data_send: [],
@@ -88,7 +88,7 @@ export const getUserbyId = async (req: Request, res: Response): Promise<Response
 export const register = async (req: Request, res: Response): Promise<Response> => {
    
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
-           clave, idioma, direccion, roles} = req?.body
+      clave, idioma, direccion, roles, preferencialid } = req?.body
 
    if(!correo || correo == null || correo == undefined || correo == ""){
       return res.status(httpCode[409].code).json({
@@ -174,14 +174,45 @@ export const register = async (req: Request, res: Response): Promise<Response> =
          msg_status: httpCode[409].message+', El rol del usuario es requerido.'
       }); 
    }
+
+   if (preferencialid && preferencialid != null) {
+
+      if (!utilsHandle.validateFieldID(preferencialid)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El id Preferencial no es valido.'
+         });
+      }
+   }
       
-   var img = Object();  let fotoperfil_path = "";
-   img = req.file;   
-   if(img != undefined && img !== null && img){        
-      fotoperfil_path  = img.path ? img.path : "";
-   }else{
+   // var img = Object();  let fotoperfil_path = "";
+   // img = req.file;   
+   // if(img != undefined && img !== null && img){        
+   //    fotoperfil_path  = img.path ? img.path : "";
+   // }else{
+   //    fotoperfil_path = "";
+   // } 
+   
+   var imgs = Object(); 
+   let imagen_preferencial_path; 
+   let fotoperfil_path;
+   imgs = req.files;
+   if (imgs != undefined && imgs !== null && imgs) {
+      if (imgs['imagen_preferencial'] != undefined && imgs['imagen_preferencial'] !== null && imgs['imagen_preferencial']) {
+         imagen_preferencial_path = imgs['imagen_preferencial']?.[0].path ?? "";
+      } else {
+         imagen_preferencial_path = "";
+      }
+      if (imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']) {
+         fotoperfil_path = imgs['fotoperfil']?.[0].path ?? "";
+      } else {
+         fotoperfil_path = "";
+      }
+   } else {
+      imagen_preferencial_path = "";
       fotoperfil_path = "";
-   }   
+   } 
       
    const user = await User.findOne({correo: correo})
    if(user) {
@@ -203,9 +234,11 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       correo,
       telefono, 
       fotoperfil: fotoperfil_path,
+      fotopreferencial: imagen_preferencial_path,
       clave,  
       idioma,
-      direccion            
+      direccion,
+      preferencialid  
       /* origen, 
       fbkid, 
       googleid,
@@ -230,13 +263,16 @@ export const register = async (req: Request, res: Response): Promise<Response> =
    try {
       
       await newUser.save();
+
       const id = newUser._id;                  
+      if (preferencialid){
+   
+         const newWallet = new Wallet({
+            userid: id
+         })
+         newWallet.save()
+      }
 
-      const newWallet = new Wallet({
-         userid: id
-      })
-
-      newWallet.save()
 
       const token = getToken({ correo, id, idcode, nombre, telefono, idioma, roles},'2d');   
       const accion = "confirmar";
@@ -259,6 +295,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       });
       
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
@@ -277,7 +315,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
    }
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
-           idioma, clave, direccion, roles} = req?.body
+      idioma, clave, direccion, roles, preferencialid} = req?.body
                                 
    if(!utilsHandle.validateFieldLetra(nombre)){
       return res.status(httpCode[409].code).json({
@@ -366,6 +404,18 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       }); 
    }
 
+   
+   if (preferencialid && preferencialid !== '') {
+
+      if (!utilsHandle.validateFieldID(preferencialid)) {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El id Preferencial no es valido.'
+         });
+      }
+   }
+
    const user = await User.findOne({correo: correo})
    if(user) {
       return res.status(httpCode[409].code).json({
@@ -375,14 +425,20 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
    }
    
-   var img = Object(); let fotoperfil_path = "";
-   img = req.file;
+   var imgs = Object(); let fotoperfil_path = "";
+   imgs = req.file;
+   console.log(imgs);
    
-   if(img != undefined && img !== null && img){        
-      fotoperfil_path  = img.path ? img.path : "";
-   }else{
+   if (imgs != undefined && imgs !== null && imgs) {
+
+      if (imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']) {
+         fotoperfil_path = imgs['fotoperfil']?.[0].path ?? "";
+      } else {
+         fotoperfil_path = "";
+      }
+   } else {
       fotoperfil_path = "";
-   }
+   } 
    let dir = "";
    if(!direccion){
       dir="";
@@ -401,7 +457,8 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       fotoperfil: fotoperfil_path,
       direccion,
       clave, 
-      idioma: idioma.toLowerCase()   
+      idioma: idioma.toLowerCase(),
+      preferencialid: (preferencialid && preferencialid !== '')? preferencialid:null
       /* origen, 
       fbkid, 
       googleid,
@@ -455,6 +512,8 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
       
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
@@ -466,7 +525,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
 export const update = async (req: Request, res: Response): Promise<Response> => {
    try {
       const { id } = req.params;
-      const { nombre, direccion, dni, telefono, genero, fecha_nacimiento, idioma, roles } = req?.body;
+      const { nombre, direccion, dni, telefono, genero, fecha_nacimiento, idioma, roles, preferencialid} = req?.body;
       
       if(!utilsHandle.validateFieldID(id)){
          return res.status(httpCode[409].code).json({
@@ -533,6 +592,19 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: httpCode[409].message+', La dirección es requerida.'
          }); 
       }
+      console.log(req.body);
+      
+      if (preferencialid &&  preferencialid !== "" ){
+
+         if (!utilsHandle.validateFieldID(preferencialid)) {
+            return res.status(httpCode[409].code).json({
+               data_send: "",
+               num_status: httpCode[409].code,
+               msg_status: 'El Id preferencial no es válido.'
+            });
+         }
+      }
+
       if(!roles || roles == null || roles == undefined || roles == ""){
          return res.status(httpCode[409].code).json({
             data_send: "",         
@@ -552,14 +624,36 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'User not found'
          });
       }
-      var img = Object();  
-      let fotoperfil_path = "";
-      img = req.file;   
-      if(img != undefined && img !== null && img){        
-         fotoperfil_path  = img.path ? img.path : "";
-      }else{
+      // var img = Object();  
+      // let fotoperfil_path = "";
+      // img = req.file;   
+      // if(img != undefined && img !== null && img){        
+      //    fotoperfil_path  = img.path ? img.path : "";
+      // }else{
+      //    fotoperfil_path = "";
+      // }
+      
+      var imgs = Object();
+      let imagen_preferencial_path;
+      let fotoperfil_path;
+      imgs = req.files;
+
+
+      if (imgs != undefined && imgs !== null && imgs) {
+         if (imgs['imagen_preferencial'] != undefined && imgs['imagen_preferencial'] !== null && imgs['imagen_preferencial']) {
+            imagen_preferencial_path = imgs['imagen_preferencial']?.[0].path ?? "";
+         } else {
+            imagen_preferencial_path = "";
+         }
+         if (imgs['fotoperfil'] != undefined && imgs['fotoperfil'] !== null && imgs['fotoperfil']) {
+            fotoperfil_path = imgs['fotoperfil']?.[0].path ?? "";
+         } else {
+            fotoperfil_path = "";
+         }
+      } else {
+         imagen_preferencial_path = "";
          fotoperfil_path = "";
-      }  
+      } 
       
       if(fotoperfil_path !== "" && fotoperfil_path !== undefined && fotoperfil_path !== null) {
          const storagePath = path.resolve(user.fotoperfil);      
@@ -568,14 +662,16 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          fotoperfil_path = user.fotoperfil;
       } 
       
-      user.nombre             = nombre.toUpperCase(); 
+      user.nombre             = nombre; 
       user.direccion          = direccion;     
       user.telefono           = telefono;            
       user.genero             = genero.toLowerCase();
       user.fecha_nacimiento   = fecha_nacimiento;            
       user.fotoperfil         = fotoperfil_path;
+      user.fotopreferencial   = imagen_preferencial_path;
       user.idioma             = idioma? idioma.toLowerCase():null
       user.dni                = dni
+      user.preferencialid = (preferencialid && preferencialid !== '') ? preferencialid: user.preferencialid
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
          user.roles = foundRoles.map(role => role._id);    
@@ -598,6 +694,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'Usuario actualizado con éxito'
       });
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
@@ -753,13 +851,13 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
           });
       }      
       const usersWithAdminRole = await User.find({ roles: role._id },{clave:0,fbkid:0,goolgleid:0,tokenFacebook:0,tokenGoogle:0})      
-      .populate("roles","nombre");
+         .populate("roles preferencialid","nombre");
       
       if (usersWithAdminRole.length === 0) {
          return res.status(httpCode[200].code).json({
             data_send: [],
             num_status: httpCode[200].code,
-            msg_status: httpCode[204].message
+            msg_status: "Operadores no encontrados"
          });
       }
       

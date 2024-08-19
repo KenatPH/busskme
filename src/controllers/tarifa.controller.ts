@@ -1,10 +1,11 @@
 
 import express, { Request, Response } from "express";
-import Bases from "../models/base.models";
+import Tarifa from "../models/tarifa.models";
 import { ObjectId } from 'mongodb';
 import { httpCode } from "../utils/httpStatusHandle";
+import utilsHandle from "../utils/utilsHandle";
 
-export const getBase = async (req: Request, res: Response): Promise<Response> => {
+export const getTarifa = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
         return res.status(httpCode[409].code).json({
@@ -13,20 +14,20 @@ export const getBase = async (req: Request, res: Response): Promise<Response> =>
             msg_status: 'El Id no es válido'
         });
     }
-    const data = await Bases.findById(id);
+    const data = await Tarifa.findById(id);
 
     try {
         if (!data) {
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Tarifa no enconttrada'
             });
         }
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Base encontrada satisfactoriamente.'
+            msg_status: 'Tarifa encontrada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -37,21 +38,21 @@ export const getBase = async (req: Request, res: Response): Promise<Response> =>
     }
 }
 
-export const getDataBases = async (req: Request, res: Response): Promise<Response> => {
-    const data = await Bases.find();
+export const getDataTarifas = async (req: Request, res: Response): Promise<Response> => {
+    const data = await Tarifa.find();
 
     try {
         if (data.length === 0) {
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Tarifa no enconttrada'
             });
         }
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'Base encontrada satisfactoriamente.'
+            msg_status: 'Tarifa encontrada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -64,38 +65,65 @@ export const getDataBases = async (req: Request, res: Response): Promise<Respons
 
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
-    const { nombre } = req?.body
+    const { nombre, cantidadMinimaParadas, cantidadMaximaParadas , monto } = req?.body
 
     if (!nombre || nombre == null || nombre == "") {
         return res.status(httpCode[409].code).json({
             data_send: "",
             num_status: httpCode[204].code,
-            msg_status: 'El nombre de la Base, es obligatorio.'
+            msg_status: 'El nombre de la Tarifa, es obligatorio.'
         })
     }
 
-    const data = await Bases.findOne({ nombre: nombre })
+    if (!utilsHandle.validateFieldNum(cantidadMinimaParadas)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', El parametro cantidadMinimaParadas es requerido, es sólo numeros.'
+        });
+    }  
+
+    if (!utilsHandle.validateFieldNum(cantidadMaximaParadas)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', El parametro cantidadMaximaParadas es requerido, es sólo numeros.'
+        });
+    }
+
+    if (!utilsHandle.validateFieldNum(monto)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', El parametro cantidadMaximaParadas es requerido, es sólo numeros.'
+        });
+    }  
+
+    const data = await Tarifa.findOne({ nombre: nombre })
     if (data) {
         return res.status(httpCode[409].code).json({
             data_send: "",
             num_status: httpCode[409].code,
-            msg_status: 'La Base ya existse.'
+            msg_status: 'La Tarifa ya existse.'
         })
     }
 
-    const newBase = new Bases({
-        nombre: nombre,
+    const newTarifa = new Tarifa({
+        nombre,
+        cantidadMinimaParadas,
+        cantidadMaximaParadas,
+        monto
     });
 
     try {
 
-        await newBase.save();
+        await newTarifa.save();
 
         return res.status(httpCode[201].code).json(
             {
-                data_send: newBase,
+                data_send: newTarifa,
                 num_status: httpCode[201].code,
-                msg_status: 'Base creada satisfactoriamente.'
+                msg_status: 'Tarifa creada satisfactoriamente.'
             });
 
     } catch (error) {
@@ -119,15 +147,47 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                 msg_status: 'El Id no es válido'
             });
         }
-        const { nombre } = req.body;
+        const { nombre, cantidadMinimaParadas, cantidadMaximaParadas, monto } = req?.body
 
-        const data = await Bases.findById(id);
+        if (!nombre || nombre == null || nombre == "") {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[204].code,
+                msg_status: 'El nombre de la Tarifa, es obligatorio.'
+            })
+        }
+
+        if (!utilsHandle.validateFieldNum(cantidadMinimaParadas)) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: httpCode[409].message + ', El parametro cantidadMinimaParadas es requerido, es sólo numeros.'
+            });
+        }
+
+        if (!utilsHandle.validateFieldNum(cantidadMaximaParadas)) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: httpCode[409].message + ', El parametro cantidadMaximaParadas es requerido, es sólo numeros.'
+            });
+        }
+
+        if (!utilsHandle.validateFieldNum(monto)) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: httpCode[409].message + ', El parametro cantidadMaximaParadas es requerido, es sólo numeros.'
+            });
+        }  
+
+        const data = await Tarifa.findById(id);
 
         if (!data) {
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no encontrada.'
+                msg_status: 'Tarifa no encontrada.'
             });
         }
 
@@ -140,15 +200,18 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         }
 
         data.nombre = nombre
+        data.cantidadMaximaParadas = cantidadMaximaParadas
+        data.cantidadMinimaParadas = cantidadMinimaParadas
+        data.monto = monto
         await data.save();
 
         return res.status(httpCode[200].code).json({
             data_send: {
-                "Base": data.nombre,
+                "Tarifa": data.nombre,
                 "activo": data.activo,
             },
             num_status: httpCode[200].code,
-            msg_status: 'Base modificada satisfactoriamente.'
+            msg_status: 'Tarifa modificada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -159,7 +222,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
     }
 }
 
-export const deleteBase = async (req: Request, res: Response): Promise<Response> => {
+export const deleteTarifa = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id } = req.params;
         if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
@@ -170,13 +233,13 @@ export const deleteBase = async (req: Request, res: Response): Promise<Response>
             });
         }
 
-        const data = await Bases.findById(id);
+        const data = await Tarifa.findById(id);
 
         if (!data) {
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no encontrada.'
+                msg_status: 'Tarifa no encontrada.'
             });
         } else {
             if (data.activo === true) {
@@ -185,20 +248,20 @@ export const deleteBase = async (req: Request, res: Response): Promise<Response>
                 await data.save();
                 return res.status(httpCode[200].code).json({
                     data_send: {
-                        "Base": data.nombre,
+                        "Tarifa": data.nombre,
                         "activo": data.activo
                     },
                     num_status: httpCode[200].code,
-                    msg_status: 'Base borrada satisfactoriamente.'
+                    msg_status: 'Tarifa borrada satisfactoriamente.'
                 });
             } else {
                 return res.status(httpCode[200].code).json({
                     data_send: {
-                        "Base": data.nombre,
+                        "Tarifa": data.nombre,
                         "activo": data.activo
                     },
                     num_status: httpCode[200].code,
-                    msg_status: 'Base ya se encuentra con estatus eliminada.'
+                    msg_status: 'Tarifa ya se encuentra con estatus eliminada.'
                 });
             }
 
@@ -213,7 +276,7 @@ export const deleteBase = async (req: Request, res: Response): Promise<Response>
     }
 }
 
-export const activarBase = async (req: Request, res: Response): Promise<Response> => {
+export const activarTarifa = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id } = req.params;
         if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
@@ -224,13 +287,13 @@ export const activarBase = async (req: Request, res: Response): Promise<Response
             });
         }
 
-        const data = await Bases.findById(id);
+        const data = await Tarifa.findById(id);
 
         if (!data) {
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no encontrada.'
+                msg_status: 'Tarifa no encontrada.'
             });
         } else {
             if (data.activo === false) {
@@ -239,20 +302,20 @@ export const activarBase = async (req: Request, res: Response): Promise<Response
                 await data.save();
                 return res.status(httpCode[200].code).json({
                     data_send: {
-                        "Base": data.nombre,
+                        "Tarifa": data.nombre,
                         "activo": data.activo
                     },
                     num_status: httpCode[200].code,
-                    msg_status: 'Base activada satisfactoriamente.'
+                    msg_status: 'Tarifa activada satisfactoriamente.'
                 });
             } else {
                 return res.status(httpCode[200].code).json({
                     data_send: {
-                        "Bases": data.nombre,
+                        "Tarifa": data.nombre,
                         "activo": data.activo
                     },
                     num_status: httpCode[200].code,
-                    msg_status: 'Base ya se encuentra con estatus activa.'
+                    msg_status: 'Tarifa ya se encuentra con estatus activa.'
                 });
             }
 

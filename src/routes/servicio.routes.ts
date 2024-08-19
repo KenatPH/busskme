@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, activarServicio, getDataServicio, actualizaUbicacion, finalizarServicio, getServicio, getServicioActivoByUser } from "../controllers/servicio.controller";
+import { create, activarServicio, getDataServicio, actualizaUbicacion, finalizarServicio, getServicio, getServicioActivoByUser, getServicioActivoByCodigoUnidad } from "../controllers/servicio.controller";
 
 
 const router = Router();
@@ -11,6 +11,7 @@ router.get('/show', getDataServicio);
 router.get('/show/:id', getServicio);
 router.post('/ubicacion/:id', actualizaUbicacion);
 router.get('/show/byUserid/:id', getServicioActivoByUser);
+router.get('/show/byCodigoUnidad/:codigo', getServicioActivoByCodigoUnidad);
 // router.get('/show/:id', getParada);
 
 

@@ -42,6 +42,7 @@ import marcaRoutes from './routes/marca.routes'
 import modeloRoutes from './routes/modelo.routes'
 import roleRoutes from './routes/role.routes'
 import choferRoutes from './routes/chofer.routes'
+import operadorRoutes from './routes/operador.routes'
 import educacionRoutes from './routes/educacion.routes'
 import colorRoutes from './routes/color.routes'
 import organizacionRoutes from './routes/organizacion.routes'
@@ -56,6 +57,11 @@ import PagosRoutes from './routes/pago.routes'
 import ServicioRoutes from './routes/servicio.routes'
 import WalletRoutes from './routes/wallet.routes'
 import TicketRoutes from './routes/ticket.routes'
+import TipoPreferencialRoutes from './routes/tipopreferencial.routes'
+import TarifaRoutes from './routes/tarifa.routes'
+import ReservaRoutes from './routes/reserva.routes'
+import ReporteOperativo from './routes/reporteOperativo.routes'
+import { validaFechasVencimiento } from './controllers/notificacion.controller';
 
 //import fbkRoutes from './routes/fbk.routes'
 
@@ -74,6 +80,9 @@ initialConfig.cerateDirStorage();
 
 //crear Roles y usuario superadmin;
 initialConfig.createRolesAndUser();
+
+
+// validaFechasVencimiento()
 
 //middlewares
 app.use(morgan('dev'))
@@ -130,6 +139,7 @@ app.use('/municipio',municipioRoutes);
 app.use('/category',passport.authenticate('jwt', {session: false}),categoriaRoutes);
 app.use('/ruta',rutaRoutes);
 app.use('/chofer',choferRoutes);
+app.use('/operador', operadorRoutes)
 app.use('/organizador',organizacionRoutes);
 app.use('/educacion',educacionRoutes);
 app.use('/parada',paradaRoutes);
@@ -142,12 +152,16 @@ app.use('/metodo-pago',metodoPagoRoutes);
 app.use('/calificar-chofer',calificarChoferRoutes);
 app.use('/Base', BaseRoutes);
 app.use('/notificaciones', notificacionesRoutes);
-app.use('/itinerario/', ItinerariosRoutes)
-app.use('/incidencia/', IncidenciasRoutes)
+app.use('/itinerario', ItinerariosRoutes)
+app.use('/incidencia', IncidenciasRoutes)
 app.use('/pago', PagosRoutes)
 app.use('/servicio', ServicioRoutes)
 app.use('/ticket', TicketRoutes)
 app.use('/wallet', WalletRoutes)
+app.use('/tipoPreferencial', TipoPreferencialRoutes)
+app.use('/tarifa', TarifaRoutes)
+app.use('/reserva', ReservaRoutes)
+app.use('/reporte-operativo', ReporteOperativo)
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);

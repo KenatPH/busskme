@@ -26,6 +26,7 @@ export interface IVehiculo extends Document {
    modeloid: Schema.Types.ObjectId, 
    colorid: Schema.Types.ObjectId, 
    anno: number,
+   codigo_unidad:string,
    clase: string,
    tipo:string,
    uso:string,

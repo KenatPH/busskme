@@ -23,6 +23,10 @@ export const vehiculoSchema = new Schema({
    nro_certificado_registro:{
       type: String
    }, 
+
+   codigo_unidad:{
+      type: String
+   },
    placa:{
       type: String,
       required: [true, 'La placa del vehículo es requerida']

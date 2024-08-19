@@ -55,6 +55,7 @@ export default {
       fotoperfil:"storage/imgs/user",
       fotop:"storage/imgs/perfil/user",      
       imgschofer:"storage/imgs/chofer",
+      imgsOperador: "storage/imgs/operador",
       imgsvehiculo:"storage/imgs/vehiculo",
       imgsorganizacion:"storage/imgs/organizacion",
       imgmetodopago:"storage/imgs/metodopago",

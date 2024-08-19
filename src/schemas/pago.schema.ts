@@ -5,6 +5,10 @@ export const pagoSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    tipopagoid: {
+        type: Schema.Types.ObjectId,
+        ref: 'TipoPago'
+    },
     monto:{
         type:Number
     },
@@ -17,8 +21,7 @@ export const pagoSchema = new Schema({
         required: true
     },
     referencia: {
-        type: String,
-        required: true
+        type: String
     },
     imagen: {
         type: String
