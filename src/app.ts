@@ -61,6 +61,7 @@ import TipoPreferencialRoutes from './routes/tipopreferencial.routes'
 import TarifaRoutes from './routes/tarifa.routes'
 import ReservaRoutes from './routes/reserva.routes'
 import ReporteOperativo from './routes/reporteOperativo.routes'
+import TarifaAdicionalRoutes from './routes/tarifaAdicional.routes'
 import { validaFechasVencimiento } from './controllers/notificacion.controller';
 
 //import fbkRoutes from './routes/fbk.routes'
@@ -93,7 +94,7 @@ const corsOptions = {
  };
  app.use(cors({
    origin: '*',
-   credentials: true
+   credentials: false
  }));
 app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Methods', '*')
@@ -162,6 +163,7 @@ app.use('/tipoPreferencial', TipoPreferencialRoutes)
 app.use('/tarifa', TarifaRoutes)
 app.use('/reserva', ReservaRoutes)
 app.use('/reporte-operativo', ReporteOperativo)
+app.use('/tarifa-adicional', TarifaAdicionalRoutes)
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);

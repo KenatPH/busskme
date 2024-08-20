@@ -15,10 +15,12 @@ import express, { Request, Response } from "express";
 import Parada from "../models/parada.models";
 import Itinerario from "../models/itinerario.model"
 import Servicio from "../models/servicio.models"
+import Reserva from "../models/reserva.models";
 import mongoose from "mongoose";
 import { paradaSchema } from "../schemas/parada.schema";
 import { httpCode } from "../utils/httpStatusHandle";
 import {ObjectId} from 'mongodb';
+import { serve } from "swagger-ui-express";
 
 
 
@@ -205,8 +207,18 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
          });
       }
 
+      const data:any = []
+
+      for (let i = 0; i < Servs.length; i++) {
+
+         const count = await Reserva.estimatedDocumentCount({ servicioid: Servs[i]._id, estado:"Abordo" });
+         data.push({_id:Servs[i]._id, pasajeros_abordo:count})
+      }
+
+
+
       return res.status(httpCode[200].code).json({
-         data_send: Servs ,
+         data_send: { Servs, pasajeros_abordo: data } ,
          num_status: httpCode[200].code,
          msg_status: 'Servicios encontrados con éxito'
       });
