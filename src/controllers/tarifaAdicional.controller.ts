@@ -66,13 +66,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
     const { tipo, monto, fecha } = req?.body
 
-    if (!tipo || tipo == null || tipo == "") {
-        return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[204].code,
-            msg_status: 'El tipo de la Tarifa Adicional, es obligatorio.'
-        })
-    }
+    // if (!tipo || tipo == null || tipo == "") {
+    //     return res.status(httpCode[409].code).json({
+    //         data_send: "",
+    //         num_status: httpCode[204].code,
+    //         msg_status: 'El tipo de la Tarifa Adicional, es obligatorio.'
+    //     })
+    // }
     if (!monto || monto == null || monto == "") {
         return res.status(httpCode[409].code).json({
             data_send: "",
@@ -84,7 +84,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
 
     const newTarifaAdicional = new TarifaAdicional({
-        tipo, monto, fecha
+        tipo: 'finDeSemana', monto, fecha
     });
 
     try {
@@ -122,13 +122,13 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 
         const { tipo, monto, fecha } = req?.body
 
-        if (!tipo || tipo == null || tipo == "") {
-            return res.status(httpCode[409].code).json({
-                data_send: "",
-                num_status: httpCode[204].code,
-                msg_status: 'El tipo de la Tarifa Adicional, es obligatorio.'
-            })
-        }
+        // if (!tipo || tipo == null || tipo == "") {
+        //     return res.status(httpCode[409].code).json({
+        //         data_send: "",
+        //         num_status: httpCode[204].code,
+        //         msg_status: 'El tipo de la Tarifa Adicional, es obligatorio.'
+        //     })
+        // }
         if (!monto || monto == null || monto == "") {
             return res.status(httpCode[409].code).json({
                 data_send: "",
@@ -150,7 +150,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 
 
         data.monto = monto
-        data.tipo = tipo
+        data.tipo = 'finDeSemana'
         data.fecha = fecha
 
         await data.save();

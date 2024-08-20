@@ -820,7 +820,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
 
         // const diaSemana = new Date().getDay();
 
-        // let costoTotal:any = tarifa.monto;
+        let costoTotal:any = tarifa.monto;
 
         // // Verificar si es fin de semana
         // if (diaSemana === 0 || diaSemana === 6) {
