@@ -8,6 +8,7 @@ export interface ITicket extends Document {
     servicioid: Schema.Types.ObjectId,
     monto: Number,
     pagado: boolean,
+    preferencial:boolean,
     activo:boolean,
     createdAt: Date,
     updateAt: Date

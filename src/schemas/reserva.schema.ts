@@ -20,6 +20,10 @@ export const reservaSchema = new Schema({
     activo: {
         type: Boolean,
         default: true
+    },
+    estado:{
+        type: String,
+        default: 'En espera'
     }
 }, { versionKey: false, timestamps: true }
 );

@@ -5,6 +5,8 @@ import Tarifa from "../models/tarifa.models";
 import Wallet from "../models/wallet.model";
 import Ticket from "../models/ticket.models";
 import Vehiculo from "../models/vehiculos/vehiculo.models";
+import Itinerario from "../models/itinerario.model";
+import Servicio from "../models/servicio.models";
 import path from 'path';
 import config from '../config/config';
 import mongoose from "mongoose";
@@ -661,45 +663,79 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                 ]
             }
         });
-
+        
         if (!reserva) {
-            return res.status(httpCode[200].code).json({
+            return res.status(httpCode[404].code).json({
                 data_send: [],
-                num_status: httpCode[204].code,
+                num_status: httpCode[404].code,
                 msg_status: 'Reserva no encontrada'
             });
         }
+        let servicioid =  reserva.servicioid
         
-        // if  (!codigo_unidad || codigo_unidad === "" || codigo_unidad === undefined) {
-        //     return res.status(httpCode[200].code).json({
-        //         data_send: [],
-        //         num_status: httpCode[204].code,
-        //         msg_status: 'Reserva no encontrada y no suminitro codigo de unidad'
-        //     });
-        // }
-
+        if (codigo_unidad){
+            if (codigo_unidad === "" || codigo_unidad === undefined){
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'Reserva no encontrada y no suminitro codigo de unidad'
+                });
+            }
+        }
+        
         let choferId = reserva.servicioid.itinerarioid.choferid._id
-        // let vehiculo:any
+        let vehiculo:any
 
-        // if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
-        //     vehiculo = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
-        //         .populate('userid choferid marcaid modeloid colorid', 'nombre color');
+        if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
+            const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
 
-        //     if(vehiculo){
-        //         return res.status(httpCode[200].code).json({
-        //             data_send: [],
-        //             num_status: httpCode[200].code,
-        //             msg_status: 'Vehículo no encontrado'
-        //         });
-        //     }
+            if (!vehi) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[400].code,
+                    msg_status: 'Vehículo no enconttrado'
+                });
+            }
 
-        //     choferId = vehiculo.choferid    
-        // }
+            const itin = await Itinerario.find({ vehiculoid: vehi._id })
 
+            if (itin.length === 0) {
+                return res.status(httpCode[404].code).json({
+                    data_send: "",
+                    num_status: httpCode[404].code,
+                    msg_status: 'No Itinerario found'
+                });
+            }
 
+            const arregloItinerarios = itin.map((it) => { return it._id })
 
+            const Servs = await Servicio.findOne({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
 
-        
+            if (!Servs) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'servicio no enconttrado'
+                });
+            }
+            servicioid = Servs._id
+            choferId = vehiculo.choferid    
+        }
+
         const calculoParadas = (a:number, b:number) => {
             if (b > a) {
                 return b - a;
@@ -717,12 +753,14 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
 
 
         if (!tarifa) {
-            return res.status(httpCode[200].code).json({
+            return res.status(httpCode[404].code).json({
                 data_send: [],
-                num_status: httpCode[204].code,
+                num_status: httpCode[404].code,
                 msg_status: 'tarifa no encontrada'
             });
         }
+
+        let cantidad_de_pasajes_a_pagar = cantidad_pasajes
 
         if (ispreferencial){
 
@@ -759,16 +797,15 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
 
                     const newTicket = new Ticket({
                         userid,
-                        servicioid: reserva.servicioid,
+                        servicioid: servicioid,
                         monto:0,
-                        pagado: true
+                        pagado: true,
+                        preferencial:true
                     });
 
                     await newTicket.save();
 
-                    reserva.activo = false
-
-                    await reserva.save()
+                    cantidad_de_pasajes_a_pagar = cantidad_de_pasajes_a_pagar - 1
     
                 } else {
                     return res.status(httpCode[404].code).json({
@@ -778,15 +815,20 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     });
                 }
             }
-        }else{
-            return res.status(httpCode[404].code).json({
-                data_send: {},
-                num_status: httpCode[404].code,
-                msg_status: 'chupe guadalupe.'
-            });
+        }
+        const tikets_no_preferenciales:any = []
+        for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
+            tikets_no_preferenciales.push({
+                userid,
+                servicioid: servicioid,
+                monto: tarifa.monto ,
+                pagado: true
+            })
         }
 
-        
+        if (tikets_no_preferenciales.length > 0){
+            await Ticket.insertMany(tikets_no_preferenciales);
+        }
 
         const titulo1 = "Servicio pagado con exito";
         const cuerpo = `Se a registrado un pago de ${cantidad_pasajes} pasaje/s `;

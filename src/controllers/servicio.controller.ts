@@ -199,6 +199,8 @@ export const getServicioActivoByCodigoUnidad = async (req: Request, res: Respons
             msg_status: 'Data found successfully'
         });
     } catch (error) {
+        console.log(error);
+        
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,

@@ -40,6 +40,7 @@ export const getTicket = async (req: Request, res: Response): Promise<Response> 
     }
 }
 
+
 export const getDataTicket = async (req: Request, res: Response): Promise<Response> => {
     
     const data = await Ticket.find().populate({
@@ -85,9 +86,29 @@ export const getDataTicket = async (req: Request, res: Response): Promise<Respon
     }
 }
 
+
+
 export const getTicketByUser = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
-    const data = await Ticket.find({ userid:id});
+    // const { id } = req.params;
+    const userId = req.user
+    const data = await Ticket.find({ userid: userId, preferencial: true }).populate({
+        path: 'servicioid',
+        populate: {
+            path: 'itinerarioid',
+            populate: [
+                {
+                    path: 'vehiculoid',
+                    select: 'colorid modeloid marcaid codigo_unidad',
+                    populate: [
+                        { path: 'colorid', select: 'color' },
+                        { path: 'modeloid', select: 'nombre' },
+                        { path: 'marcaid', select: 'nombre' }
+                    ]
+                },
+                { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+            ]
+        }
+    });
 
     try {
         if (data.length === 0) {

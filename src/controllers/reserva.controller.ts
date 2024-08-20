@@ -1,7 +1,13 @@
 
 import express, { Request, Response } from "express";
+import Pago from "../models/pago.models";
 import Reserva from "../models/reserva.models";
-import Servicio from "../models/servicio.models"
+import Tarifa from "../models/tarifa.models";
+import Wallet from "../models/wallet.model";
+import Ticket from "../models/ticket.models";
+import Vehiculo from "../models/vehiculos/vehiculo.models";
+import Itinerario from "../models/itinerario.model";
+import Servicio from "../models/servicio.models";
 import Parada from "../models/parada.models";
 import { ObjectId } from 'mongodb';
 import { httpCode } from "../utils/httpStatusHandle";
@@ -136,7 +142,6 @@ export const getDataReservasBycliente = async (req: Request, res: Response): Pro
     }
 }
 
-
 export const create = async (req: Request, res: Response): Promise<Response> => {
 
     const { servicioid, paradaorigenid, paradadestinoid } = req?.body
@@ -171,13 +176,22 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
     try {
 
-        const Servs:any = await Servicio.findById(servicioid).populate({
+        const Servs: any = await Servicio.findById(servicioid).populate({
             path: 'itinerarioid',
             populate: [
-
-                { path: 'choferid colectorid', select: 'nombre genero' },
+                {
+                    path: 'vehiculoid',
+                    select: 'colorid modeloid marcaid codigo_unidad',
+                    populate: [
+                        { path: 'colorid', select: 'color' },
+                        { path: 'modeloid', select: 'nombre' },
+                        { path: 'marcaid', select: 'nombre' }
+                    ]
+                },
+                { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
             ]
         })
+
 
         if (!Servs) {
             return res.status(httpCode[404].code).json({
@@ -227,12 +241,151 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
 
         return res.status(httpCode[201].code).json(
             {
-                data_send: newReserva,
+                data_send: { newReserva, Servs },
                 num_status: httpCode[201].code,
                 msg_status: 'Reserva creada satisfactoriamente.'
             });
 
     } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later '
+        });
+    }
+}
+
+export const consolidarReserva = async (req: Request, res: Response): Promise<Response> => {
+    const { codigo_unidad } = req.body
+    try {
+        const userid = req.user
+
+        if (codigo_unidad) {
+            if (codigo_unidad === "" || codigo_unidad === undefined) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'Reserva no encontrada o no suminitro codigo de unidad'
+                });
+            }
+        }
+
+
+        const reserva:any = await Reserva.findOne({ userid, activo: true }).populate('paradadestinoid paradaorigenid', 'nombre').populate({
+            path: 'servicioid',
+            populate: {
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            }
+        });
+
+        if (!reserva) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'Reserva no encontrada'
+            });
+        }
+
+        let servicioid = reserva.servicioid
+
+        let choferId = reserva.servicioid.itinerarioid.choferid._id
+        let vehiculo: any
+        let data
+        console.log(codigo_unidad);
+        console.log(reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad);
+        
+        
+
+        if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()) {
+            const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
+
+            if (!vehi) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[400].code,
+                    msg_status: 'Vehículo no enconttrado'
+                });
+            }
+
+            const itin = await Itinerario.find({ vehiculoid: vehi._id })
+
+            if (itin.length === 0) {
+                return res.status(httpCode[404].code).json({
+                    data_send: "",
+                    num_status: httpCode[404].code,
+                    msg_status: 'No Itinerario found'
+                });
+            }
+
+            const arregloItinerarios = itin.map((it) => { return it._id })
+
+            const Servs = await Servicio.findOne({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
+
+            if (!Servs) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'servicio no enconttrado'
+                });
+            }
+            servicioid = Servs._id
+            choferId = vehiculo.choferid
+
+            reserva.activo =  false;
+            await reserva.save()
+
+            const newReserva = new Reserva({
+                userid, servicioid, paradaorigenid: reserva.paradaorigenid, paradadestinoid:reserva.paradadestinoid, estado:'Abordo'
+            });
+
+            await newReserva.save();
+
+            data = newReserva
+
+
+        }else{
+            console.log(" es la misma unidad");
+            
+            reserva.estado = 'Abordo';
+            await reserva.save()
+            data = reserva
+        }
+
+
+        return res.status(httpCode[200].code).json({
+            data_send: data,
+            num_status: httpCode[200].code,
+            msg_status: 'Reserva ya se encuentra con estatus activa y abordo.'
+        });
+
+    } catch (error) {
+        console.log(error)
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,

@@ -18,6 +18,10 @@ export const ticketSchema = new Schema({
         type: Boolean,
         default: false
     },
+    preferencial: {
+        type: Boolean,
+        default: false
+    },
     activo: {
         type: Boolean,
         default: false

@@ -10,6 +10,7 @@ export interface IReserva extends Document {
     paradaorigenid: Schema.Types.ObjectId,
     paradadestinoid: Schema.Types.ObjectId,
     activo: boolean,
+    estado:string,
     createdAt: Date,
     updateAt: Date
 }
