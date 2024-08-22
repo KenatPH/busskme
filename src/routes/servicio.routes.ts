@@ -12,7 +12,6 @@ router.get('/show/:id', getServicio);
 router.post('/ubicacion/:id', actualizaUbicacion);
 router.get('/show/byUserid/:id', getServicioActivoByUser);
 router.get('/show/byCodigoUnidad/:codigo', getServicioActivoByCodigoUnidad);
-// router.get('/show/:id', getParada);
 
 
 

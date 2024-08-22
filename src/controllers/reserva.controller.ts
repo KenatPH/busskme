@@ -303,11 +303,7 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
         let choferId = reserva.servicioid.itinerarioid.choferid._id
         let vehiculo: any
         let data
-        console.log(codigo_unidad);
-        console.log(reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad);
         
-        
-
         if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()) {
             const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
 
@@ -368,10 +364,8 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
 
             data = newReserva
 
-
         }else{
-            console.log(" es la misma unidad");
-            
+
             reserva.estado = 'Abordo';
             await reserva.save()
             data = reserva

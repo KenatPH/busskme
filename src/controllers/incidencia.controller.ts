@@ -212,6 +212,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
                 });
             }
 
+        }else{
+            // poner notifciones a un grupo
         }
 
 

@@ -208,6 +208,30 @@ class initialConfig {
       }
    }
 
+
+   async createTipoPago() {
+      try {
+         const count = await Educacion.estimatedDocumentCount();
+
+         console.log("createEducacion: ", count);
+
+
+         if (count > 0) return;
+
+
+         const values = await Promise.all([
+            new Educacion({ nombre: "sin estudio", activo: true }).save(),
+            new Educacion({ nombre: "Bachiller", activo: true }).save(),
+            new Educacion({ nombre: "Universitario", activo: true }).save(),
+
+         ]);
+
+         console.log(values);
+      } catch (error) {
+         console.error(error);
+      }
+   }
+
    async createUser() {
       try {
          const superadmin = await Role.findOne({ nombre: 'superadmin' });
