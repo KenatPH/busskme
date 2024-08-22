@@ -119,6 +119,9 @@ passport.use(passportMiddleware)
 app.get('/', (req, res) => {
    res.send(`The API Busskm, is running in http://localhost:${app.get('port')}`)
 })
+app.get('/test', (req, res) => {
+   res.send(` hola mundo The API Busskm, is running in http://localhost:${app.get('port')}`)
+})
 
 app.use("/api-docs",basicAuth({
    users: {'busskm': 'busskm.bioonix'},
