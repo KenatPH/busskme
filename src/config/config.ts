@@ -60,5 +60,9 @@ export default {
       imgsorganizacion:"storage/imgs/organizacion",
       imgmetodopago:"storage/imgs/metodopago",
       imgincidencia: "storage/imgs/incidencia"
-   }
+   },
+   WS: {
+      // HOST: production ? process.env.SOCKETHOST : 'http://174.138.68.136:3001',//'http://localhost',
+      HOST: 'http://localhost:5001',
+   },
 }

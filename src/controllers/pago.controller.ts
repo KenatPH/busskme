@@ -818,18 +818,18 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
             }
         }
 
-        // const diaSemana = new Date().getDay();
+        const diaSemana = new Date().getDay();
 
         let costoTotal:any = tarifa.monto;
 
-        // // Verificar si es fin de semana
-        // if (diaSemana === 0 || diaSemana === 6) {
-        //     const tarifaFinDeSemana = await TarifaAdicional.findOne({ tipo: 'finDeSemana' });
+        // Verificar si es fin de semana
+        if (diaSemana === 0 || diaSemana === 6) {
+            const tarifaFinDeSemana = await TarifaAdicional.findOne({ tipo: 'finDeSemana' });
 
-        //     if (tarifaFinDeSemana) {
-        //         costoTotal += tarifaFinDeSemana.monto;
-        //     }
-        // }
+            if (tarifaFinDeSemana) {
+                costoTotal += tarifaFinDeSemana.monto;
+            }
+        }
 
         const tikets_no_preferenciales:any = []
         for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {

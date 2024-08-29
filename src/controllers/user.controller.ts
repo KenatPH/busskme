@@ -316,6 +316,9 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    }
    const { dni, nombre, fecha_nacimiento, genero, correo, telefono, 
       idioma, clave, direccion, roles, preferencialid} = req?.body
+
+   console.log(req.body);
+   
                                 
    if(!utilsHandle.validateFieldLetra(nombre)){
       return res.status(httpCode[409].code).json({

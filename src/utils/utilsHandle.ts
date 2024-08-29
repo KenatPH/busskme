@@ -12,6 +12,8 @@
 import * as dns from 'dns';
 import {ObjectId} from 'mongodb';
 import moment from 'moment';
+import config from '../config/config';
+import { io } from "socket.io-client";
 
 class utilsHandle {
    constructor() {
@@ -153,6 +155,24 @@ class utilsHandle {
    // console.log(isValidTime24HourFormat("24:00")); // false
    // console.log(isValidTime24HourFormat("10:60")); // false
    // console.log(isValidTime24HourFormat("10:15 PM")); // false
+
+   llamarSocket(data: any, emit: any) {
+      console.log("llamarSocket");
+      
+
+      const urlSocket = config.WS.HOST
+
+      if (urlSocket) {
+         console.log(urlSocket);
+         
+         var socket = io(urlSocket);
+
+         socket.emit(emit, data);
+
+         // socket.close()
+      }
+
+   }
 
 }
 

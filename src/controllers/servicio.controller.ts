@@ -10,6 +10,7 @@ import { ObjectId } from 'mongodb';
 import utilsHandle from "../utils/utilsHandle";
 
 
+
 export const getDataServicio = async (req: Request, res: Response): Promise<Response> => {
     const dat = await Servicio.find()
         .populate({
@@ -382,18 +383,22 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
                 msg_status: 'Id is invalid'
             });
         }
-        const dat = await Servicio.findById(id);
+        const dat:any = await Servicio.findById(id).populate('itinerarioid');
+
         if (!dat) {
             return res.status(httpCode[404].code).json({
                 data_send: "",
                 num_status: httpCode[404].code,
-                msg_status: 'Parada no encontrada.'
+                msg_status: 'servicio no encontrado.'
             });
         }
 
-        dat.activo = true;
-
+        // dat.activo = true;
+        dat.latitud = latitud
+        dat.longitud = longitud
         await dat.save();
+
+        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, rutaid: dat.itinerarioid.rutaid, action:'locationUpdated'}, 'unirseAruta')
 
         return res.status(httpCode[200].code).json({
             data_send: dat,
@@ -409,3 +414,5 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
         });
     }
 }
+
+

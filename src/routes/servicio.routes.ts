@@ -14,6 +14,4 @@ router.get('/show/byUserid/:id', getServicioActivoByUser);
 router.get('/show/byCodigoUnidad/:codigo', getServicioActivoByCodigoUnidad);
 
 
-
-
 export default router;

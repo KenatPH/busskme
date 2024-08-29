@@ -188,7 +188,7 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
          populate: [
             {
                path: 'vehiculoid',
-               select:'colorid modeloid marcaid',
+               select:'colorid modeloid marcaid codigo_unidad',
                populate: [
                   { path: 'colorid', select:'color' },
                   { path: 'modeloid', select: 'nombre' },

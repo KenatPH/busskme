@@ -10,7 +10,7 @@ const multer = new MulterMiddleware(config.STORAGEAPI.imgsOperador, 'operador');
 const upload = multer.getMiddleware().fields([{ name: 'fotoperfil', maxCount: 1 },
 { name: 'imagen_dni', maxCount: 1 },
 { name: 'imagen_licencia', maxCount: 1 },
-{ name: 'imagen_cermed', maxCount: 1 },]);
+{ name: 'imagen_cermed', maxCount: 1 }]);
 
 
 
