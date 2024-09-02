@@ -290,6 +290,8 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
             }
         });
 
+        
+
         if (!reserva) {
             return res.status(httpCode[404].code).json({
                 data_send: [],
@@ -297,6 +299,8 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
                 msg_status: 'Reserva no encontrada'
             });
         }
+        console.log(reserva);
+        
 
         let servicioid = reserva.servicioid
 
