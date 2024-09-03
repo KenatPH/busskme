@@ -56,6 +56,8 @@ export const getOperadorByUserId = async (req: Request, res: Response): Promise<
          msg_status: 'Id no es válido'
       });
    }
+
+
    const data = await Operador.findOne({userid:id})
    .populate('userid','nombre genero fecha_nacimiento dni telefono correo direccion idioma fotoperfil');
    
@@ -115,7 +117,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       fecha_venc_rif, fecha_venc_dni, nro_licencia, fecha_emision_lic,
       fecha_venc_lic, grado_licencia, nro_cert_medico, fecha_emision_cermed,
       fecha_venc_cermed, grado_cermed, carga_familiar, grado_instruccion,
-      idiomas} = req?.body
+      idiomas, is_independent } = req?.body
    
    if(grado_instruccion === null || grado_instruccion === undefined || !grado_instruccion || !ObjectId.isValid(grado_instruccion)){
       return res.status(httpCode[409].code).json({
@@ -435,7 +437,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          carga_familiar: carga_familiar, 
          grado_instruccion,
          idiomas: idiomas,
-         activo:true
+         activo:true,
+         is_independent: (parseInt(is_independent)==1) ? true : false
       });
       await operador.save();
 
@@ -681,7 +684,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       fecha_venc_rif, fecha_venc_dni, nro_licencia, fecha_emision_lic,
       fecha_venc_lic, grado_licencia, nro_cert_medico, fecha_emision_cermed,
       fecha_venc_cermed, grado_cermed, carga_familiar, grado_instruccion,
-      idiomas} = req?.body
+      idiomas, is_independent } = req?.body
    
    const operador = await Operador.findById(id);
    if (!operador) {
@@ -989,6 +992,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
    operador.carga_familiar               = carga_familiar, 
    operador.grado_instruccion            = grado_instruccion,
    operador.idiomas                      = idiomas
+   operador.is_independent               = (parseInt(is_independent)==1)? true:false
 
    try {
       

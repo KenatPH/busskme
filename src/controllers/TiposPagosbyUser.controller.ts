@@ -72,7 +72,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
     if (!type || type == null || type == "") {
         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: httpCode[204].code,
+            num_status: httpCode[409].code,
             msg_status: 'type, es obligatorio.'
         })
     }
@@ -80,7 +80,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
     if (!details || details == null || details == "") {
         return res.status(httpCode[409].code).json({
             data_send: "",
-            num_status: httpCode[204].code,
+            num_status: httpCode[409].code,
             msg_status: 'type, es obligatorio.'
         })
     }
@@ -104,6 +104,8 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
             });
 
     } catch (error) {
+        console.log(error);
+        
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,

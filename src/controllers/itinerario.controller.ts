@@ -105,7 +105,7 @@ export const getDataItinerarioByChofer = async (req: Request, res: Response): Pr
     //     'vehiculoid rutaid choferid colectorid baseid'
     // );
     const { id } = req.params;
-    const data = await Itinerario.find({choferid:id}).populate({
+    const data = await Itinerario.find({ $or: [{ choferid: id }, { colectorid: id }] }).populate({
         path: 'vehiculoid',
         select: 'marcaid modeloid marcaid userid',
         populate: {
@@ -213,6 +213,27 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
             msg_status: httpCode[409].message + ', La hora de salida es requerida, formato (HH:MM).'
         });
     }
+
+
+    // const data = await Itinerario.findOne({ $or: [{ choferid: choferid }, { colectorid: colectorid }] })
+    const choferidItinerario = await Itinerario.findOne({ choferid: choferid })
+    if (choferidItinerario){
+        return res.status(httpCode[409].code).json({
+            data_send: choferidItinerario,
+            num_status: httpCode[409].code,
+            msg_status: " chofer ya pertenece a un itinerario"
+        });
+    }
+
+    const colectoridItinerario = await Itinerario.findOne({ colectorid: colectorid })
+    if (colectoridItinerario) {
+        return res.status(httpCode[409].code).json({
+            data_send: colectoridItinerario,
+            num_status: httpCode[409].code,
+            msg_status: " colector ya pertenece a un itinerario"
+        });
+    }
+    
 
 
     const newInt = new Itinerario({
@@ -328,6 +349,24 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                 data_send: [],
                 num_status: httpCode[200].code,
                 msg_status: 'Base no encontrada.'
+            });
+        }
+
+        const choferidItinerario = await Itinerario.findOne({ choferid: choferid })
+        if (choferidItinerario) {
+            return res.status(httpCode[409].code).json({
+                data_send: choferidItinerario,
+                num_status: httpCode[409].code,
+                msg_status: " chofer ya pertenece a un itinerario"
+            });
+        }
+
+        const colectoridItinerario = await Itinerario.findOne({ colectorid: colectorid })
+        if (colectoridItinerario) {
+            return res.status(httpCode[409].code).json({
+                data_send: colectoridItinerario,
+                num_status: httpCode[409].code,
+                msg_status: " colector ya pertenece a un itinerario"
             });
         }
 

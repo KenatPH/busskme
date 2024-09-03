@@ -25,6 +25,7 @@ export interface IOperador extends Document {
     idiomas: string,
     aprobado: boolean,
     activo: boolean,
+    is_independent:boolean,
     createdAt: Date,
     updateAt: Date
 }

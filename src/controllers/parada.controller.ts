@@ -21,7 +21,7 @@ import { paradaSchema } from "../schemas/parada.schema";
 import { httpCode } from "../utils/httpStatusHandle";
 import {ObjectId} from 'mongodb';
 import { serve } from "swagger-ui-express";
-
+import axios from "axios";
 
 
 export const getParada = async (req: Request, res: Response): Promise<Response> => {
@@ -151,7 +151,7 @@ export const getDataParadasByRuta = async (req: Request, res: Response): Promise
 }
 
 export const getDataServiciosByParada = async (req: Request, res: Response): Promise<Response> => {
-   const { id } = req.params;
+   const { id, userLat, userLng } = req.params;
    if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
       return res.status(httpCode[409].code).json({
          data_send: "",
@@ -211,8 +211,29 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
 
       for (let i = 0; i < Servs.length; i++) {
 
-         const count = await Reserva.estimatedDocumentCount({ servicioid: Servs[i]._id, estado:"Abordo" });
-         data.push({_id:Servs[i]._id, pasajeros_abordo:count})
+         let distancia:any 
+         if ((userLat !== null && userLat !== undefined && userLat !== "" && userLat !== "null") &&
+            (userLng !== null && userLng !== undefined && userLng !== "" && userLng !== "null")  ) {
+            const result  = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
+               params: {
+                  origins: `${Servs[i].latitud},${Servs[i].longitud}`,
+                  // origins: `${10.9707264},${-63.8418944}`,
+                  destinations: `${userLat},${userLng}`,
+                  // destinations: `${11.079022312234454},${-63.97048097723263}`,
+                  key: `AIzaSyCaMOe0kIYCylSuG8XmPNZhvQXnoW5wDO4`,
+               },
+            });
+
+            if(result && result.data){
+               distancia = result.data
+            }
+         }
+
+         
+
+
+         const count = await Reserva.find({ $and: [{ servicioid: Servs[i]._id }, { estado: "Abordo" } ]});
+         data.push({ servicioid: Servs[i]._id, pasajeros_abordo: count.length, distancia: distancia })
       }
 
 

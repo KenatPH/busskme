@@ -63,6 +63,7 @@ import ReservaRoutes from './routes/reserva.routes'
 import ReporteOperativo from './routes/reporteOperativo.routes'
 import TarifaAdicionalRoutes from './routes/tarifaAdicional.routes'
 import TipoPagosByUser from './routes/tiposPagosByUser.routes'
+import ETARoutes from './routes/ETA.routes'
 import { validaFechasVencimiento } from './controllers/notificacion.controller';
 
 //import fbkRoutes from './routes/fbk.routes'
@@ -172,6 +173,7 @@ app.use('/reserva', ReservaRoutes)
 app.use('/reporte-operativo', ReporteOperativo)
 app.use('/tarifa-adicional', TarifaAdicionalRoutes)
 app.use('/configuracion-pago', TipoPagosByUser)
+app.use('/eta', ETARoutes)
 app.use('/storage',express.static(path.resolve(config.STORAGEAPI.destination)));
 app.use(passport.authenticate('jwt', {session: false}),protectedRoutes);
 //app.use('/login/facebook',fbkRoutes);

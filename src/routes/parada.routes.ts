@@ -23,7 +23,7 @@ router.get('/show', getDataParadas);
 router.get('/show/:filtro', getDataParadasByNombre);
 router.get('/show/:id', getParada);
 router.get('/ruta/show/:rutaid', getDataParadasByRuta);
-router.get('/servicio/show/:id', getDataServiciosByParada);
+router.get('/servicio/show/:id/:userLat/:userLng', getDataServiciosByParada);
 
 
 

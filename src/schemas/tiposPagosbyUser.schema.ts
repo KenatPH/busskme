@@ -67,6 +67,10 @@ export const TransferSchema = new Schema({
         type: String,
         required: true,
     },
+    accountType:{
+        type: String,
+        required: true,      
+    },
     idNumber: {
         type: String,
         required: true,

@@ -74,6 +74,10 @@ export const OperadorSchema = new Schema({
     activo: {
         type: Boolean,
         default: true
+    },
+    is_independent:{
+        type: Boolean,
+        default: false
     }
 }, { versionKey: false, timestamps: true }
 );
