@@ -83,7 +83,7 @@ export const getDataIncidencia = async (req: Request, res: Response): Promise<Re
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
-                msg_status: 'incidencia no enconttrada'
+                msg_status: 'incidencia no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({

@@ -45,7 +45,7 @@ export const getDataTipoPreferencial = async (req: Request, res: Response): Prom
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'TipoPreferencial no enconttrada'
+                msg_status: 'TipoPreferencial no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({

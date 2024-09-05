@@ -30,7 +30,7 @@ export const getMarca = async (req: Request, res: Response): Promise<Response> =
          return res.status(httpCode[200].code).json({
             data_send: [],
             num_status: httpCode[200].code,
-            msg_status: 'Marca no enconttrada'
+            msg_status: 'Marca no encontrada'
          });
       }
       return res.status(httpCode[200].code).json({
@@ -55,7 +55,7 @@ export const getDataMarcas = async (req: Request, res: Response): Promise<Respon
          return res.status(httpCode[200].code).json({
             data_send: [],
             num_status: httpCode[200].code,
-            msg_status: 'Marca no enconttrada'
+            msg_status: 'Marca no encontrada'
          });
       }
       return res.status(httpCode[200].code).json({

@@ -506,7 +506,7 @@ export const getListPagosByUser = async (req: Request, res: Response): Promise<R
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[204].code,
-                msg_status: 'pagos no enconttrada'
+                msg_status: 'pagos no encontrada'
             });
         }
 

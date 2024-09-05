@@ -20,7 +20,7 @@ export const getReporteOperativo = async (req: Request, res: Response): Promise<
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'ReporteOperativo no enconttrada'
+                msg_status: 'ReporteOperativo no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({
@@ -45,7 +45,7 @@ export const getDataReporteOperativos = async (req: Request, res: Response): Pro
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'ReporteOperativo no enconttrada'
+                msg_status: 'ReporteOperativo no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({

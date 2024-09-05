@@ -20,7 +20,7 @@ export const getBase = async (req: Request, res: Response): Promise<Response> =>
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Base no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({
@@ -45,7 +45,7 @@ export const getDataBases = async (req: Request, res: Response): Promise<Respons
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Base no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({

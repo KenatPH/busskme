@@ -29,7 +29,7 @@ export const getReserva = async (req: Request, res: Response): Promise<Response>
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Reserva no enconttrada'
+                msg_status: 'Reserva no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({
@@ -54,7 +54,7 @@ export const getDataReservas = async (req: Request, res: Response): Promise<Resp
             return res.status(httpCode[200].code).json({
                 data_send: [],
                 num_status: httpCode[200].code,
-                msg_status: 'Reserva no enconttrada'
+                msg_status: 'Reserva no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({

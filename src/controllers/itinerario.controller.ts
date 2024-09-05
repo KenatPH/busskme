@@ -83,7 +83,7 @@ export const getDataItinerario = async (req: Request, res: Response): Promise<Re
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Base no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({
@@ -129,7 +129,7 @@ export const getDataItinerarioByChofer = async (req: Request, res: Response): Pr
             return res.status(httpCode[200].code).json({
                 data_send: "",
                 num_status: httpCode[204].code,
-                msg_status: 'Base no enconttrada'
+                msg_status: 'Base no encontrada'
             });
         }
         return res.status(httpCode[200].code).json({
