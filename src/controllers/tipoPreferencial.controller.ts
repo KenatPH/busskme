@@ -175,7 +175,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
                 "activo": data.activo,
             },
             num_status: httpCode[200].code,
-            msg_status: 'TipoPreferencial modificada satisfactoriamente.'
+            msg_status: 'Tipo Preferencial modificada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
@@ -274,10 +274,7 @@ export const activarTipoPreferencial = async (req: Request, res: Response): Prom
                 });
             } else {
                 return res.status(httpCode[200].code).json({
-                    data_send: {
-                        "TipoPreferencial": data.nombre,
-                        "activo": data.activo
-                    },
+                    data_send: data,
                     num_status: httpCode[200].code,
                     msg_status: 'TipoPreferencial ya se encuentra con estatus activa.'
                 });

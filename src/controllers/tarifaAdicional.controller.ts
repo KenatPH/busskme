@@ -51,7 +51,7 @@ export const getDataTarifaAdicional = async (req: Request, res: Response): Promi
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'TarifaAdicional encontrada satisfactoriamente.'
+            msg_status: 'Tarifa Adicional encontrada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({

@@ -340,7 +340,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         return res.status(httpCode[200].code).json({
             data_send: data,
             num_status: httpCode[200].code,
-            msg_status: 'BAse modificada satisfactoriamente.'
+            msg_status: 'Incidencia modificada satisfactoriamente.'
         });
     } catch (error) {
         return res.status(httpCode[500].code).json({
