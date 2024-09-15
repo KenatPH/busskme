@@ -412,7 +412,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
    }
 
    try {
-      
+      const isIndependent = ( is_independent&&parseInt(is_independent) == 1) ? true : false
       await newUser.save();
       const id = newUser._id;  
       const operador = new Operador({
@@ -438,7 +438,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          grado_instruccion,
          idiomas: idiomas,
          activo:true,
-         is_independent: (parseInt(is_independent)==1) ? true : false
+         is_independent: isIndependent
       });
       await operador.save();
 
