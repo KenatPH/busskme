@@ -7,7 +7,7 @@ import { deleteTipoPreferencial, activarTipoPreferencial, getDataTipoPreferencia
 const router = Router();
 
 router.post('/create', checkAuth, create);
-router.put('/update/:id', checkAuth, update);
+router.put('/update/:id'/* , checkAuth, */, update);
 router.delete('/delete/:id', checkAuth, deleteTipoPreferencial);
 router.post('/active/:id', checkAuth, activarTipoPreferencial);
 router.get('/show', getDataTipoPreferencial);
