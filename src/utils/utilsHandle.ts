@@ -66,6 +66,19 @@ class utilsHandle {
       }    
       return true; 
    };
+   validateFieldAlfaNumComma(fieldValue: string | undefined | null) {
+      // Expresión regular ajustada para permitir signos de puntuación y caracteres especiales
+      const validaRegex = /^[a-zA-ZÀÁÉÍÓÚàáéíóúñÑ0-9.,;:!?_\-\s]+$/;
+
+      if (!fieldValue || fieldValue === null || fieldValue === 'null' || fieldValue === undefined || fieldValue === 'undefined') {
+         return false;
+      }
+
+      if (!validaRegex.test(fieldValue)) {
+         return false;
+      }
+      return true;
+   };
 
    validateFieldDireccion(fieldValue: string | undefined | null):boolean {
       const validaRegex = /^[a-zA-ZÀÁÉÍÓÚàáéíóúñÑ0-9 ,.]+$/;

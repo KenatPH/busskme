@@ -267,7 +267,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
          msg_status: httpCode[409].message+', El campo nro_rutas es requerido, es un campo númerico, sólo acepta números.'
       });          
    }
-   if(!utilsHandle.validateFieldAlfaNum(descripcion_rutas)){
+   if (!utilsHandle.validateFieldAlfaNumComma(descripcion_rutas)){
       return res.status(httpCode[409].code).json({
          data_send: "",         
          num_status:httpCode[409].code,
@@ -984,7 +984,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: httpCode[409].message+', El campo nro_rutas es requerido, es un campo númerico, sólo acepta números.'
          });          
       }
-      if(!utilsHandle.validateFieldAlfaNum(descripcion_rutas)){
+      if (!utilsHandle.validateFieldAlfaNumComma(descripcion_rutas)){
          return res.status(httpCode[409].code).json({
             data_send: "",         
             num_status:httpCode[409].code,
