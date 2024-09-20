@@ -92,14 +92,13 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
         })
     }
 
-    // Convertir monto a número y luego a cadena con formato de comas
-    const montoNumerico = parseFloat(monto.replace(/,/g, '')); // Convertir a número sin comas
-    const montoFormateado = montoNumerico.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // Reemplazar coma por punto en el monto (ejemplo: "8,00" a "8.00")
+    const montoNormalizado = monto.replace(',', '.');
 
 
     const newTipoPreferencial = new TipoPreferencial({
         nombre: nombre,
-        monto: montoFormateado
+        monto: montoNormalizado
     });
 
     try {
@@ -171,11 +170,10 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
         }
 
         data.nombre = nombre
-        // Convertir monto a número y luego a cadena con formato de comas
-        const montoNumerico = parseFloat(monto.replace(/,/g, '')); // Convertir a número sin comas
-        const montoFormateado = montoNumerico.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Reemplazar coma por punto en el monto (ejemplo: "8,00" a "8.00")
+        const montoNormalizado = monto.replace(',', '.');
 
-        data.monto = montoFormateado;
+        data.monto = montoNormalizado;
         await data.save();
 
         return res.status(httpCode[200].code).json({
@@ -187,6 +185,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Tipo Preferencial modificada satisfactoriamente.'
         });
     } catch (error) {
+        console.log(error);
+        
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,
