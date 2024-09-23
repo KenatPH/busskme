@@ -90,14 +90,14 @@ export const getDataVehiculosbyDriver = async (req: Request, res: Response): Pro
          msg_status: 'El Id no es válido'
       });
    }
-   const data = await Vehiculo.find({ userid: id });
-
+   
    try {
+      const data = await Vehiculo.find({ userid: id });
       if (data.length === 0) {
          return res.status(httpCode[200].code).json({
             data_send: [],
             num_status: httpCode[200].code,
-            msg_status: 'Vehículos no enconttrados.'
+            msg_status: 'Vehículos no encontrados.'
          });
       }
       return res.status(httpCode[200].code).json({

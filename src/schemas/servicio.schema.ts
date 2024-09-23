@@ -18,6 +18,18 @@ export const servicioSchema = new Schema({
     activo: {
         type: Boolean,
         default: true
-    }
+    },
+    tipoTaxi: {
+        type: Boolean,
+        default: false
+    },
+    vehiculoid: {
+        type: Schema.Types.ObjectId,
+        ref: 'Vehiculo'
+    },
+    userid: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 }, { versionKey: false, timestamps: true }
 );

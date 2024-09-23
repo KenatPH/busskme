@@ -8,6 +8,8 @@ export interface IServicio extends Document {
     activo: boolean,
     latitud: String,
     longitud: String,
+    tipoTaxi:boolean,
+    userid:boolean,
     createdAt: Date,
     updateAt: Date
 }

@@ -11,6 +11,7 @@
 
 import express, { Request, Response } from "express";
 import User from "../../models/users.models";
+import Vehiculo from "../../models/vehiculos/vehiculo.models";
 import {getToken, getTokenData} from "../../config/config.jwt";
 import {sendMail, getTemplateHtml} from "../../config/config.mail";
 import  utilsHandle  from "../../utils/utilsHandle";
@@ -70,7 +71,9 @@ export const login = async (req: Request, res: Response) => {
          msg_status: 'Su cuenta debe ser validada, se ha enviado un email a su correo, verifica y sigue las instrucciones!'         
       })
    }
-   
+
+   const vehiculo = await Vehiculo.findOne({ userid: user._id });
+
    user.comparePassword(clave).then((match: boolean) => {
       if(!match) {
          const intent = user.intentos+1;
@@ -88,9 +91,11 @@ export const login = async (req: Request, res: Response) => {
          
       
       const token = getToken({ correo, id: user._id, afiliado: user.idcode,  roles: user.roles, genero: user.genero, idioma:user.idioma },'3d');
+
+
     
       return res.status(httpCode[200].code).json({
-        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles, fecha_nacimiento: user.fecha_nacimiento, dni:user.dni, direccion: user.direccion, telefono: user.telefono, genero:user.genero, imagen: user.fotoperfil},
+        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles, fecha_nacimiento: user.fecha_nacimiento, dni:user.dni, direccion: user.direccion, telefono: user.telefono, genero:user.genero, imagen: user.fotoperfil, vehiculo:vehiculo},
         num_status:httpCode[200].code,
         msg_status: httpCode[605].es
       })

@@ -138,6 +138,42 @@ export const getServicioActivoByUser = async (req: Request, res: Response): Prom
     }
 }
 
+export const getServicioActivoByUserTaxi = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+        });
+    }
+
+
+    const Servs = await Servicio.findOne({ userid:id, finalizado: false })
+
+    try {
+        if (!Servs) {
+            return res.status(httpCode[404].code).json({
+                data_send: "",
+                num_status: httpCode[404].code,
+                msg_status: 'No Servicio found'
+            });
+        }
+
+        return res.status(httpCode[200].code).json({
+            data_send: Servs,
+            num_status: httpCode[200].code,
+            msg_status: 'Data found successfully'
+        });
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later '
+        });
+    }
+}
+
 export const getServicioActivoByCodigoUnidad = async (req: Request, res: Response): Promise<Response> => {
     const { codigo } = req.params;
     if (codigo === null || codigo === undefined || !codigo ) {
@@ -275,6 +311,56 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
     }
 }
 
+export const createTaxi = async (req: Request, res: Response): Promise<Response> => {
+
+    const { vehiculoid, latitud, longitud } = req.body
+
+    const userId = req.user
+
+    if (!vehiculoid || vehiculoid === null || vehiculoid == "" || vehiculoid == undefined) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El vechiculo es obligatorio, verifique.'
+        });
+    }
+
+    const data = await Servicio.findOne({ vehiculoid: vehiculoid, finalizado: false, tipoTaxi:true })
+    if (data) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'La Servicio ya existe debe finalizar el servicio antes de iniciar otro.'
+        })
+    }
+
+    const newServicio = new Servicio({
+        vehiculoid,
+        latitud,
+        longitud,
+        tipoTaxi: true,
+        userid: userId
+    });
+
+    try {
+
+        await newServicio.save();
+
+        return res.status(httpCode[201].code).json(
+            {
+                data_send: newServicio,
+                num_status: httpCode[201].code,
+                msg_status: 'Servicip creado satisfactoriamente.'
+            });
+
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later ' + error
+        })
+    }
+}
 
 export const activarServicio = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -399,6 +485,66 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
         await dat.save();
 
         utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, rutaid: dat.itinerarioid.rutaid, action:'locationUpdated'}, 'unirseAruta')
+
+        return res.status(httpCode[200].code).json({
+            data_send: dat,
+            num_status: httpCode[200].code,
+            msg_status: 'Servicio activada con éxito.'
+        });
+
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem trying to modify the route, try again later (ruta)'
+        });
+    }
+}
+
+export const actualizaUbicacionTaxi = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const { latitud, longitud } = req.body;
+
+        if (!latitud || latitud === null || latitud == "" || latitud == undefined) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: 'El campo latitud es obligatorio, es un campo numerico, formato (-127.554334) verifique.'
+            });
+        }
+
+        if (!longitud || longitud === null || longitud == "" || longitud == undefined) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: 'El campo longitud es obligatorio, es un campo numerico, formato (-127.554334) verifique.'
+            });
+        }
+
+        if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+            return res.status(httpCode[409].code).json({
+                data_send: "",
+                num_status: httpCode[409].code,
+                msg_status: 'Id is invalid'
+            });
+        }
+        const dat: any = await Servicio.findById(id).populate('vehiculoid');
+
+        if (!dat) {
+            return res.status(httpCode[404].code).json({
+                data_send: "",
+                num_status: httpCode[404].code,
+                msg_status: 'servicio no encontrado.'
+            });
+        }
+
+        // dat.activo = true;
+        dat.latitud = latitud
+        dat.longitud = longitud
+        await dat.save();
+
+        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, action: 'locationUpdatedTaxi' }, 'servicioTaxi')
 
         return res.status(httpCode[200].code).json({
             data_send: dat,
