@@ -72,7 +72,7 @@ export const login = async (req: Request, res: Response) => {
       })
    }
 
-   const vehiculo = await Vehiculo.findOne({ userid: user._id });
+   const vehiculo = await Vehiculo.findOne({ userid: user._id }).populate('choferid marcaid modeloid colorid', 'nombre color');
 
    user.comparePassword(clave).then((match: boolean) => {
       if(!match) {

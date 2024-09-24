@@ -2,6 +2,7 @@
 import express, { Request, Response } from "express";
 import Servicio from "../models/servicio.models";
 import Vehiculo from "../models/vehiculos/vehiculo.models"
+import SolicitudServicioModel from '../models/solicitudDeServicio.model';
 import Itinerario from "../models/itinerario.model";
 import mongoose from "mongoose";
 import { paradaSchema } from "../schemas/parada.schema";
@@ -539,12 +540,26 @@ export const actualizaUbicacionTaxi = async (req: Request, res: Response): Promi
             });
         }
 
+        const solicitudActiva = await SolicitudServicioModel.findOne({
+            aceptadoPor: dat.userid,
+            activo: true
+        })
+
+        if (!solicitudActiva) {
+            return res.status(404).json({ 
+                data_send: "",
+                num_status: httpCode[404].code,
+                msg_status: 'No se encontró ninguna solicitud activa para el solicitante.'
+             });
+        }
+
+
         // dat.activo = true;
         dat.latitud = latitud
         dat.longitud = longitud
         await dat.save();
 
-        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, action: 'locationUpdatedTaxi' }, 'servicioTaxi')
+        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, action: 'locationUpdatedTaxi', userid:solicitudActiva.solicitanteid }, 'servicioTaxi')
 
         return res.status(httpCode[200].code).json({
             data_send: dat,

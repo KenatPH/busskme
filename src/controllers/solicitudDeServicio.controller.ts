@@ -19,7 +19,8 @@ export const crearSolicitudServicio = async (req: Request, res: Response): Promi
         // Verificar si el usuario ya tiene solicitudes en espera
         const solicitudesEnEspera = await SolicitudServicioModel.find({
             solicitanteid: solicitanteid,
-            estado: 'En espera'
+            $or: [{ estado: 'En espera' }, { estado: 'Aceptado' }, { estado: 'En viaje' }]
+            
         });
 
         if (solicitudesEnEspera.length > 0) {
