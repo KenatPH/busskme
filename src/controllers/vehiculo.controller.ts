@@ -122,6 +122,7 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
            nro_autorizacion, empresa_seguro, nro_poliza,
       nro_sudeaseg, fecha_emision_poliza, fecha_venc_poliza, codigo_unidad } = req?.body
 
+
    const userid = req.user
    
    if (!utilsHandle.validateFieldID(choferid)) {
@@ -279,13 +280,16 @@ export const create = async (req: Request, res: Response): Promise<Response> => 
       });          
    }
 
-   if (!codigo_unidad || codigo_unidad === null || codigo_unidad === "") {
-      return res.status(httpCode[409].code).json({
-         data_send: "",
-         num_status: httpCode[409].code,
-         msg_status: httpCode[409].message + ', El campo codigo unidad requerido.'
-      });
+   if (tipo !=='taxi'){
+      if (!codigo_unidad || codigo_unidad === null || codigo_unidad === "") {
+         return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: httpCode[409].message + ', El campo codigo unidad requerido.'
+         });
+      }
    }
+
    var imgs = Object();  let img_certificado_path = ""; let img_poliza_path =""; 
    imgs = req.files;  
    if(imgs != undefined && imgs !== null && imgs){ 

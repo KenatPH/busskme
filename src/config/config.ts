@@ -31,11 +31,11 @@ export default {
    MAIL: {
       correo: "jlramirez17@gmail.com",
       passw: process.env.MAIL_PASSW,
-      path_confirm: "http://localhost:5173/#/auth/confirm-account/",
-      path_confirm_admin: "http://localhost:5173/#/auth/account/confirm-admin",
-      path_validate: "http://localhost:5173/#/auth/validar-cuenta/", 
-      path_login: "http://localhost:5173/#/auth/login/" ,
-      path_resetPass:"http://localhost:5173/#/nueva-clave"
+      path_confirm: "https://buskmback.bioonix.com/#/auth/confirm-account/",
+      path_confirm_admin: "https://buskmback.bioonix.com/#/auth/account/confirm-admin",
+      path_validate: "https://buskmback.bioonix.com/#/auth/validar-cuenta/", 
+      path_login: "https://buskmback.bioonix.com/#/auth/login/" ,
+      path_resetPass:"https://buskmback.bioonix.com/#/nueva-clave"
    },
    FBK: {
       clientID: process.env.FBK_ID || "730716712424276",
