@@ -368,6 +368,8 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
 
             data = newReserva
 
+            Servs.cantidadPasajeros = ( Servs.cantidadPasajeros || Servs.cantidadPasajeros == 0)?  Servs.cantidadPasajeros + 1 : 0
+
         }else{
 
             reserva.estado = 'Abordo';

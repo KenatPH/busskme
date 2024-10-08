@@ -352,7 +352,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             });
         }
 
-        const choferidItinerario = await Itinerario.findOne({ choferid: choferid })
+        const choferidItinerario = await Itinerario.findOne({ choferid: choferid, _id:{ $ne: id } })
         if (choferidItinerario) {
             return res.status(httpCode[409].code).json({
                 data_send: choferidItinerario,
@@ -361,7 +361,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             });
         }
 
-        const colectoridItinerario = await Itinerario.findOne({ colectorid: colectorid })
+        const colectoridItinerario = await Itinerario.findOne({ colectorid: colectorid, _id:{ $ne: id } })
         if (colectoridItinerario) {
             return res.status(httpCode[409].code).json({
                 data_send: colectoridItinerario,

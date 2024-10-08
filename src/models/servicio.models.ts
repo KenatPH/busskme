@@ -10,6 +10,7 @@ export interface IServicio extends Document {
     longitud: String,
     tipoTaxi:boolean,
     userid:boolean,
+    cantidadPasajeros:number,
     createdAt: Date,
     updateAt: Date
 }

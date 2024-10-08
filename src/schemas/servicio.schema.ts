@@ -23,6 +23,10 @@ export const servicioSchema = new Schema({
         type: Boolean,
         default: false
     },
+    cantidadPasajeros:{
+         type: Number,
+         default:0
+    },
     vehiculoid: {
         type: Schema.Types.ObjectId,
         ref: 'Vehiculo'

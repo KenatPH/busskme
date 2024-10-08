@@ -7,12 +7,15 @@ import { registarPago, getListPagos, getPago, validarPago, getListPagosByUser, p
 
 const router = Router();
 const multer = new MulterMiddleware(config.STORAGEAPI.imgmetodopago, "metodopago");
-const upload = multer.getMiddleware().single('imagen');
+// const upload = multer.getMiddleware().single('imagen');
+
+const upload = multer.getMiddleware().fields([{ name: 'imagen', maxCount: 1 }]);
 
 
-router.post('/create', checkAuth, function (req, res, next) {
+router.post('/create', /* checkAuth, */ function (req, res, next) {
     upload(req, res, (err) => {
-
+        console.log(req.files);
+        
         if (err) {
             return res.status(409).json({
                 data_send: "",
@@ -29,6 +32,8 @@ router.post('/create', checkAuth, function (req, res, next) {
         next();
     })
 }, registarPago);
+
+// router.post('/create', multer.getMiddleware().single('imagen'), registarPago);
 router.post('/viaje', checkAuth, pagarViaje);
 router.post('/validar/:id', validarPago);
 router.get('/show', getListPagos);

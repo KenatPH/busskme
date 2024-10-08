@@ -22,7 +22,9 @@ class MulterMiddleware {
    constructor(private destination: string, private origen:string) {  
       
      this.storage = multer.diskStorage({       
-       destination: (req, file, cb) => {         
+       destination: (req, file, cb) => {
+         console.log("esto es destination: ",destination );
+                  
          if(destination !== null || destination !== undefined || destination !== ""){
             if (!fs.existsSync(`${destination}`)) {
                fs.mkdirSync(destination, { recursive: true });              
@@ -36,18 +38,38 @@ class MulterMiddleware {
          const uuidname = `${uuidv4()}${path.extname(file.originalname)}`;                
          cb(null, uuidname); // Nombre de archivo único
        },       
-     });                 
+     });       
+   
+   //     this.storage = multer.diskStorage({
+   //    destination: (req, file, cb) => {
+   //      console.log('Destino:', this.destination);
+
+   //      if (this.destination) {
+   //        // Asegura la creación del directorio si no existe
+   //        fs.ensureDirSync(this.destination);
+   //      }
+   //      cb(null, this.destination);
+   //    },
+   //    filename: (req, file, cb) => {
+   //      const uuidname = `${uuidv4()}${path.extname(file.originalname)}`;
+   //      cb(null, uuidname); // Nombre de archivo único
+   //    },
+   //  });
    }
      
    public getMiddleware(): multer.Multer { 
+               //  console.log("llego aqui al menos");
                 
       return multer({         
          storage: this.storage,               
          limits: this.limits,
          fileFilter(req, file, cb) {
             if (!file.originalname.match(/\.(jpg|jpeg|png)$/i)) {
+               console.log("entro en condicion");
                cb(new Error('Solo los siguientes formatos .jpg, .jpeg, .png, están permitidos!'));               
             } else {
+               console.log("entro en el else");
+               
                cb(null, true);
             }
          },                          

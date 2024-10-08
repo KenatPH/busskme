@@ -265,13 +265,13 @@ export const register = async (req: Request, res: Response): Promise<Response> =
       await newUser.save();
 
       const id = newUser._id;                  
-      if (preferencialid){
+      // if (preferencialid){
    
          const newWallet = new Wallet({
             userid: id
          })
          newWallet.save()
-      }
+      // }
 
 
       const token = getToken({ correo, id, idcode, nombre, telefono, idioma, roles},'2d');   
@@ -408,16 +408,16 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
    }
 
    
-   if (preferencialid && preferencialid !== '') {
+   // if (preferencialid && preferencialid !== '') {
 
-      if (!utilsHandle.validateFieldID(preferencialid)) {
-         return res.status(httpCode[409].code).json({
-            data_send: "",
-            num_status: httpCode[409].code,
-            msg_status: 'El id Preferencial no es valido.'
-         });
-      }
-   }
+   //    if (!utilsHandle.validateFieldID(preferencialid)) {
+   //       return res.status(httpCode[409].code).json({
+   //          data_send: "",
+   //          num_status: httpCode[409].code,
+   //          msg_status: 'El id Preferencial no es valido.'
+   //       });
+   //    }
+   // }
 
    const user = await User.findOne({correo: correo})
    if(user) {
@@ -461,7 +461,8 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       direccion,
       clave, 
       idioma: idioma.toLowerCase(),
-      preferencialid: (preferencialid && preferencialid !== '')? preferencialid:null
+      // preferencialid: (preferencialid && preferencialid !== '')? preferencialid:null
+
       /* origen, 
       fbkid, 
       googleid,
@@ -595,18 +596,18 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: httpCode[409].message+', La dirección es requerida.'
          }); 
       }
-      console.log(req.body);
+      // console.log(req.body);
       
-      if (preferencialid &&  preferencialid !== "" ){
+      // if (preferencialid &&  preferencialid !== "" ){
 
-         if (!utilsHandle.validateFieldID(preferencialid)) {
-            return res.status(httpCode[409].code).json({
-               data_send: "",
-               num_status: httpCode[409].code,
-               msg_status: 'El Id preferencial no es válido.'
-            });
-         }
-      }
+      //    if (!utilsHandle.validateFieldID(preferencialid)) {
+      //       return res.status(httpCode[409].code).json({
+      //          data_send: "",
+      //          num_status: httpCode[409].code,
+      //          msg_status: 'El Id preferencial no es válido.'
+      //       });
+      //    }
+      // }
 
       if(!roles || roles == null || roles == undefined || roles == ""){
          return res.status(httpCode[409].code).json({
@@ -674,7 +675,7 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       user.fotopreferencial   = imagen_preferencial_path;
       user.idioma             = idioma? idioma.toLowerCase():null
       user.dni                = dni
-      user.preferencialid = (preferencialid && preferencialid !== '') ? preferencialid: user.preferencialid
+      // user.preferencialid = (preferencialid && preferencialid !== '') ? preferencialid: user.preferencialid
       if(roles){
          const foundRoles = await Role.find({nombre: {$in: roles}});      
          user.roles = foundRoles.map(role => role._id);    

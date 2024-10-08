@@ -87,7 +87,6 @@ export const getDataTicket = async (req: Request, res: Response): Promise<Respon
 }
 
 
-
 export const getTicketByUser = async (req: Request, res: Response): Promise<Response> => {
     // const { id } = req.params;
     const userId = req.user

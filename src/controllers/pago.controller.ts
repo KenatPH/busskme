@@ -337,23 +337,7 @@ import { populate } from "dotenv";
 
 export const registarPago = async (req: Request, res: Response): Promise<Response> => {
     const { userid, titulo, referencia, metodopagoid, servicioid, monto } = req?.body
-    // const { titulo, referencia, nombre, telefono, cedula, userId, torneoId } = req.body;
 
-    // if (!titulo || titulo == null || titulo == undefined || titulo == "") {
-    //     return res.status(httpCode[409].code).json({
-    //         data_send: "",
-    //         num_status: httpCode[409].code,
-    //         msg_status: httpCode[409].message + ', La titulo  es requerido.'
-    //     });
-    // }
-
-    // if (!referencia || referencia == null || referencia == undefined || referencia == "") {
-    //     return res.status(httpCode[409].code).json({
-    //         data_send: "",
-    //         num_status: httpCode[409].code,
-    //         msg_status: httpCode[409].message + ', La referencia  es requerida.'
-    //     });
-    // }
 
     if (userid === null || userid === undefined || !userid || !ObjectId.isValid(userid)) {
         return res.status(httpCode[409].code).json({
@@ -381,13 +365,30 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
 
     try {
 
-        var img = Object(); let fotoReferencia = "";
-        img = req.file;
-        if (img != undefined && img !== null && img) {
-            fotoReferencia = img.path ? img.path : "";
+        // var img = Object(); let fotoReferencia = "";
+        // img = req.files;
+
+        // // console.log(req);
+        
+        // if (img != undefined && img !== null && img) {
+        //     fotoReferencia = img.path ? img.path : "";
+        // } else {
+        //     fotoReferencia = "";
+        // }
+
+        var imgs = Object(); 
+        let fotoReferencia; 
+        imgs = req.files;
+        if (imgs != undefined && imgs !== null && imgs) {
+            if (imgs['imagen'] != undefined && imgs['imagen'] !== null && imgs['imagen']) {
+                fotoReferencia = imgs['imagen']?.[0].filename ?? "";
+            } else {
+                fotoReferencia = "";
+            }
+
         } else {
             fotoReferencia = "";
-        }   
+        } 
 
 
         const pago = new Pago({
@@ -607,7 +608,7 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
             return parseFloat(a) + parseFloat(b);
         }
 
-        
+        // esto me agrega cantidad de tikets a mi wallet
         wallet.balance_usd = (data && data.monto) ? suma(wallet.balance_usd, data.monto) : wallet.balance_usd;
         wallet.balance_bs = (data && data.monto) ? suma(wallet.balance_bs, data.monto) : wallet.balance_bs;
         await wallet.save();
@@ -638,7 +639,7 @@ export const validarPago = async (req: Request, res: Response): Promise<Response
 
 export const pagarViaje = async (req: Request, res: Response): Promise<Response> => {
 
-    const {ispreferencial, cantidad_pasajes, codigo_unidad} =  req.body
+    const {ispreferencial, cantidad_pasajes, codigo_unidad, cash} =  req.body
 
     const userid = req.user
 
@@ -763,7 +764,21 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
 
         let cantidad_de_pasajes_a_pagar = cantidad_pasajes
 
-        if (ispreferencial){
+        const diaSemana = new Date().getDay();
+
+        let costoTotal:any = tarifa.monto;
+
+        // Verificar si es fin de semana
+        if (diaSemana === 0 || diaSemana === 6) {
+            const tarifaFinDeSemana = await TarifaAdicional.findOne({ tipo: 'finDeSemana' });
+
+            if (tarifaFinDeSemana) {
+                costoTotal += tarifaFinDeSemana.monto;
+            }
+        }
+
+
+        if (!cash){
 
             const walletUser = await Wallet.findOne({ userid: userid })
     
@@ -789,10 +804,10 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     return parseFloat(a) - parseFloat(b);
                 }
     
-                if (validaMonto(walletUser.balance_bs, 1)) {
+                if (validaMonto(walletUser.balance_bs, costoTotal)) {
     
-                    walletUser.balance_bs = resta(walletUser.balance_bs, 1)
-                    walletUser.balance_usd = resta(walletUser.balance_usd, 1)
+                    walletUser.balance_bs = resta(walletUser.balance_bs, costoTotal)
+                    walletUser.balance_usd = resta(walletUser.balance_usd, costoTotal)
     
                     await walletUser.save()
 
@@ -801,7 +816,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                         servicioid: servicioid,
                         monto:0,
                         pagado: true,
-                        preferencial:true
+                        // preferencial:true
                     });
 
                     await newTicket.save();
@@ -816,34 +831,24 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     });
                 }
             }
-        }
+        }else{
 
-        const diaSemana = new Date().getDay();
-
-        let costoTotal:any = tarifa.monto;
-
-        // Verificar si es fin de semana
-        if (diaSemana === 0 || diaSemana === 6) {
-            const tarifaFinDeSemana = await TarifaAdicional.findOne({ tipo: 'finDeSemana' });
-
-            if (tarifaFinDeSemana) {
-                costoTotal += tarifaFinDeSemana.monto;
+            const tikets_no_preferenciales:any = []
+            for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
+                tikets_no_preferenciales.push({
+                    userid,
+                    servicioid: servicioid,
+                    monto: costoTotal ,
+                    pagado: true
+                })
+            }
+            
+            if (tikets_no_preferenciales.length > 0){
+                await Ticket.insertMany(tikets_no_preferenciales);
             }
         }
 
-        const tikets_no_preferenciales:any = []
-        for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
-            tikets_no_preferenciales.push({
-                userid,
-                servicioid: servicioid,
-                monto: costoTotal ,
-                pagado: true
-            })
-        }
 
-        if (tikets_no_preferenciales.length > 0){
-            await Ticket.insertMany(tikets_no_preferenciales);
-        }
 
         const titulo1 = "Servicio pagado con exito";
         const cuerpo = `Se a registrado un pago de ${cantidad_pasajes} pasaje/s `;
