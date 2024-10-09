@@ -10,6 +10,7 @@ export interface ITicket extends Document {
     pagado: boolean,
     preferencial:boolean,
     activo:boolean,
+    cash:boolean,
     createdAt: Date,
     updateAt: Date
 }

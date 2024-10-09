@@ -26,6 +26,10 @@ export const ticketSchema = new Schema({
         type: Boolean,
         default: false
     },
+    cash: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -62,7 +62,7 @@ export const getDataTicket = async (req: Request, res: Response): Promise<Respon
                 ]
 }
         ]
-    }).populate('userid','nombre');
+    }).populate('userid','nombre') .sort({ createdAt: -1 })  // Orden descendente por createdAt;
 
     try {
         if (data.length === 0) {
@@ -90,7 +90,7 @@ export const getDataTicket = async (req: Request, res: Response): Promise<Respon
 export const getTicketByUser = async (req: Request, res: Response): Promise<Response> => {
     // const { id } = req.params;
     const userId = req.user
-    const data = await Ticket.find({ userid: userId, preferencial: true }).populate({
+    const data = await Ticket.find({ userid: userId}).populate({
         path: 'servicioid',
         populate: {
             path: 'itinerarioid',

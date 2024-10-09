@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import Pago from "../models/pago.models";
 import Reserva from "../models/reserva.models";
 import Tarifa from "../models/tarifa.models";
+import Role from "../models/role.models";
 import Wallet from "../models/wallet.model";
 import Ticket from "../models/ticket.models";
 import Vehiculo from "../models/vehiculos/vehiculo.models";
@@ -336,6 +337,8 @@ import { populate } from "dotenv";
 // }
 
 export const registarPago = async (req: Request, res: Response): Promise<Response> => {
+
+    const  userId  = req.user
     const { userid, titulo, referencia, metodopagoid, servicioid, monto } = req?.body
 
 
@@ -390,6 +393,29 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
             fotoReferencia = "";
         } 
 
+        const admin = await Role.find({ $or: [{ nombre: "admin" }, { nombre: "superadmin" }] });
+
+        // console.log(admin);
+        let aprobado = false
+        let adminuser = null
+
+
+        
+        if (admin) {
+
+            // console.log(admin.map((a: any) => { return a._id }));
+            
+            // Busca el usuario con el rol de admin
+            adminuser = await User.findOne({ $and: [{ _id: new ObjectId(`${userId}`) },{$or:admin.map((a:any)=>{return {roles : a._id}})}]  });
+            // console.log(adminuser);
+        
+            if(adminuser){
+                aprobado = true
+            }
+        } else {
+            console.log('No se encontró el rol de admin');
+        }
+
 
         const pago = new Pago({
             titulo,
@@ -398,7 +424,7 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
             metodopagoid,
             userid,
             monto,
-            aprobado:false,
+            aprobado:aprobado,
             imagen: fotoReferencia
         });
 
@@ -840,6 +866,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     userid,
                     servicioid: servicioid,
                     monto: costoTotal ,
+                    cash:true,
                     pagado: true
                 })
             // }

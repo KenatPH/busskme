@@ -12,7 +12,7 @@ const multer = new MulterMiddleware(config.STORAGEAPI.imgmetodopago, "metodopago
 const upload = multer.getMiddleware().fields([{ name: 'imagen', maxCount: 1 }]);
 
 
-router.post('/create', /* checkAuth, */ function (req, res, next) {
+router.post('/create', checkAuth, function (req, res, next) {
     upload(req, res, (err) => {
         console.log(req.files);
         
