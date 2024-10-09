@@ -687,6 +687,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
         
         let choferId = reserva.servicioid.itinerarioid.choferid._id
         let vehiculo:any
+        let Servs 
 
         if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
             const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
@@ -711,7 +712,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
 
             const arregloItinerarios = itin.map((it) => { return it._id })
 
-            const Servs = await Servicio.findOne({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+            Servs = await Servicio.findOne({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
                 path: 'itinerarioid',
                 populate: [
                     {
@@ -731,7 +732,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                 return res.status(httpCode[404].code).json({
                     data_send: [],
                     num_status: httpCode[404].code,
-                    msg_status: 'servicio no enconttrado'
+                    msg_status: 'servicio no encontrado'
                 });
             }
             servicioid = Servs._id
@@ -762,7 +763,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
             });
         }
 
-        let cantidad_de_pasajes_a_pagar = cantidad_pasajes
+        // let cantidad_de_pasajes_a_pagar = cantidad_pasajes
 
         const diaSemana = new Date().getDay();
 
@@ -814,14 +815,14 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     const newTicket = new Ticket({
                         userid,
                         servicioid: servicioid,
-                        monto:0,
+                        monto:costoTotal,
                         pagado: true,
                         // preferencial:true
                     });
 
                     await newTicket.save();
 
-                    cantidad_de_pasajes_a_pagar = cantidad_de_pasajes_a_pagar - 1
+                    // cantidad_de_pasajes_a_pagar = cantidad_de_pasajes_a_pagar - 1
     
                 } else {
                     return res.status(httpCode[404].code).json({
@@ -834,24 +835,33 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
         }else{
 
             const tikets_no_preferenciales:any = []
-            for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
+            // for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
                 tikets_no_preferenciales.push({
                     userid,
                     servicioid: servicioid,
                     monto: costoTotal ,
                     pagado: true
                 })
-            }
+            // }
             
-            if (tikets_no_preferenciales.length > 0){
+            // if (tikets_no_preferenciales.length > 0){
                 await Ticket.insertMany(tikets_no_preferenciales);
-            }
+            // }
         }
 
+        if (!Servs) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'servicio no encontrado'
+            });
+        }
 
+        Servs.cantidadTicketsPagados = costoTotal
+        await Servs.save()
 
-        const titulo1 = "Servicio pagado con exito";
-        const cuerpo = `Se a registrado un pago de ${cantidad_pasajes} pasaje/s `;
+        const titulo1 = "Pasaje pagado con exito";
+        const cuerpo = `Se a registrado un pago de ${costoTotal} ticket/s `;
         const link = "";
         const notificacion = await crearNotificacion(titulo1, cuerpo, link, choferId);
 

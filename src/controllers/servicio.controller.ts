@@ -139,6 +139,89 @@ export const getServicioActivoByUser = async (req: Request, res: Response): Prom
     }
 }
 
+export const getServiciosByUser = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { page = 1, limit = 10 } = req.query; // Parámetros de paginación con valores por defecto
+
+    if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+        return res.status(httpCode[409].code).json({
+            data_send: "",
+            num_status: httpCode[409].code,
+            msg_status: 'El Id no es válido'
+        });
+    }
+
+    const itin = await Itinerario.find({ $or: [{ choferid: id }, { colectorid: id }] });
+
+    if (itin.length === 0) {
+        return res.status(httpCode[404].code).json({
+            data_send: "",
+            num_status: httpCode[404].code,
+            msg_status: 'No Itinerario found'
+        });
+    }
+
+    const arregloItinerarios = itin.map((it) => it._id);
+
+    try {
+        // Convertir page y limit a números para su uso en paginación
+        const pageNumber = parseInt(page as string, 10);
+        const limitNumber = parseInt(limit as string, 10);
+
+        // Consultar los servicios con paginación
+        const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios } })
+            .populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
+            .sort({ createdAt: -1 })  // Orden descendente por createdAt
+            .skip((pageNumber - 1) * limitNumber)  // Saltar los documentos de acuerdo con la página actual
+            .limit(limitNumber);                   // Limitar el número de resultados por página
+
+        if (Servs.length === 0) {
+            return res.status(httpCode[404].code).json({
+                data_send: "",
+                num_status: httpCode[404].code,
+                msg_status: 'No Servicio found'
+            });
+        }
+
+        // Contar el número total de servicios para calcular las páginas
+        const totalServs = await Servicio.countDocuments({ itinerarioid: { $in: arregloItinerarios } });
+        const totalPages = Math.ceil(totalServs / limitNumber);
+
+        return res.status(httpCode[200].code).json({
+            data_send: Servs,
+            num_status: httpCode[200].code,
+            msg_status: 'Data found successfully',
+            pagination: {
+                totalItems: totalServs,
+                totalPages,
+                currentPage: pageNumber,
+                itemsPerPage: limitNumber
+            }
+        });
+    } catch (error) {
+        return res.status(httpCode[500].code).json({
+            data_send: "",
+            num_status: httpCode[500].code,
+            msg_status: 'There was a problem with the server, try again later'
+        });
+    }
+};
+
+
 export const getServicioActivoByUserTaxi = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
@@ -440,7 +523,6 @@ export const finalizarServicio = async (req: Request, res: Response): Promise<Re
         });
     }
 }
-
 
 export const actualizaUbicacion = async (req: Request, res: Response): Promise<Response> => {
     try {

@@ -23,7 +23,7 @@ export const servicioSchema = new Schema({
         type: Boolean,
         default: false
     },
-    cantidadPasajeros:{
+    cantidadTicketsPagados:{
          type: Number,
          default:0
     },

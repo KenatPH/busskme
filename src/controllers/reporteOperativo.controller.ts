@@ -38,7 +38,7 @@ export const getReporteOperativo = async (req: Request, res: Response): Promise<
 }
 
 export const getDataReporteOperativos = async (req: Request, res: Response): Promise<Response> => {
-    const data = await ReporteOperativo.find();
+    const data = await ReporteOperativo.find().populate('choferAnterior choferNuevo', ' nombre ').populate('vehiculoid');
 
     try {
         if (data.length === 0) {
@@ -90,5 +90,39 @@ export const deleteReporteOperativo = async (req: Request, res: Response): Promi
         });
     }
 }
+
+// Función para actualizar solo la propiedad 'nota' en un ReporteOperativo
+export const updateNotaReporteOperativo = async (req: Request, res: Response) => {
+  const { id } = req.params; // Obtener el ID del reporte operativo desde los parámetros de la URL
+  const { nota } = req.body; // Obtener la nueva nota desde el cuerpo de la solicitud
+
+  try {
+    // Validar que el ID sea un ObjectId válido
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'ID inválido' });
+    }
+
+    // Buscar y actualizar solo el campo 'nota' del documento
+    const updatedReporteOperativo = await ReporteOperativo.findById(
+      id
+    );
+
+    // Si el reporte operativo no fue encontrado, lanzamos un error
+    if (!updatedReporteOperativo) {
+      return res.status(404).json({ message: 'Reporte Operativo no encontrado' });
+    }
+
+    updatedReporteOperativo.nota = nota
+    await updatedReporteOperativo.save()
+
+    return res.status(httpCode[200].code).json({
+        data_send: {updatedReporteOperativo},
+        num_status: httpCode[200].code,
+        msg_status: 'Nota actualizada correctamente.'
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error en el servidor', error });
+  }
+};
 
 

@@ -1,8 +1,8 @@
 import { Schema, Document } from "mongoose";
 
-export const baseSchema = new Schema({
+export const reporteOperativoSchema = new Schema({
 
-    vehiculoId: {
+    vehiculoid: {
         type: Schema.Types.ObjectId,
         ref: "Vehiculo"
     },
@@ -13,6 +13,9 @@ export const baseSchema = new Schema({
     choferNuevo: {
         type: Schema.Types.ObjectId,
         ref: "User"
+    },
+    nota: {
+        type: String
     },
     fechaCambio: { 
         type: Date, 

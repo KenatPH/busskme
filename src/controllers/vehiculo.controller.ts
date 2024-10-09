@@ -587,12 +587,15 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          img_certificado_path = data.img_certificado;
          img_poliza_path = data.img_poliza;      
       } 
+
+      console.log(data.choferid != choferid);
+      
       
       if (data.choferid != choferid){
          const choferAnterior = data.choferid;
    
          const reporte = new Reporte({
-            vehiculoId: data._id,
+            vehiculoid: data._id,
             choferAnterior: choferAnterior,
             choferNuevo: choferid
          });
@@ -638,6 +641,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'Vehiculo actualizado con exito'
       });
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,
