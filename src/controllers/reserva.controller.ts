@@ -309,9 +309,9 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
         let data
         
         if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()) {
-            const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
+             vehiculo = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
 
-            if (!vehi) {
+            if (!vehiculo) {
                 return res.status(httpCode[404].code).json({
                     data_send: [],
                     num_status: httpCode[400].code,
@@ -319,7 +319,7 @@ export const consolidarReserva = async (req: Request, res: Response): Promise<Re
                 });
             }
 
-            const itin = await Itinerario.find({ vehiculoid: vehi._id })
+            const itin = await Itinerario.find({ vehiculoid: vehiculo._id })
 
             if (itin.length === 0) {
                 return res.status(httpCode[404].code).json({

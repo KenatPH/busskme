@@ -62,7 +62,7 @@ export default {
       imgincidencia: "storage/imgs/incidencia"
    },
    WS: {
-      // HOST: production ? process.env.SOCKETHOST : 'http://174.138.68.136:3001',//'http://localhost',
-      HOST: 'https://fkt9b3xc-5001.use2.devtunnels.ms',
+      // HOST: 'http://localhost:6001',
+      HOST: 'https://fkt9b3xc-6001.use2.devtunnels.ms',
    },
 }

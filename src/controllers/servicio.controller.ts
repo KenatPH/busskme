@@ -546,6 +546,8 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
         } 
         
         if (id === null || id === undefined || !id || !ObjectId.isValid(id)) {
+            console.log();
+            
             return res.status(httpCode[409].code).json({
                 data_send: "",
                 num_status: httpCode[409].code,
@@ -567,7 +569,7 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
         dat.longitud = longitud
         await dat.save();
 
-        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, rutaid: dat.itinerarioid.rutaid, action:'locationUpdated'}, 'unirseAruta')
+        utilsHandle.llamarSocket({ servicioid: id, latitud, longitud, rutaid: dat.itinerarioid.rutaid.toString(), choferid: dat.itinerarioid.choferid.toString(), action:'locationUpdated'}, 'unirseAruta')
 
         return res.status(httpCode[200].code).json({
             data_send: dat,

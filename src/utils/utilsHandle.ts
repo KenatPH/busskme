@@ -170,19 +170,27 @@ class utilsHandle {
    // console.log(isValidTime24HourFormat("10:15 PM")); // false
 
    llamarSocket(data: any, emit: any) {
-      console.log("llamarSocket");
-      
 
-      const urlSocket = config.WS.HOST
-
-      if (urlSocket) {
-         console.log(urlSocket);
+      try {
          
-         var socket = io(urlSocket);
-
-         socket.emit(emit, data);
-
-         // socket.close()
+         console.log("llamarSocket");
+         console.log("emit: ", emit);
+         console.log("data: ", data);
+   
+         const urlSocket = config.WS.HOST
+   
+         if (urlSocket) {
+            console.log(urlSocket);
+            
+            var socket = io(urlSocket);
+   
+            socket.emit(emit, data);
+   
+            // socket.close()
+         }
+      } catch (error) {
+          console.log(error);
+          
       }
 
    }

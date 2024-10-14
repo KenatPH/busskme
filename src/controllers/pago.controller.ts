@@ -713,7 +713,21 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
         
         let choferId = reserva.servicioid.itinerarioid.choferid._id
         let vehiculo:any
-        let Servs 
+        let Servs = await Servicio.findOne({ _id:reserva.servicioid }).populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
 
         if (codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
             const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
@@ -722,7 +736,7 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                 return res.status(httpCode[404].code).json({
                     data_send: [],
                     num_status: httpCode[400].code,
-                    msg_status: 'Vehículo no enconttrado'
+                    msg_status: 'Vehículo no encontrado'
                 });
             }
 
@@ -755,6 +769,8 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
             })
 
             if (!Servs) {
+                console.log("perdio el servicio");
+                
                 return res.status(httpCode[404].code).json({
                     data_send: [],
                     num_status: httpCode[404].code,
@@ -851,9 +867,9 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
                     // cantidad_de_pasajes_a_pagar = cantidad_de_pasajes_a_pagar - 1
     
                 } else {
-                    return res.status(httpCode[404].code).json({
+                    return res.status(httpCode[409].code).json({
                         data_send: {},
-                        num_status: httpCode[404].code,
+                        num_status: httpCode[409].code,
                         msg_status: 'saldo en wallet insuficiente.'
                     });
                 }
