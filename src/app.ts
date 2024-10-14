@@ -24,6 +24,7 @@ const basicAuth = require('express-basic-auth');
 import initialConfig from './config/initialConfig';
 import path from 'path';
 import 'dotenv/config';
+import rateLimit from 'express-rate-limit';
 
 //imported routes
 import authRoutes from './routes/auth.routes'
@@ -104,6 +105,16 @@ app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Headers', '*')
    next()
 });
+
+// Define rate limit rules
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later."
+});
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter);
 
 console.log("inicio: hola mundo");
 
