@@ -109,8 +109,10 @@ app.use((req, res, next) => {
 // Define rate limit rules
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP, please try again later."
+  max: 20000, // Aumenta el límite a 20,000 solicitudes por ventana de tiempo
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true, // Incluir información en los headers estándar (RateLimit-Limit, etc)
+  legacyHeaders: false, // Desactivar los headers de rate limit obsoletos
 });
 
 // Apply the rate limiting middleware to all requests
