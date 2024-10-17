@@ -213,7 +213,7 @@ export const aceptarSolicitudServicio = async (req: Request, res: Response): Pro
         }
 
 
-        const vehiculo = await Vehiculo.findOne({ choferid: operadodData?._id })
+        const vehiculo = await Vehiculo.findOne({ choferid: operadodData.userid })
             .populate('userid choferid marcaid modeloid colorid', 'nombre color');
         ;
 
