@@ -138,6 +138,34 @@ export const obtenerSolicitudActiva = async (req: Request, res: Response): Promi
     }
 };
 
+// Obtener solicitud activa del solicitante
+export const obtenerSolicitudActivaAceptada = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const aceptadoPor = req.user as string;
+
+        // Buscar la solicitud activa del solicitante
+        const solicitudActiva:any = await SolicitudServicioModel.findOne({
+            aceptadoPor: aceptadoPor,
+            activo: true
+        }).populate('solicitanteid','nombre');
+
+
+
+        if (!solicitudActiva) {
+            return res.status(404).json({ msg: 'No se encontró ninguna solicitud aceptada para el chofer' });
+        }
+
+        
+
+        return res.status(httpCode[200].code).json({
+            data_send: { ...solicitudActiva.toObject(),  },
+            num_status: httpCode[200].code,
+            msg_status: 'Solicitud activa encontrada.'
+        });
+    } catch (error) {
+        return res.status(500).json({ msg: 'Error al obtener la solicitud activa', error });
+    }
+};
 
 // Eliminar una solicitud de servicio
 export const eliminarSolicitudServicio = async (req: Request, res: Response): Promise<Response> => {

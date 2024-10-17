@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { checkAuth } from '../config/config.jwt';
-import { aceptarSolicitudServicio, crearSolicitudServicio, eliminarSolicitudServicio, finalizarViaje, iniciarViaje, listarSolicitudesEnEspera, modificarSolicitudServicio, obtenerSolicitudActiva } from '../controllers/solicitudDeServicio.controller';
+import { aceptarSolicitudServicio, crearSolicitudServicio, eliminarSolicitudServicio, finalizarViaje, iniciarViaje, listarSolicitudesEnEspera, modificarSolicitudServicio, obtenerSolicitudActiva, obtenerSolicitudActivaAceptada } from '../controllers/solicitudDeServicio.controller';
 
 const router = Router();
 
@@ -27,5 +27,8 @@ router.get('/en-espera', listarSolicitudesEnEspera);
 
 // Ruta para optener solicitudes que están activas 
 router.get('/activa', checkAuth, obtenerSolicitudActiva);
+
+// Ruta para optener solicitudes que están activas 
+router.get('/activa/chofer', checkAuth, obtenerSolicitudActivaAceptada);
 
 export default router;
