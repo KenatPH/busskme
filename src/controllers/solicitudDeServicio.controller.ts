@@ -158,7 +158,7 @@ export const obtenerSolicitudActivaAceptada = async (req: Request, res: Response
         
 
         return res.status(httpCode[200].code).json({
-            data_send: { ...solicitudActiva.toObject(),  },
+            data_send: { ...solicitudActiva.toObject()  },
             num_status: httpCode[200].code,
             msg_status: 'Solicitud activa encontrada.'
         });
