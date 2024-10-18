@@ -166,7 +166,11 @@ export const obtenerSolicitudActivaAceptada = async (req: Request, res: Response
 
 
         if (!solicitudActiva) {
-            return res.status(404).json({ msg: 'No se encontró ninguna solicitud aceptada para el chofer' });
+            return res.status(httpCode[404].code).json({
+                data_send: {},
+                num_status: httpCode[404].code,
+                msg_status: 'No se encontró ninguna solicitud aceptada para el chofer'
+            });
         }
 
         
