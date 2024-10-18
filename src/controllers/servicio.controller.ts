@@ -578,6 +578,7 @@ export const actualizaUbicacion = async (req: Request, res: Response): Promise<R
         });
 
     } catch (error) {
+        console.log(error)
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,
@@ -652,6 +653,7 @@ export const actualizaUbicacionTaxi = async (req: Request, res: Response): Promi
         });
 
     } catch (error) {
+        console.log(error)
         return res.status(httpCode[500].code).json({
             data_send: "",
             num_status: httpCode[500].code,

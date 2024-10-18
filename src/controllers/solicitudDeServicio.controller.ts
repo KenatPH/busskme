@@ -9,6 +9,7 @@ import User from "../models/users.models";
 import axios from "axios";
 import utilsHandle from '../utils/utilsHandle';
 import Servicio from "../models/servicio.models";
+import { GoogleMapsService } from './ETA.controller';
 
 // Crear una nueva solicitud de servicio
 export const crearSolicitudServicio = async (req: Request, res: Response): Promise<Response> => {
@@ -34,7 +35,12 @@ export const crearSolicitudServicio = async (req: Request, res: Response): Promi
             });
         }
 
-
+        const etaData = await GoogleMapsService.getETA({
+            originLat:ubicacionOrigen.latitud,
+            originLng:ubicacionOrigen.longitud,
+            destinationLat: ubicacionDestino.latitud,
+            destinationLng: ubicacionDestino.longitud,
+        });
 
         // Crear la solicitud
         const nuevaSolicitud = new SolicitudServicioModel({
@@ -108,7 +114,12 @@ export const obtenerSolicitudActiva = async (req: Request, res: Response): Promi
 
 
         if (!solicitudActiva) {
-            return res.status(404).json({ msg: 'No se encontró ninguna solicitud activa para el solicitante' });
+
+            return res.status(httpCode[404].code).json({
+                data_send: {},
+                num_status: httpCode[404].code,
+                msg_status: 'No se encontró ninguna solicitud activa para el solicitante'
+            });
         }
 
 

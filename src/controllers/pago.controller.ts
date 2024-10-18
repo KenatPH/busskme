@@ -18,6 +18,7 @@ import { ObjectId } from 'mongodb';
 import fs from 'fs-extra';
 import { crearNotificacion } from "./notificacion.controller";
 import { populate } from "dotenv";
+import SolicitudServicioModel from "../models/solicitudDeServicio.model";
 
 
 // export const getMetodoPagoById = async (req: Request, res: Response): Promise<Response> => {
@@ -904,6 +905,98 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
         await Servs.save()
 
         const titulo1 = "Pasaje pagado con exito";
+        const cuerpo = `Se a registrado un pago de ${costoTotal} ticket/s `;
+        const link = "";
+        const notificacion = await crearNotificacion(titulo1, cuerpo, link, choferId);
+
+
+        if (!notificacion || notificacion.success === false) {
+            console.log("fallo 1", notificacion);
+
+            return res.status(409).json({
+                data_send: "",
+                num_status: httpCode[201].code,
+                msg_status: notificacion.msg
+            });
+        }
+
+
+        return res.status(201).json(
+            {
+                data_send: "",
+                num_status: httpCode[201].code,
+                msg_status: 'Pago creado correctamente.'
+            });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: error
+        })
+    }
+}
+
+export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Response> => {
+
+    const {ispreferencial, cantidad_pasajes, codigo_unidad, cash} =  req.body
+
+    const userid = req.user
+
+
+    try {
+
+
+        const reserva:any = await SolicitudServicioModel.findOne({
+            solicitanteid: userid,
+            activo: true
+        }).populate('aceptadoPor');
+        
+        if (!reserva) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'Reserva no encontrada'
+            });
+        }
+        let servicioid =  reserva.servicioid
+        
+
+        
+        let choferId = reserva.servicioid.itinerarioid.choferid._id
+        let Servs = await Servicio.findOne({ _id:reserva.servicioid })
+
+
+        let costoTotal:any = 0;
+
+        const tikets_no_preferenciales:any = []
+        // for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
+            tikets_no_preferenciales.push({
+                userid,
+                servicioid: servicioid,
+                monto: costoTotal ,
+                cash:true,
+                pagado: true
+            })
+        // }
+        
+        // if (tikets_no_preferenciales.length > 0){
+            await Ticket.insertMany(tikets_no_preferenciales);
+        // }
+        
+
+        if (!Servs) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'servicio no encontrado'
+            });
+        }
+
+        Servs.cantidadTicketsPagados = costoTotal
+        await Servs.save()
+
+        const titulo1 = "Viaje pagado con exito";
         const cuerpo = `Se a registrado un pago de ${costoTotal} ticket/s `;
         const link = "";
         const notificacion = await crearNotificacion(titulo1, cuerpo, link, choferId);
