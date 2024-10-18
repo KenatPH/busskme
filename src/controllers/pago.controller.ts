@@ -946,11 +946,12 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
 
     try {
 
-
+        console.log(userid);
+        
         const reserva:any = await SolicitudServicioModel.findOne({
             solicitanteid: userid,
             activo: true
-        }).populate('aceptadoPor');
+        })
         
         if (!reserva) {
             return res.status(httpCode[404].code).json({
@@ -964,8 +965,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
 
         
         let choferId = reserva.aceptadoPor
-        let Servs = await Servicio.findOne({ _id:reserva.servicioid })
-
+        const Servs = await Servicio.findOne({ userid:reserva.aceptadoPor, finalizado: false })
 
         let costoTotal:any = (reserva.distance / 1000) * 3 ;
 
@@ -995,6 +995,8 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
 
         Servs.cantidadTicketsPagados = costoTotal
         await Servs.save()
+        reserva.activo = false
+        await reserva.save()
 
         const titulo1 = "Viaje pagado con exito";
         const cuerpo = `Se a registrado un pago de ${costoTotal} ticket/s `;
