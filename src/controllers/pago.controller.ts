@@ -963,7 +963,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         
 
         
-        let choferId = reserva.servicioid.itinerarioid.choferid._id
+        let choferId = reserva.aceptadoPor
         let Servs = await Servicio.findOne({ _id:reserva.servicioid })
 
 
