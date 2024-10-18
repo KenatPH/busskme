@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { checkAuth } from '../config/config.jwt';
-import { aceptarSolicitudServicio, crearSolicitudServicio, eliminarSolicitudServicio, finalizarViaje, iniciarViaje, listarSolicitudesEnEspera, modificarSolicitudServicio, obtenerSolicitudActiva, obtenerSolicitudActivaAceptada } from '../controllers/solicitudDeServicio.controller';
+import { aceptarSolicitudServicio, cancelarSolicitudServicio, crearSolicitudServicio, eliminarSolicitudServicio, finalizarViaje, iniciarViaje, listarSolicitudesEnEspera, modificarSolicitudServicio, obtenerSolicitudActiva, obtenerSolicitudActivaAceptada } from '../controllers/solicitudDeServicio.controller';
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.post('/crear', checkAuth, crearSolicitudServicio);
 router.put('/modificar/:id', checkAuth, modificarSolicitudServicio);
 
 // Ruta para eliminar una solicitud de servicio
-router.delete('/eliminar/:id', checkAuth, eliminarSolicitudServicio);
+router.delete('/eliminar/:id', checkAuth, cancelarSolicitudServicio);
 
 // Ruta para aceptar una solicitud de servicio
 router.put('/aceptar/:id', checkAuth,  aceptarSolicitudServicio);
