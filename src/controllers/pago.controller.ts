@@ -967,7 +967,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         let Servs = await Servicio.findOne({ _id:reserva.servicioid })
 
 
-        let costoTotal:any = 0;
+        let costoTotal:any = (reserva.distance / 1000) * 3 ;
 
         const tikets_no_preferenciales:any = []
         // for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
