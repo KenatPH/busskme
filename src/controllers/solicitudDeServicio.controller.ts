@@ -8,6 +8,7 @@ import { httpCode } from '../utils/httpStatusHandle';
 import User from "../models/users.models";
 import axios from "axios";
 import utilsHandle from '../utils/utilsHandle';
+import Servicio from "../models/servicio.models";
 
 // Crear una nueva solicitud de servicio
 export const crearSolicitudServicio = async (req: Request, res: Response): Promise<Response> => {
@@ -117,6 +118,8 @@ export const obtenerSolicitudActiva = async (req: Request, res: Response): Promi
             return res.status(404).json({ msg: 'No se encontró ningun operador' });
         }
 
+        const Servs = await Servicio.findOne({ userid:solicitudActiva.aceptadoPor?._id, finalizado: false })
+
 
         const vehiculo = await Vehiculo.findOne({ choferid: operadodData.userid })
             .populate('userid choferid marcaid modeloid colorid', 'nombre color');
@@ -129,7 +132,7 @@ export const obtenerSolicitudActiva = async (req: Request, res: Response): Promi
         
 
         return res.status(httpCode[200].code).json({
-            data_send: { ...solicitudActiva.toObject(), operador:operadodData.toObject(), vehiculo },
+            data_send: { ...solicitudActiva.toObject(), operador:operadodData.toObject(), vehiculo, Servs },
             num_status: httpCode[200].code,
             msg_status: 'Solicitud activa encontrada.'
         });
