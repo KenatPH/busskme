@@ -226,7 +226,8 @@ export const aceptarSolicitudServicio = async (req: Request, res: Response): Pro
         // Verificar si el usuario ya tiene otra solicitud aceptada
         const solicitudesAceptadas = await SolicitudServicioModel.find({
             aceptadoPor: aceptadoPor,
-            estado: 'Aceptado'
+            estado: 'Aceptado',
+            activo:true
         });
 
         if (solicitudesAceptadas.length > 0) {
