@@ -29,4 +29,5 @@ export const solicitudServicioSchema = new Schema({
     },
     inicioViaje: { type: Date, default: null },
     finViaje: { type: Date, default: null },
+    distance:{ type: Number, required: true },
 }, { versionKey: false, timestamps: true });

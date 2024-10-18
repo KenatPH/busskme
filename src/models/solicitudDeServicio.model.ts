@@ -17,7 +17,8 @@ export interface ISolicitudServicio extends Document {
     };
     activo: boolean;
     inicioViaje:  Date,
-    finViaje:  Date
+    finViaje:  Date,
+    distance:number,
 }
 
 // Crear el modelo basado en el esquema

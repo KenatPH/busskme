@@ -42,11 +42,15 @@ export const crearSolicitudServicio = async (req: Request, res: Response): Promi
             destinationLng: ubicacionDestino.longitud,
         });
 
+        const distance = etaData.rows[0].elements[0].distance.value
+
+
         // Crear la solicitud
         const nuevaSolicitud = new SolicitudServicioModel({
             solicitanteid,
             ubicacionOrigen,
-            ubicacionDestino
+            ubicacionDestino,
+            distance
         });
 
         // Guardar en la base de datos
