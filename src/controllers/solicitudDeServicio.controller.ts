@@ -297,7 +297,7 @@ export const aceptarSolicitudServicio = async (req: Request, res: Response): Pro
 
 
         return res.status(httpCode[200].code).json({
-            data_send: solicitud,
+            data_send: solicitudActiva,
             num_status: httpCode[200].code,
             msg_status: 'Solicitud de servicio aceptada exitosamente.'
         });
