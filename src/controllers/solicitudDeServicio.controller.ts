@@ -281,7 +281,7 @@ export const aceptarSolicitudServicio = async (req: Request, res: Response): Pro
         solicitud.aceptadoPor = user?._id; 
         await solicitud.save();
 
-        const solicitudActiva = await SolicitudServicioModel.findById(id).populate('aceptadoPor');
+        const solicitudActiva = await SolicitudServicioModel.findById(id).populate('aceptadoPor solicitanteid', 'nombre telefono');
 
         if (!solicitudActiva) {
             // return res.status(404).json({ msg: 'Solicitud no encontrada' });
