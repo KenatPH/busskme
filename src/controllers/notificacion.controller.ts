@@ -22,7 +22,7 @@ export const getListNotificacion = async (req: Request, res: Response): Promise<
     try {
         const data = await Notificaciones
                 .find({
-                    userid: id 
+                    userid: id, leida: false 
                 }).sort([['createdAt', 'desc']]).skip(offset).limit(10)
 
 
