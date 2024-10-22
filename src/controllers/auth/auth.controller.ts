@@ -11,18 +11,21 @@
 
 import express, { Request, Response } from "express";
 import User from "../../models/users.models";
-import Vehiculo from "../../models/vehiculos/vehiculo.models";
+import Vehiculo, { IVehiculo } from "../../models/vehiculos/vehiculo.models";
+import Role from "../../models/role.models";
+import Operador from "../../models/operador.models";
 import {getToken, getTokenData} from "../../config/config.jwt";
 import {sendMail, getTemplateHtml} from "../../config/config.mail";
 import  utilsHandle  from "../../utils/utilsHandle";
 import { httpCode } from "../../utils/httpStatusHandle";
 import {ObjectId} from 'mongodb';
 import config from "../../config/config";
+import { Document, Types } from "mongoose";
 
 export const home = (req: Request, res: Response) => {
    res.send('Bienvenido al inicio del sistema Best Padel Ranking');   
 }
-console.log('idioma: ',config.IDIOMA);
+
 export const login = async (req: Request, res: Response) => {
    
    const { correo, clave } = req?.body
@@ -71,8 +74,21 @@ export const login = async (req: Request, res: Response) => {
          msg_status: 'Su cuenta debe ser validada, se ha enviado un email a su correo, verifica y sigue las instrucciones!'         
       })
    }
+   let operador:any
+   let vehi: any
 
-   const vehiculo = await Vehiculo.findOne({ userid: user._id }).populate('choferid marcaid modeloid colorid', 'nombre color');
+   const operadorRole = await Role.find({ $or: [{ nombre: "operador" }] });
+   if (operadorRole) {
+
+
+      operador = await Operador.findOne({userid:user._id})
+
+      vehi = await Vehiculo.findOne({ userid: user._id }).populate('choferid marcaid modeloid colorid', 'nombre color');
+
+    } else {
+        console.log('No se encontró el rol de admin');
+    }
+
 
    user.comparePassword(clave).then((match: boolean) => {
       if(!match) {
@@ -95,7 +111,7 @@ export const login = async (req: Request, res: Response) => {
 
     
       return res.status(httpCode[200].code).json({
-        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles, fecha_nacimiento: user.fecha_nacimiento, dni:user.dni, direccion: user.direccion, telefono: user.telefono, genero:user.genero, imagen: user.fotoperfil, vehiculo:vehiculo},
+        data_send: {token, user_id: user._id, user_nombre: user.nombre, afiliado: user.idcode, activo: user.activo, perfil: user.roles, fecha_nacimiento: user.fecha_nacimiento, dni:user.dni, direccion: user.direccion, telefono: user.telefono, genero:user.genero, imagen: user.fotoperfil, vehiculo:vehi, operador:operador },
         num_status:httpCode[200].code,
         msg_status: httpCode[605].es
       })
