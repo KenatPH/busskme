@@ -540,13 +540,13 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       }
       
       
-      if(!utilsHandle.validateFieldLetra(nombre)){
-         return res.status(httpCode[409].code).json({
-            data_send: "",         
-            num_status:httpCode[409].code,
-            msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
-         });          
-      }  
+      // if(!utilsHandle.validateFieldLetra(nombre)){
+      //    return res.status(httpCode[409].code).json({
+      //       data_send: "",         
+      //       num_status:httpCode[409].code,
+      //       msg_status: httpCode[409].message+', El nombre es requerido, es sólo letras.'         
+      //    });          
+      // }  
 
       if(!utilsHandle.validateFieldAlfaNum(dni)){
          return res.status(httpCode[409].code).json({
