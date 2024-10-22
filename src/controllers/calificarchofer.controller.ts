@@ -54,6 +54,48 @@ export const getDataCalificarChofer = async (req: Request, res: Response): Promi
       });
    }   
 }
+
+export const getCalificacionTotalChofer = async (req: Request, res: Response): Promise<Response> => {
+   const { id } = req.params; 
+
+   // if(!utilsHandle.validateFieldID(choferid)){
+   //    return res.status(httpCode[409].code).json({
+   //       data_send: "",
+   //       num_status: httpCode[409].code,
+   //       msg_status: 'Id no es válido'
+   //    });
+   // }
+
+   try {
+      // Busca todas las calificaciones activas del chofer
+      const calificaciones = await Calificar.find( { userid: new ObjectId(`${id}`),  activo: true } );
+
+      if(calificaciones.length === 0){
+         return res.status(httpCode[200].code).json({
+            data_send: [],
+            num_status: httpCode[200].code,
+            msg_status: 'No se encontraron calificaciones para el chofer.'
+         });
+      }
+      
+      // Calcula el promedio de las calificaciones
+      const calificacionTotal = calificaciones.reduce((acc, cal) => acc + cal.calificacion, 0) / calificaciones.length;
+
+      return res.status(httpCode[200].code).json({
+         data_send: calificacionTotal, // Devuelve el promedio de calificaciones
+         num_status: httpCode[200].code,
+         msg_status: 'Calificación total del chofer obtenida satisfactoriamente'
+      });
+   } catch (error) {
+      return res.status(httpCode[500].code).json({
+         data_send: "",
+         num_status: httpCode[500].code,
+         msg_status: 'Hubo un problema con el servidor, intenta más tarde (chofer)'         
+      });
+   }   
+}
+
+
 export const getCalificarChoferByUserId = async (req: Request, res: Response): Promise<Response> => {
    const { id } = req.params; 
     if(!utilsHandle.validateFieldID(id)){

@@ -969,16 +969,13 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
 
         const tarifaporKilometro = await TarifaAdicional.findOne({ tipo: 'TaxiPorkilometro' });
 
-        let costoTotal:number = (reserva.distance / 1000) * 3 ;
-
+        let costoTotal:number
+        
         if (tarifaporKilometro) {
             costoTotal = (reserva.distance / 1000) * Number(tarifaporKilometro.monto);
         }else{
-            return res.status(httpCode[409].code).json({
-                data_send: [],
-                num_status: httpCode[404].code,
-                msg_status: 'Reserva no encontrada'
-            });
+            costoTotal = (reserva.distance / 1000) * 3 ;
+
         }
 
         const tikets_no_preferenciales:any = []

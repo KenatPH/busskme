@@ -19,6 +19,7 @@ export interface ISolicitudServicio extends Document {
     inicioViaje:  Date,
     finViaje:  Date,
     distance:number,
+    costo:number
 }
 
 // Crear el modelo basado en el esquema

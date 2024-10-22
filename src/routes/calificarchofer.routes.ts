@@ -10,7 +10,7 @@
 */
 
 import { Router } from "express";
-import { create, update, deleteCalificarChofer, getDataCalificarChoferes, getDataCalificarChofer, getCalificarChoferByUserId, getCalificarChoferByChoferId } from "../controllers/calificarchofer.controller";
+import { create, update, deleteCalificarChofer, getDataCalificarChoferes, getDataCalificarChofer, getCalificarChoferByUserId, getCalificarChoferByChoferId, getCalificacionTotalChofer } from "../controllers/calificarchofer.controller";
 import {checkAuth} from '../config/config.jwt';
 import config from '../config/config';
 
@@ -23,7 +23,7 @@ router.put('/update/:id', checkAuth,update);
  
 router.delete('/delete/:id', checkAuth, deleteCalificarChofer);
 router.get('/show', getDataCalificarChoferes);
-router.get('/show/:id', getDataCalificarChofer);
+router.get('/show/:id', getCalificacionTotalChofer);
 router.get('/show/chofer/:id', getCalificarChoferByChoferId);
 router.get('/show/user/:id', getCalificarChoferByUserId);
 

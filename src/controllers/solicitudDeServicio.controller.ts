@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import SolicitudServicioModel from '../models/solicitudDeServicio.model';
 import Vehiculo from "../models/vehiculos/vehiculo.models";
 import Operador from "../models/operador.models";
+import TarifaAdicional from "../models/tarifaAdicional.model"
 import { Types } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { httpCode } from '../utils/httpStatusHandle';
@@ -47,12 +48,23 @@ export const crearSolicitudServicio = async (req: Request, res: Response): Promi
         
         let distance = (etaData.rows[0].elements[0].status === 'ZERO_RESULTS')? 0:etaData.rows[0].elements[0].distance.value
 
+        const tarifaporKilometro = await TarifaAdicional.findOne({ tipo: 'TaxiPorkilometro' });
+
+        let costoTotal:number
+        
+        if (tarifaporKilometro) {
+            costoTotal = (distance / 1000) * Number(tarifaporKilometro.monto);
+        }else{
+            costoTotal = (distance / 1000) * 3 ;
+        }
+
         // Crear la solicitud
         const nuevaSolicitud = new SolicitudServicioModel({
             solicitanteid,
             ubicacionOrigen,
             ubicacionDestino,
-            distance
+            distance,
+            costo:costoTotal
         });
 
         // Guardar en la base de datos
