@@ -356,7 +356,7 @@ export const cancelarSolicitudServicio = async (req: Request, res: Response): Pr
         }
 
         // Verificar que el estado actual permita la cancelación
-        if (solicitud.estado === 'Finalizado') {
+        if (solicitud.estado === 'Completado') {
             return res.status(400).json({ msg: 'No se puede cancelar una solicitud finalizada' });
         }
 
