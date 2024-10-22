@@ -439,7 +439,7 @@ export const finalizarViaje = async (req: Request, res: Response): Promise<Respo
             return res.status(400).json({ msg: 'El viaje ya ha sido finalizado' });
         }
 
-        solicitud.estado = 'Finalizado';
+        solicitud.estado = 'Completado';
         solicitud.finViaje = new Date(); // Registrar la hora de finalización
         solicitud.activo = false; // Marcar la solicitud como no activa
         await solicitud.save();

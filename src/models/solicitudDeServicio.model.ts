@@ -5,7 +5,7 @@ import { solicitudServicioSchema } from '../schemas/solicitudDeServicio.schema';
 // Interface que extiende de Document para asegurar el tipado
 export interface ISolicitudServicio extends Document {
     solicitanteid: Schema.Types.ObjectId;
-    estado: 'En espera' | 'Aceptado' | 'Finalizado' | 'Cancelado' | 'En viaje';
+    estado: 'En espera' | 'Aceptado' | 'Completado' | 'Cancelado' | 'En viaje';
     aceptadoPor: Schema.Types.ObjectId;
     ubicacionOrigen: {
         latitud: number;
