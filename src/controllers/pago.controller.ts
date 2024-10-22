@@ -967,7 +967,19 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         let choferId = reserva.aceptadoPor
         const Servs = await Servicio.findOne({ userid:reserva.aceptadoPor, finalizado: false })
 
-        let costoTotal:any = (reserva.distance / 1000) * 3 ;
+        const tarifaporKilometro = await TarifaAdicional.findOne({ tipo: 'TaxiPorkilometro' });
+
+        let costoTotal:number = (reserva.distance / 1000) * 3 ;
+
+        if (tarifaporKilometro) {
+            costoTotal = (reserva.distance / 1000) * Number(tarifaporKilometro.monto);
+        }else{
+            return res.status(httpCode[409].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'Reserva no encontrada'
+            });
+        }
 
         const tikets_no_preferenciales:any = []
         // for (let i = 0; i < cantidad_de_pasajes_a_pagar; i++) {
@@ -996,6 +1008,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         Servs.cantidadTicketsPagados = costoTotal
         await Servs.save()
         reserva.activo = false
+        reserva.estado = ''
         await reserva.save()
 
         const titulo1 = "Viaje pagado con exito";
