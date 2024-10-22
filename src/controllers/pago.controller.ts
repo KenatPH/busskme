@@ -1008,7 +1008,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         Servs.cantidadTicketsPagados = costoTotal
         await Servs.save()
         reserva.activo = false
-        reserva.estado = ''
+        reserva.estado = 'Completado'
         await reserva.save()
 
         const titulo1 = "Viaje pagado con exito";
