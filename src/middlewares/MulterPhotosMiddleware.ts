@@ -64,6 +64,8 @@ class MulterMiddleware {
          storage: this.storage,               
          limits: this.limits,
          fileFilter(req, file, cb) {
+            console.log(file, !file.originalname.match(/\.(jpg|jpeg|png)$/i));
+            
             if (!file.originalname.match(/\.(jpg|jpeg|png)$/i)) {
                console.log("entro en condicion");
                cb(new Error('Solo los siguientes formatos .jpg, .jpeg, .png, están permitidos!'));               

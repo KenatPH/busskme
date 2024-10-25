@@ -1001,7 +1001,9 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
             msg_status: 'Organización no encontrada'
          });
       }
-      var imgs = Object();  let img_acta_constitutiva_path:any = []; let img_rif_path =""; let img_cps_path =""; 
+      var imgs = Object();  
+      let img_acta_constitutiva_path = "";
+       let img_rif_path =""; let img_cps_path =""; 
       let img_ult_acta_asamblea_path =""; let fotoperfil_path ="";
       imgs = req.files;  
       if(imgs != undefined && imgs !== null && imgs){ 
@@ -1009,30 +1011,53 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          img_rif_path = imgs['img_rif']?.[0].path ?? "";
          img_cps_path = imgs['img_cps']?.[0].path ?? "";    
          img_ult_acta_asamblea_path = imgs['img_ult_acta_asamblea']?.[0].path ?? "";
-
-         
-         if(img_rif_path !== "" && img_rif_path !== undefined && img_rif_path !== null) {
-            const storagePath = path.resolve(data.img_rif);      
-            if (fs.existsSync(storagePath)) {
-               await fs.unlink(storagePath);            
-            }
-         }else{
-            img_rif_path = data.img_rif;
-         }
-         if(img_cps_path !== "" && img_cps_path !== undefined && img_cps_path !== null) {
-            const storagePath = path.resolve(data.img_cps);      
-            if (fs.existsSync(storagePath)) {
-               await fs.unlink(storagePath);            
-            }
-         }else{
-            img_cps_path = data.img_cps;
-         }
                     
       }else{         
          img_rif_path = data.img_rif;
          img_cps_path = data.img_cps;
       } 
       
+      if(img_rif_path !== "" && img_rif_path !== undefined && img_rif_path !== null) {
+         if(data.img_rif!== ""){
+            console.log(data.img_rif);
+            
+            const storagePath = path.resolve(data.img_rif);      
+            utilsHandle.deleteImage(storagePath)
+         }
+      }else{
+            img_rif_path = data.img_rif;
+         }
+
+      if(img_cps_path !== "" && img_cps_path !== undefined && img_cps_path !== null) {
+         if(data.img_cps!== ""){
+
+            console.log(data.img_cps);
+            const storagePath = path.resolve(data.img_cps);      
+            utilsHandle.deleteImage(storagePath)
+         }
+      }else{
+            img_cps_path = data.img_cps;
+      }
+
+      if(img_acta_constitutiva_path !== "" && img_acta_constitutiva_path !== undefined && img_acta_constitutiva_path !== null) {
+         if(data.img_acta_constitutiva!== "" && data.img_acta_constitutiva !== undefined && data.img_acta_constitutiva !== null){
+            console.log(data.img_acta_constitutiva);
+            const storagePath = path.resolve(data.img_acta_constitutiva);      
+            utilsHandle.deleteImage(storagePath)
+         }
+      }else{
+            img_acta_constitutiva_path = data.img_acta_constitutiva;
+         }
+
+      if(img_ult_acta_asamblea_path !== "" && img_ult_acta_asamblea_path !== undefined && img_ult_acta_asamblea_path !== null) {
+         if(data.img_ult_acta_asamblea!== "" && data.img_ult_acta_asamblea !== undefined && data.img_ult_acta_asamblea !== null){
+            console.log(data.img_ult_acta_asamblea);
+            const storagePath = path.resolve(data.img_ult_acta_asamblea);      
+            utilsHandle.deleteImage(storagePath)
+         }
+      }else{
+            img_ult_acta_asamblea_path = data.img_ult_acta_asamblea;
+         }
 
       
       data.paisid                      = paisid,
@@ -1062,6 +1087,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       data.descripcion_rutas           = descripcion_rutas,      
       data.img_rif                     = img_rif_path,
       data.img_cps                     = img_cps_path,
+      data.img_acta_constitutiva = img_acta_constitutiva_path
+      data.img_ult_acta_asamblea = img_ult_acta_asamblea_path      
       
 
       await data.save();
@@ -1098,6 +1125,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
          msg_status: 'Organización modificada satisfactoriamente.'
       });
    } catch (error) {
+      console.log(error);
+      
       return res.status(httpCode[500].code).json({
          data_send: "",
          num_status: httpCode[500].code,

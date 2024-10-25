@@ -385,7 +385,7 @@ export const registarPago = async (req: Request, res: Response): Promise<Respons
         imgs = req.files;
         if (imgs != undefined && imgs !== null && imgs) {
             if (imgs['imagen'] != undefined && imgs['imagen'] !== null && imgs['imagen']) {
-                fotoReferencia = imgs['imagen']?.[0].filename ?? "";
+                fotoReferencia = imgs['imagen']?.[0].path ?? "";
             } else {
                 fotoReferencia = "";
             }

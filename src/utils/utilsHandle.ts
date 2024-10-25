@@ -14,6 +14,7 @@ import {ObjectId} from 'mongodb';
 import moment from 'moment';
 import config from '../config/config';
 import { io } from "socket.io-client";
+import fs from 'fs-extra';
 
 class utilsHandle {
    constructor() {
@@ -194,6 +195,23 @@ class utilsHandle {
       }
 
    }
+
+    deleteImage(storagePath: string) {
+      try {
+         console.log(storagePath);
+         if(storagePath.match(/\.(jpg|jpeg|png)$/i)){
+            if (fs.existsSync(storagePath)) {
+                fs.unlink(storagePath);
+            }
+
+         }
+         
+
+      } catch (error) {
+         // Ignore errors
+         console.log(error)
+      }
+}
 
 }
 

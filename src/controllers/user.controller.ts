@@ -307,6 +307,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 
 export const registeradmin = async (req: Request, res: Response): Promise<Response> => {
    
+   // console.log(req);
+   
    if(!req.body && req.body.length == 0 && req.body == undefined){
       return res.status(httpCode[409].code).json({
          data_send: "",         
@@ -428,8 +430,9 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
       });
    }
    
-   var imgs = Object(); let fotoperfil_path = "";
-   imgs = req.file;
+   var imgs = Object(); 
+   let fotoperfil_path = "";
+   imgs = req.files;
    console.log(imgs);
    
    if (imgs != undefined && imgs !== null && imgs) {
@@ -509,7 +512,7 @@ export const registeradmin = async (req: Request, res: Response): Promise<Respon
             "ubicación": newUser.direccion,
             "email": newUser.correo,
             "telefonos": newUser.telefono,            
-            "token": token
+            // "token": token
          },         
          num_status:httpCode[201].code,
             msg_status: 'Usuario creado exitosamente, se envió un correo electrónico para confirmar su cuenta, revise su carpeta de spam.'
@@ -644,6 +647,8 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
 
 
       if (imgs != undefined && imgs !== null && imgs) {
+         console.log(imgs);
+         
          if (imgs['imagen_preferencial'] != undefined && imgs['imagen_preferencial'] !== null && imgs['imagen_preferencial']) {
             imagen_preferencial_path = imgs['imagen_preferencial']?.[0].path ?? "";
          } else {
@@ -660,8 +665,10 @@ export const update = async (req: Request, res: Response): Promise<Response> => 
       } 
       
       if(fotoperfil_path !== "" && fotoperfil_path !== undefined && fotoperfil_path !== null) {
-         const storagePath = path.resolve(user.fotoperfil);      
-         deleteImage(storagePath)
+         if(user.fotoperfil!== ""){
+            const storagePath = path.resolve(user.fotoperfil);      
+            deleteImage(storagePath)
+         }
       }else{
          fotoperfil_path = user.fotoperfil;
       } 
@@ -881,13 +888,14 @@ export const getUserRole = async (req: Request, res: Response): Promise<Response
 
 function deleteImage(storagePath: string) {
       try {
-
+         console.log(storagePath);
+         
          if (fs.existsSync(storagePath)) {
              fs.unlink(storagePath);
          }
 
       } catch (error) {
          // Ignore errors
-         console.log((error))
+         console.log(error)
       }
 }

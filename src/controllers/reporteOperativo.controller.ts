@@ -112,6 +112,8 @@ export const updateNotaReporteOperativo = async (req: Request, res: Response) =>
       return res.status(404).json({ message: 'Reporte Operativo no encontrado' });
     }
 
+    console.log(nota)
+
     updatedReporteOperativo.nota = nota
     await updatedReporteOperativo.save()
 

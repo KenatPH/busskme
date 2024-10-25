@@ -95,22 +95,21 @@ export const organizacionSchema = new Schema({
    descripcion_rutas:{
       type: String
    },
-   img_acta_constitutiva: [
+   img_acta_constitutiva: 
       {            
          type: String,      
-      }
-   ],  
+      },  
    img_rif:{
       type: String
    },  
    img_cps:{
       type:String
    },
-   img_ult_acta_asamblea: [
+   img_ult_acta_asamblea: 
       {            
          type: String,      
       }
-   ],
+   ,
    aprobado: {    
       type: Boolean,
       default: false
