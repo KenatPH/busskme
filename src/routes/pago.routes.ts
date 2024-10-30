@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkAuth } from '../config/config.jwt';
 import MulterMiddleware from '../middlewares/MulterPhotosMiddleware'
 import config from '../config/config';
-import { registarPago, getListPagos, getPago, validarPago, getListPagosByUser, pagarViaje, pagarViajeTaxi } from "../controllers/pago.controller";
+import { registarPago, getListPagos, getPago, validarPago, getListPagosByUser, pagarViaje, pagarViajeTaxi, obtenerMontoViajeBus } from "../controllers/pago.controller";
 
 
 const router = Router();
@@ -40,5 +40,6 @@ router.post('/validar/:id', validarPago);
 router.get('/show', getListPagos);
 router.get('/show/:id', getPago);
 router.get('/show/byUserid/:id', getListPagosByUser);
+router.get('/get/monto/bus',checkAuth, obtenerMontoViajeBus)
 
 export default router;

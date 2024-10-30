@@ -806,8 +806,6 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
             });
         }
 
-        // let cantidad_de_pasajes_a_pagar = cantidad_pasajes
-
         const diaSemana = new Date().getDay();
 
         let costoTotal:any = tarifa.monto;
@@ -937,6 +935,193 @@ export const pagarViaje = async (req: Request, res: Response): Promise<Response>
     }
 }
 
+
+export const obtenerMontoViajeBus = async (req: Request, res: Response): Promise<Response> => {
+
+    const {ispreferencial, cantidad_pasajes, codigo_unidad, cash} =  req.body
+
+    const userid = req.user
+
+    console.log(userid);
+    
+
+    try {
+
+
+        const reserva:any = await Reserva.findOne({ userid, activo: true }).populate('paradadestinoid paradaorigenid', 'nombre orden').populate({
+            path: 'servicioid',
+            populate: {
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            }
+        });
+        
+        if (!reserva) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'Reserva no encontrada'
+            });
+        }
+        let servicioid =  reserva.servicioid
+        
+        if (codigo_unidad){
+            if (codigo_unidad === "" || codigo_unidad === undefined){
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'Reserva no encontrada y no suminitro codigo de unidad'
+                });
+            }
+        }
+        
+        let choferId = reserva.servicioid.itinerarioid.choferid._id
+        let vehiculo:any
+        let Servs = await Servicio.findOne({ _id:reserva.servicioid }).populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
+
+        if (codigo_unidad &&  codigo_unidad.toUpperCase() !== reserva.servicioid.itinerarioid.vehiculoid.codigo_unidad.toUpperCase()){
+            const vehi = await Vehiculo.findOne({ codigo_unidad: codigo_unidad })
+
+            if (!vehi) {
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[400].code,
+                    msg_status: 'Vehículo no encontrado'
+                });
+            }
+
+            const itin = await Itinerario.find({ vehiculoid: vehi._id })
+
+            if (itin.length === 0) {
+                return res.status(httpCode[404].code).json({
+                    data_send: "",
+                    num_status: httpCode[404].code,
+                    msg_status: 'No Itinerario found'
+                });
+            }
+
+            const arregloItinerarios = itin.map((it) => { return it._id })
+
+            Servs = await Servicio.findOne({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+                path: 'itinerarioid',
+                populate: [
+                    {
+                        path: 'vehiculoid',
+                        select: 'colorid modeloid marcaid codigo_unidad',
+                        populate: [
+                            { path: 'colorid', select: 'color' },
+                            { path: 'modeloid', select: 'nombre' },
+                            { path: 'marcaid', select: 'nombre' }
+                        ]
+                    },
+                    { path: 'choferid colectorid baseid rutaid', select: 'nombre genero fotoperfil' },
+                ]
+            })
+
+            if (!Servs) {
+                console.log("perdio el servicio");
+                
+                return res.status(httpCode[404].code).json({
+                    data_send: [],
+                    num_status: httpCode[404].code,
+                    msg_status: 'servicio no encontrado'
+                });
+            }
+            servicioid = Servs._id
+            choferId = vehiculo.choferid    
+        }
+
+        const calculoParadas = (a:number, b:number) => {
+            if (b > a) {
+                return b - a;
+            } else {
+                return a - b;
+            }
+        }
+
+        const cantidadParadasRecorridas = calculoParadas(reserva.paradaorigenid.orden, reserva.paradadestinoid.orden)
+
+        const tarifa = await Tarifa.findOne({
+            cantidadMinimaParadas: { $lte: cantidadParadasRecorridas },
+            cantidadMaximaParadas: { $gte: cantidadParadasRecorridas }
+        });
+
+
+        if (!tarifa) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'tarifa no encontrada'
+            });
+        }
+
+        const diaSemana = new Date().getDay();
+
+        let costoTotal:number = Number(tarifa.monto);
+
+        // Verificar si es fin de semana
+        if (diaSemana === 0 || diaSemana === 6) {
+            const tarifaFinDeSemana = await TarifaAdicional.findOne({ tipo: 'finDeSemana' });
+
+            if (tarifaFinDeSemana) {
+                costoTotal= Number(tarifaFinDeSemana.monto) + Number(costoTotal)
+                ;
+            }
+        }
+
+
+
+
+        if (!Servs) {
+            return res.status(httpCode[404].code).json({
+                data_send: [],
+                num_status: httpCode[404].code,
+                msg_status: 'servicio no encontrado'
+            });
+        }
+
+
+        return res.status(201).json(
+            {
+                data_send: {costoTotal},
+                num_status: httpCode[201].code,
+                msg_status: 'monto a pagar.'
+            });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: error
+        })
+    }
+}
+
 export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Response> => {
 
     const {ispreferencial, cantidad_pasajes, codigo_unidad, cash} =  req.body
@@ -992,7 +1177,7 @@ export const pagarViajeTaxi = async (req: Request, res: Response): Promise<Respo
         // if (tikets_no_preferenciales.length > 0){
             await Ticket.insertMany(tikets_no_preferenciales);
         // }
-        
+        // hola
 
         if (!Servs) {
             return res.status(httpCode[404].code).json({
