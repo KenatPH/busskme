@@ -16,6 +16,7 @@ import Parada from "../models/parada.models";
 import Itinerario from "../models/itinerario.model"
 import Servicio from "../models/servicio.models"
 import Reserva from "../models/reserva.models";
+import Calificar from "../models/calificarchofer.models";
 import mongoose from "mongoose";
 import { paradaSchema } from "../schemas/parada.schema";
 import { httpCode } from "../utils/httpStatusHandle";
@@ -183,7 +184,7 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
 
       const arregloItinerarios = itin.map((it) => { return it._id })
 
-      const Servs = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
+      const Servs:any = await Servicio.find({ itinerarioid: { $in: arregloItinerarios }, finalizado: false }).populate({
          path: 'itinerarioid',
          populate: [
             {
@@ -231,9 +232,14 @@ export const getDataServiciosByParada = async (req: Request, res: Response): Pro
 
          
 
-
          const count = await Reserva.find({ $and: [{ servicioid: Servs[i]._id }, { estado: "Abordo" } ]});
-         data.push({ servicioid: Servs[i]._id, pasajeros_abordo: count.length, distancia: distancia })
+
+         const calificaciones = await Calificar.find( { choferid: new ObjectId(`${Servs[i]?.itinerarioid.choferid._id}`),  activo: true } );
+
+         // Calcula el promedio de las calificaciones
+         const calificacionTotal = calificaciones.reduce((acc, cal) => acc + cal.calificacion, 0) / calificaciones.length;
+
+         data.push({ servicioid: Servs[i]._id, pasajeros_abordo: count.length, distancia: distancia, calificacionTotal })
       }
 
 

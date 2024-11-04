@@ -68,7 +68,7 @@ export const getCalificacionTotalChofer = async (req: Request, res: Response): P
 
    try {
       // Busca todas las calificaciones activas del chofer
-      const calificaciones = await Calificar.find( { userid: new ObjectId(`${id}`),  activo: true } );
+      const calificaciones = await Calificar.find( { choferid: new ObjectId(`${id}`),  activo: true } );
 
       if(calificaciones.length === 0){
          return res.status(httpCode[200].code).json({

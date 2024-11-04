@@ -63,6 +63,7 @@ export default {
    },
    WS: {
       // HOST: 'http://localhost:6001',
-      HOST: 'https://fkt9b3xc-6001.use2.devtunnels.ms',
+      // HOST: 'https://fkt9b3xc-6001.use2.devtunnels.ms',
+      HOST: 'wss://api.quality.bioonix.com'
    },
 }
